@@ -4,7 +4,7 @@ import { createChart } from './tv-lightweight'
 import { getStakesInfoDays, mapStakes } from './dataFetch/stakes'
 import { getPairsInfoDays, mapPairs } from './dataFetch/pairs'
 
-import './styles/main.css'
+import './styles/main.scss'
 
 const chartConfig = {
     width: 600,
