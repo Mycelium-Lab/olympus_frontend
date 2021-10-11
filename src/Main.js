@@ -10,7 +10,7 @@ const chartConfig = {
     width: 600,
     height: 300,
     autoScale: true,
-    priceScale: {
+    rightPriceScale: {
         entireTextOnly: true,
         scaleMargins: {
             top: 0.14,
@@ -19,7 +19,7 @@ const chartConfig = {
         borderVisible: true,
     },
     crosshair: {
-        mode: 0,
+        mode: 1,
     },
     drawTicks: true,
     layout: {
@@ -46,17 +46,21 @@ const createCrosshairOptions = (flag) => ({
 })
 
 export default function Main() {
-    const ref = createRef()
-    const ref2 = createRef()
-    const ref3 = createRef()
+    const refs = []
+    Array.from(Array(3).keys()).forEach((_) => refs.push(createRef()))
 
     useEffect(async () => {
-        const chart = createChart(ref.current, chartConfig)
-        const chart2 = createChart(ref2.current, {
-            ...chartConfig,
-            height: 200,
+        const charts = refs.map((_, i) => {
+            if (i == 1) {
+                return createChart(refs[i].current, {
+                    ...chartConfig,
+                    height: 200,
+                })
+            }
+            return createChart(refs[i].current, chartConfig)
         })
-        const chart3 = createChart(ref3.current, chartConfig)
+
+        // data and charts' config
 
         const tsmain = 1616457600
         const delta =
@@ -65,7 +69,7 @@ export default function Main() {
         const pairs = await getPairsInfoDays(tsmain, delta)
         const pairsMapped = await mapPairs(pairs)
 
-        const candleSeries = chart.addCandlestickSeries({
+        const candleSeries = charts[0].addCandlestickSeries({
             upColor: 'rgb(37,166,154)',
             downColor: 'rgb(239,83,80)',
             borderVisible: false,
@@ -84,12 +88,12 @@ export default function Main() {
             },
         }
 
-        const volumeUpHist = chart2.addHistogramSeries({
+        const volumeUpHist = charts[1].addHistogramSeries({
             ...volumeHistConfig,
             color: 'rgb(147,210,204)',
         })
 
-        const volumeDownHist = chart2.addHistogramSeries({
+        const volumeDownHist = charts[1].addHistogramSeries({
             ...volumeHistConfig,
             color: 'rgb(247,169,167)',
         })
@@ -107,12 +111,12 @@ export default function Main() {
             },
         }
 
-        const stakedHist = chart3.addHistogramSeries({
+        const stakedHist = charts[2].addHistogramSeries({
             ...stakedHistConfig,
             color: 'rgb(147,210,204)',
         })
 
-        const unstakedHist = chart3.addHistogramSeries({
+        const unstakedHist = charts[2].addHistogramSeries({
             ...stakedHistConfig,
             color: 'rgb(247,169,167)',
         })
@@ -122,111 +126,68 @@ export default function Main() {
 
         // crosshair
 
-        let isCrosshairMoving,
-            isChartCrosshairActive,
-            isChart2CrosshairActive,
-            isChart3CrosshairActive = false
+        let isCrosshairMoving = false
+        let isCrosshairActiveArr = Array(refs.length).fill(false)
 
-        chart.subscribeCrosshairMove((param) => {
-            if (!param.point) return
-            if (!param.time) return
-            if (isCrosshairMoving) return
+        charts.forEach((chart, idx) => {
+            chart.subscribeCrosshairMove((param) => {
+                if (!param.point) return
+                if (!param.time) return
+                if (isCrosshairMoving) return
 
-            isCrosshairMoving = true
-            chart2.moveCrosshair(param.point)
-            chart3.moveCrosshair(param.point)
-            isCrosshairMoving = false
+                isCrosshairMoving = true
+                charts
+                    .slice(0, idx)
+                    .concat(charts.slice(idx + 1))
+                    .forEach((c) => c.moveCrosshair(param.point))
+                isCrosshairMoving = false
+            })
         })
 
-        chart2.subscribeCrosshairMove((param) => {
-            if (!param.point) return
-            if (!param.time) return
-            if (isCrosshairMoving) return
+        refs.forEach((r, i) => {
+            r.current.addEventListener('mousemove', () => {
+                if (isCrosshairActiveArr[i]) return
+                isCrosshairActiveArr.forEach((e, idx) => {
+                    if (i == idx) e = true
+                    else e = false
 
-            isCrosshairMoving = true
-            chart.moveCrosshair(param.point)
-            chart3.moveCrosshair(param.point)
-            isCrosshairMoving = false
+                    charts[idx].applyOptions(createCrosshairOptions(e))
+                })
+            })
         })
 
-        chart3.subscribeCrosshairMove((param) => {
-            if (!param.point) return
-            if (!param.time) return
-            if (isCrosshairMoving) return
-
-            isCrosshairMoving = true
-            chart.moveCrosshair(param.point)
-            chart2.moveCrosshair(param.point)
-            isCrosshairMoving = false
+        charts.forEach((chart, idx) => {
+            chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
+                charts
+                    .slice(0, idx)
+                    .concat(charts.slice(idx + 1))
+                    .forEach((c) => c.timeScale().setVisibleLogicalRange(range))
+            })
         })
 
-        ref.current.addEventListener('mousemove', () => {
-            if (isChartCrosshairActive) return
-            isChartCrosshairActive = true
-            isChart2CrosshairActive = false
-            isChart3CrosshairActive = false
-            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
-            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
-            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
-        })
-
-        ref2.current.addEventListener('mousemove', () => {
-            if (isChart2CrosshairActive) return
-            isChartCrosshairActive = false
-            isChart2CrosshairActive = true
-            isChart3CrosshairActive = false
-            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
-            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
-            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
-        })
-
-        ref3.current.addEventListener('mousemove', () => {
-            if (isChart3CrosshairActive) return
-            isChartCrosshairActive = false
-            isChart2CrosshairActive = false
-            isChart3CrosshairActive = true
-            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
-            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
-            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
-        })
-
-        chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
-            chart2.timeScale().setVisibleLogicalRange(range)
-            chart3.timeScale().setVisibleLogicalRange(range)
-        })
-        chart2.timeScale().subscribeVisibleLogicalRangeChange((range) => {
-            chart.timeScale().setVisibleLogicalRange(range)
-            chart3.timeScale().setVisibleLogicalRange(range)
-        })
-
-        chart3.timeScale().subscribeVisibleLogicalRangeChange((range) => {
-            chart2.timeScale().setVisibleLogicalRange(range)
-            chart.timeScale().setVisibleLogicalRange(range)
-        })
-
-        chart.timeScale().applyOptions({ visible: false })
-        chart2.timeScale().applyOptions({ visible: false })
+        charts[0].timeScale().applyOptions({ visible: false })
+        charts[1].timeScale().applyOptions({ visible: false })
 
         return () => {}
-    }, [ref, ref2, ref3])
+    }, refs)
 
     return (
         <div className="dex-container">
             <div className="dex-price-outer">
                 <span className="dex-price-title">SushiSwap OHM/DAI, 1D</span>
-                <div className="dex-price" ref={ref}></div>
+                <div className="dex-price" ref={refs[0]}></div>
             </div>
             <div className="dex-volume-outer">
                 <span className="dex-volume-title">
                     SushiSwap OHM/DAI Volume, 1D
                 </span>
-                <div className="dex-volume" ref={ref2}></div>
+                <div className="dex-volume" ref={refs[1]}></div>
             </div>
             <div className="staking-volume-outer">
                 <span className="staking-volume-title">
                     Staking & Unstaking Volume, OHM, 1D
                 </span>
-                <div className="staking-volume" ref={ref3}></div>
+                <div className="staking-volume" ref={refs[2]}></div>
             </div>
         </div>
     )
