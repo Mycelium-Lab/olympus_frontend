@@ -165,8 +165,8 @@ export default function Main() {
             })
         })
 
-        charts[0].timeScale().applyOptions({ visible: false })
-        charts[1].timeScale().applyOptions({ visible: false })
+        // charts[0].timeScale().applyOptions({ visible: false })
+        // charts[1].timeScale().applyOptions({ visible: false })
 
         return () => {}
     }, refs)
