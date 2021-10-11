@@ -36,6 +36,15 @@ const chartConfig = {
     },
 }
 
+const createCrosshairOptions = (flag) => ({
+    crosshair: {
+        horzLine: {
+            visible: flag,
+            labelVisible: flag,
+        },
+    },
+})
+
 export default function Main() {
     const ref = createRef()
     const ref2 = createRef()
@@ -156,30 +165,9 @@ export default function Main() {
             isChartCrosshairActive = true
             isChart2CrosshairActive = false
             isChart3CrosshairActive = false
-            chart.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: true,
-                        labelVisible: true,
-                    },
-                },
-            })
-            chart2.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
-            chart3.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
+            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
+            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
+            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
         })
 
         ref2.current.addEventListener('mousemove', () => {
@@ -187,30 +175,9 @@ export default function Main() {
             isChartCrosshairActive = false
             isChart2CrosshairActive = true
             isChart3CrosshairActive = false
-            chart.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
-            chart2.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: true,
-                        labelVisible: true,
-                    },
-                },
-            })
-            chart3.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
+            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
+            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
+            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
         })
 
         ref3.current.addEventListener('mousemove', () => {
@@ -218,30 +185,9 @@ export default function Main() {
             isChartCrosshairActive = false
             isChart2CrosshairActive = false
             isChart3CrosshairActive = true
-            chart.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
-            chart2.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: false,
-                        labelVisible: false,
-                    },
-                },
-            })
-            chart3.applyOptions({
-                crosshair: {
-                    horzLine: {
-                        visible: true,
-                        labelVisible: true,
-                    },
-                },
-            })
+            chart.applyOptions(createCrosshairOptions(isChartCrosshairActive))
+            chart2.applyOptions(createCrosshairOptions(isChart2CrosshairActive))
+            chart3.applyOptions(createCrosshairOptions(isChart3CrosshairActive))
         })
 
         chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
