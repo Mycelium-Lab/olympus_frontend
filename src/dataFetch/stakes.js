@@ -164,11 +164,15 @@ export async function getStakesInfoHour(startTimestamp, days) {
                     obj.amountUnstaked = stakes[j].amountUnstaked
                     obj.currentStaked = stakes[j].currentStaked
                     obj.unstakedToStakedPercent =
-                        100 *
-                        (stakes[j].amountUnstaked / stakes[j].amountStaked)
+                        (100 *
+                            (stakes[j].amountUnstaked -
+                                stakes[j].amountStaked)) /
+                        stakes[j].amountStaked
                     obj.unstakedToTotalStakedPercent =
-                        100 *
-                        (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                        (100 *
+                            (stakes[j].amountUnstaked -
+                                stakes[j].currentStaked)) /
+                        stakes[j].currentStaked
                 }
             }
             data.push(obj)
@@ -297,22 +301,51 @@ export async function getStakesInfoMinute(startTimestamp, days) {
     }
 }
 
+class TVTimeValueObject {
+    constructor(value, time) {
+        this.time = time
+        this.value = value
+    }
+}
+
 export async function mapStakes(stakes) {
     return stakes.reduce(
         (acc, e) => {
             const time = moment
                 .unix(parseInt(e.beginTimestamp))
                 .format('YYYY-MM-DD')
-            acc.staked.push({
-                value: Number(e.amountStaked),
-                time,
-            })
-            acc.unstaked.push({
-                value: -Number(e.amountUnstaked),
-                time,
-            })
+            acc.staked.push(new TVTimeValueObject(Number(e.amountStaked), time))
+            acc.unstaked.push(
+                new TVTimeValueObject(-Number(e.amountUnstaked), time)
+            )
+            acc.currentStaked.push(
+                new TVTimeValueObject(Number(e.currentStaked), time)
+            )
+            acc.unstakedToStakedPercent.push(
+                new TVTimeValueObject(Number(e.unstakedToStakedPercent), time)
+            )
+            acc.unstakedToTotalStakedPercent.push(
+                new TVTimeValueObject(
+                    Number(e.unstakedToTotalStakedPercent),
+                    time
+                )
+            )
+            acc.stakeCount.push(
+                new TVTimeValueObject(Number(e.stakeCount), time)
+            )
+            acc.unstakeCount.push(
+                new TVTimeValueObject(Number(e.unstakeCount), time)
+            )
             return acc
         },
-        { staked: [], unstaked: [] }
+        {
+            staked: [],
+            unstaked: [],
+            currentStaked: [],
+            unstakedToStakedPercent: [],
+            unstakedToTotalStakedPercent: [],
+            stakeCount: [],
+            unstakeCount: [],
+        }
     )
 }

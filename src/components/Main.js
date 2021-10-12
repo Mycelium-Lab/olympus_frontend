@@ -1,40 +1,12 @@
-import React, { useEffect, createRef } from 'react'
-import { createChart } from './tv-lightweight'
+import React, { useEffect, useState, createRef } from 'react'
+import { v4 } from 'uuid'
+import { createChart } from '../tv-lightweight'
 
-import { getStakesInfoDays, mapStakes } from './dataFetch/stakes'
-import { getPairsInfoDays, mapPairs } from './dataFetch/pairs'
+import { getStakesInfoDays, mapStakes } from '../dataFetch/stakes'
+import { getPairsInfoDays, mapPairs } from '../dataFetch/pairs'
+import { chartConfig, methodPropsChartConfigs } from '../util/config'
 
-import './styles/main.scss'
-
-const chartConfig = {
-    width: 600,
-    height: 300,
-    autoScale: true,
-    rightPriceScale: {
-        entireTextOnly: true,
-        scaleMargins: {
-            top: 0.14,
-            bottom: 0.14,
-        },
-        borderVisible: true,
-    },
-    crosshair: {
-        mode: 1,
-    },
-    drawTicks: true,
-    layout: {
-        backgroundColor: '#FFFFFF',
-        textColor: 'rgb(18,23,34)',
-    },
-    grid: {
-        vertLines: {
-            color: 'rgb(231,232,232)',
-        },
-        horzLines: {
-            color: 'rgb(231,232,232)',
-        },
-    },
-}
+import '../styles/main.scss'
 
 const createCrosshairOptions = (flag) => ({
     crosshair: {
@@ -45,9 +17,35 @@ const createCrosshairOptions = (flag) => ({
     },
 })
 
+const fillChart = async (chart, startTime, delta, method) => {
+    const stakes = await getStakesInfoDays(startTime, delta)
+    const stakesMapped = await mapStakes(stakes)
+
+    methodPropsChartConfigs[method].setChart(chart, stakesMapped)
+}
+
 export default function Main() {
-    const refs = []
-    Array.from(Array(3).keys()).forEach((_) => refs.push(createRef()))
+    const [refs, setRefs] = useState(
+        Array.from(Array(3).keys()).map((_) => createRef())
+    )
+
+    const [key, setKey] = useState(null)
+    const [method, setMethod] = useState(0)
+    const [timeframe, setTimeframe] = useState(0)
+
+    const changeMethod = (e) => {
+        const newMethod = e.currentTarget.value
+        if (newMethod !== method) {
+            updateRefs()
+            setMethod(parseInt(newMethod))
+        }
+    }
+
+    const updateRefs = () => {
+        setKey(v4())
+        const newRefs = Array.from(Array(3).keys()).map((_) => createRef())
+        setRefs(newRefs)
+    }
 
     useEffect(async () => {
         const charts = refs.map((_, i) => {
@@ -65,6 +63,8 @@ export default function Main() {
         const tsmain = 1616457600
         const delta =
             Math.ceil((Math.floor(Date.now() / 1000) - tsmain) / 86400) + 1
+
+        // main data (dex price + volume)
 
         const pairs = await getPairsInfoDays(tsmain, delta)
         const pairsMapped = await mapPairs(pairs)
@@ -101,28 +101,9 @@ export default function Main() {
         volumeUpHist.setData(pairsMapped.volumeUp)
         volumeDownHist.setData(pairsMapped.volumeDown)
 
-        const stakes = await getStakesInfoDays(tsmain, delta)
-        const stakesMapped = await mapStakes(stakes)
+        // additional data from smart contracts
 
-        const stakedHistConfig = {
-            base: 0,
-            priceFormat: {
-                type: 'volume',
-            },
-        }
-
-        const stakedHist = charts[2].addHistogramSeries({
-            ...stakedHistConfig,
-            color: 'rgb(147,210,204)',
-        })
-
-        const unstakedHist = charts[2].addHistogramSeries({
-            ...stakedHistConfig,
-            color: 'rgb(247,169,167)',
-        })
-
-        stakedHist.setData(stakesMapped.staked)
-        unstakedHist.setData(stakesMapped.unstaked)
+        await fillChart(charts[2], tsmain, delta, method)
 
         // crosshair
 
@@ -169,25 +150,47 @@ export default function Main() {
         // charts[1].timeScale().applyOptions({ visible: false })
 
         return () => {}
-    }, refs)
+    }, [method])
 
     return (
-        <div className="dex-container">
-            <div className="dex-price-outer">
-                <span className="dex-price-title">SushiSwap OHM/DAI, 1D</span>
-                <div className="dex-price" ref={refs[0]}></div>
+        <div className="main">
+            <div className="inputs">
+                {methodPropsChartConfigs.map((e, idx) => (
+                    <div key={idx}>
+                        <input
+                            type="radio"
+                            value={idx}
+                            checked={method === idx}
+                            onChange={changeMethod}
+                        />
+                        <label>{e.title}</label>
+                        {e.info && (
+                            <span className="input__info-label">
+                                : {e.info}
+                            </span>
+                        )}
+                    </div>
+                ))}
             </div>
-            <div className="dex-volume-outer">
-                <span className="dex-volume-title">
-                    SushiSwap OHM/DAI Volume, 1D
-                </span>
-                <div className="dex-volume" ref={refs[1]}></div>
-            </div>
-            <div className="staking-volume-outer">
-                <span className="staking-volume-title">
-                    Staking & Unstaking Volume, OHM, 1D
-                </span>
-                <div className="staking-volume" ref={refs[2]}></div>
+            <div key={key} className="dex-container">
+                <div className="dex-price-outer">
+                    <span className="dex-price-title">
+                        SushiSwap OHM/DAI, 1D
+                    </span>
+                    <div className="dex-price" ref={refs[0]}></div>
+                </div>
+                <div className="dex-volume-outer">
+                    <span className="dex-volume-title">
+                        SushiSwap OHM/DAI Volume, 1D
+                    </span>
+                    <div className="dex-volume" ref={refs[1]}></div>
+                </div>
+                <div className="staking-volume-outer">
+                    <span className="staking-volume-title">
+                        {`${methodPropsChartConfigs[method].title}, 1D`}
+                    </span>
+                    <div className="staking-volume" ref={refs[2]}></div>
+                </div>
             </div>
         </div>
     )
