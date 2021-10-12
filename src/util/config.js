@@ -51,8 +51,22 @@ class MethodPropsChartConfig {
     }
 }
 
+class MethodPropsChartConfigStaking extends MethodPropsChartConfig {
+    constructor(title, setChart, info) {
+        super(title, setChart, info)
+        this.type = 'staking'
+    }
+}
+
+class MethodPropsChartConfigBonds extends MethodPropsChartConfig {
+    constructor(title, setChart, info) {
+        super(title, setChart, info)
+        this.type = 'bonds'
+    }
+}
+
 export const methodPropsChartConfigs = [
-    new MethodPropsChartConfig(
+    new MethodPropsChartConfigStaking(
         'Staking & Unstaking Volume, OHM',
         (chart, data) => {
             const stakedHist = chart.addHistogramSeries({
@@ -70,15 +84,15 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfig(
-        'Current Staked, OHM',
+    new MethodPropsChartConfigStaking(
+        'Current Staked (Cumulative), OHM',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
             line.setData(data.currentStaked)
         },
         null
     ),
-    new MethodPropsChartConfig(
+    new MethodPropsChartConfigStaking(
         'Stake Count',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
@@ -86,7 +100,7 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfig(
+    new MethodPropsChartConfigStaking(
         'Unstake Count',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
@@ -94,7 +108,7 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfig(
+    new MethodPropsChartConfigStaking(
         'Unstake Count',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
@@ -102,7 +116,7 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfig(
+    new MethodPropsChartConfigStaking(
         'Unstaked to Staked, %',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
@@ -110,12 +124,110 @@ export const methodPropsChartConfigs = [
         },
         '100 x (Unstaked - Staked) / Staked'
     ),
-    new MethodPropsChartConfig(
-        'Unstake to Total Staked, %',
+    new MethodPropsChartConfigStaking(
+        'Unstaked to Total Staked, %',
         (chart, data) => {
             const line = chart.addLineSeries(baseLineConfig)
             line.setData(data.unstakedToTotalStakedPercent)
         },
         '100 x (Unstaked - Total Staked) / Total Staked'
+    ),
+    // bonds
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, DAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountDai)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, ETH',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountEth)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, FRAX',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountFrax)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LUSD',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountLusd)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMDAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountOhmDai)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMFRAX',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountOhmFrax)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, DAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountDai)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, ETH',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountEth)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, FRAX',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountFrax)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, LUSD',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountLusd)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, LP OHMDAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountOhmDai)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, LP OHMFRAX',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountOhmFrax)
+        },
+        null
     ),
 ]

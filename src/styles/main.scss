@@ -47,13 +47,21 @@
     justify-content: center;
     font-size: 14px;
 
-    & > div {
-        display: flex;
-        justify-content: flex-start;
+    &-staking,
+    &-bonds {
+        text-align: left;
+        & > div {
+            display: flex;
+            justify-content: flex-start;
 
-        &:not(:first-child) {
-            margin-top: 10px;
+            &:not(:first-child) {
+                margin-top: 10px;
+            }
         }
+    }
+
+    &-bonds {
+        margin-top: 40px;
     }
 
     .input__info-label {

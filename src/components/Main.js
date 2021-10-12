@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 
 import { getStakesInfoDays, mapStakes } from '../dataFetch/stakes'
+import { getDepositsInfoDays, mapBonds } from '../dataFetch/bonds'
 import { getPairsInfoDays, mapPairs } from '../dataFetch/pairs'
 import { chartConfig, methodPropsChartConfigs } from '../util/config'
 
@@ -17,11 +18,29 @@ const createCrosshairOptions = (flag) => ({
     },
 })
 
-const fillChart = async (chart, startTime, delta, method) => {
-    const stakes = await getStakesInfoDays(startTime, delta)
-    const stakesMapped = await mapStakes(stakes)
+const stakingLength = methodPropsChartConfigs.reduce((acc, e) => {
+    if (e.type === 'staking') acc += 1
+    return acc
+}, 0)
 
-    methodPropsChartConfigs[method].setChart(chart, stakesMapped)
+const fillChart = async (chart, startTime, delta, method) => {
+    let mappedData
+
+    const typeOfData = methodPropsChartConfigs[method].type
+    switch (typeOfData) {
+        case 'staking':
+            const stakes = await getStakesInfoDays(startTime, delta)
+            mappedData = await mapStakes(stakes)
+            break
+        case 'bonds':
+            const bonds = await getDepositsInfoDays(startTime, delta)
+            mappedData = await mapBonds(bonds)
+            break
+        default:
+            break
+    }
+
+    methodPropsChartConfigs[method].setChart(chart, mappedData)
 }
 
 export default function Main() {
@@ -155,22 +174,48 @@ export default function Main() {
     return (
         <div className="main">
             <div className="inputs">
-                {methodPropsChartConfigs.map((e, idx) => (
-                    <div key={idx}>
-                        <input
-                            type="radio"
-                            value={idx}
-                            checked={method === idx}
-                            onChange={changeMethod}
-                        />
-                        <label>{e.title}</label>
-                        {e.info && (
-                            <span className="input__info-label">
-                                : {e.info}
-                            </span>
-                        )}
-                    </div>
-                ))}
+                <div className="inputs-staking">
+                    <span>Staking:</span>
+                    {methodPropsChartConfigs
+                        .filter((e) => e.type === 'staking')
+                        .map((e, idx) => (
+                            <div key={idx}>
+                                <input
+                                    type="radio"
+                                    value={idx}
+                                    checked={method === idx}
+                                    onChange={changeMethod}
+                                />
+                                <label>{e.title}</label>
+                                {e.info && (
+                                    <span className="input__info-label">
+                                        : {e.info}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                </div>
+                <div className="inputs-bonds">
+                    <span>Bonds:</span>
+                    {methodPropsChartConfigs
+                        .filter((e) => e.type === 'bonds')
+                        .map((e, idx) => (
+                            <div key={idx + stakingLength}>
+                                <input
+                                    type="radio"
+                                    value={idx + stakingLength}
+                                    checked={method === idx + stakingLength}
+                                    onChange={changeMethod}
+                                />
+                                <label>{e.title}</label>
+                                {e.info && (
+                                    <span className="input__info-label">
+                                        : {e.info}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                </div>
             </div>
             <div key={key} className="dex-container">
                 <div className="dex-price-outer">
