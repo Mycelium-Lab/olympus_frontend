@@ -166,14 +166,14 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, LP OHMDAI',
-        (chart, data) => {
-            const line = chart.addLineSeries(baseLineConfig)
-            line.setData(data.amountOhmDai)
-        },
-        null
-    ),
+    // new MethodPropsChartConfigBonds(
+    //     'Bond Purchase Volume, LP OHMDAI',
+    //     (chart, data) => {
+    //         const line = chart.addLineSeries(baseLineConfig)
+    //         line.setData(data.amountOhmDai)
+    //     },
+    //     null
+    // ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMFRAX',
         (chart, data) => {
@@ -214,14 +214,14 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    new MethodPropsChartConfigBonds(
-        'Bond Times Purchased, LP OHMDAI',
-        (chart, data) => {
-            const line = chart.addLineSeries(baseLineConfig)
-            line.setData(data.depositCountOhmDai)
-        },
-        null
-    ),
+    // new MethodPropsChartConfigBonds(
+    //     'Bond Times Purchased, LP OHMDAI',
+    //     (chart, data) => {
+    //         const line = chart.addLineSeries(baseLineConfig)
+    //         line.setData(data.depositCountOhmDai)
+    //     },
+    //     null
+    // ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LP OHMFRAX',
         (chart, data) => {
