@@ -3,18 +3,6 @@ import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 
 import {
-    getStakesInfoDays,
-    getStakesInfoHours,
-    getStakesInfoMinutes,
-    mapStakes,
-} from '../dataFetch/stakes'
-import {
-    getDepositsInfoDays,
-    getDepositsInfoHours,
-    getDepositsInfoMinutes,
-    mapBonds,
-} from '../dataFetch/bonds'
-import {
     getPairsInfoDays,
     getPairsInfoHours,
     getPairsInfoMinutes,
@@ -51,8 +39,10 @@ const getPairsInfoFunction = (timeframe) => {
 }
 
 export default function Main() {
+    const nCharts = 3
+
     const [refs, setRefs] = useState(
-        Array.from(Array(3).keys()).map((_) => createRef())
+        Array.from(Array(nCharts).keys()).map((_) => createRef())
     )
 
     const [key, setKey] = useState(null)
@@ -76,7 +66,9 @@ export default function Main() {
 
     const updateRefs = () => {
         setKey(v4())
-        const newRefs = Array.from(Array(3).keys()).map((_) => createRef())
+        const newRefs = Array.from(Array(nCharts).keys()).map((_) =>
+            createRef()
+        )
         setRefs(newRefs)
     }
 
@@ -255,7 +247,7 @@ export default function Main() {
                     <div>
                         <div onClick={() => changeTimeframe(0)}>1D</div>
                         <div onClick={() => changeTimeframe(1)}>1H</div>
-                        {/* <div onClick={() => changeTimeframe(2)}>1M</div> */}
+                        <div onClick={() => changeTimeframe(2)}>1M</div>
                     </div>
                 </div>
                 <div className="inputs-staking">
@@ -300,7 +292,7 @@ export default function Main() {
                             </div>
                         ))}
                 </div>
-                {/* <div className="inputs-treasury">
+                <div className="inputs-treasury">
                     <span>Treasury:</span>
                     {methodPropsChartConfigs
                         .filter((e) => e.type === 'treasury')
@@ -322,7 +314,7 @@ export default function Main() {
                                 )}
                             </div>
                         ))}
-                </div> */}
+                </div>
             </div>
             <div key={key} className="dex-container">
                 <div className="dex-price-outer">

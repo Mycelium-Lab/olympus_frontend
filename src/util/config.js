@@ -1,7 +1,9 @@
-import { getTotalReserveByDay } from '../dataFetch/treasury/total_reserve/totalReserveGetInformationForDays'
-import { getDepositByDay } from '../dataFetch/treasury/deposit/depositGetInformationForDays'
-import { getManageByDay } from '../dataFetch/treasury/manage/manageGetInformationForDays'
-import { getMintRewardsByDays } from '../dataFetch/treasury/mint/mintGetInformationForDays'
+import {
+    getTotalReserveByMinute,
+    getTotalReservesByDay,
+    getTotalReservesByHour,
+    mapTotalReserves,
+} from '../dataFetch/treasury/totalReserves'
 
 import moment from 'moment'
 
@@ -59,8 +61,9 @@ const baseLineConfig = {
 export const baseGranularityUnix = 86400
 
 export const timeframesConfig = (() => {
-    const todayMidnight = moment().subtract(1, 'days').startOf('day')
-    const todayHourStart = moment().add(1, 'hours').startOf('hour')
+    const todayMidnight = moment().utc().subtract(1, 'days').startOf('day')
+    const todayHourStart = moment().utc().add(1, 'hours').startOf('hour')
+    const todayMinuteStart = moment().utc().add(1, 'minutes').startOf('minute')
 
     const dailyFetchBackDelta = 200
     const hourlyFetchBackDelta = 10
@@ -75,7 +78,7 @@ export const timeframesConfig = (() => {
     )
 
     const initialMinutelyTimestamp = parseInt(
-        todayMidnight.subtract(minutelyFetchBackDelta - 3, 'days').unix()
+        todayMinuteStart.subtract(minutelyFetchBackDelta, 'days').unix()
     )
 
     return [
@@ -120,9 +123,10 @@ class MethodPropsChartConfigBonds extends MethodPropsChartConfig {
 }
 
 class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
-    constructor(title, setChart, info, getMappedData) {
-        super(title, setChart, info, getMappedData)
-        this.getMappedData = getMappedData
+    constructor(title, setChart, info, getDataFunctions, mapDataFunction) {
+        super(title, setChart, info, getDataFunctions, mapDataFunction)
+        this.getDataFunctions = getDataFunctions
+        this.mapDataFunction = mapDataFunction
         this.type = 'treasury'
     }
 }
@@ -293,15 +297,20 @@ export const methodPropsChartConfigs = [
         null
     ),
     // treasury
-    // new MethodPropsChartConfigTreasury(
-    //     'Total Reserve',
-    //     (chart, data) => {
-    //         const line = chart.addLineSeries(baseLineConfig)
-    //         line.setData(data.depositCountOhmFrax)
-    //     },
-    //     null,
-    //     getTotalReserveByDay
-    // ),
+    new MethodPropsChartConfigTreasury(
+        'Total Reserves',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data)
+        },
+        null,
+        [
+            getTotalReservesByDay,
+            getTotalReservesByHour,
+            getTotalReserveByMinute,
+        ],
+        mapTotalReserves
+    ),
 ]
 
 const typesLength = methodPropsChartConfigs.reduce(

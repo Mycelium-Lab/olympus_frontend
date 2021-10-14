@@ -274,7 +274,7 @@ export async function getPairsInfoMinutes(
       {
         hourPair(first:24 orderBy:timestamp)
         {
-          minutePair(first:24 orderBy:timestamp)
+          minutePair(first:60 orderBy:timestamp)
           {
             token1Price
             token1PriceLow
@@ -306,48 +306,49 @@ export async function getPairsInfoMinutes(
             for (let i = 0; i < pair[c].dayPair.length; ++i) {
                 for (let j = 0; j < pair[c].dayPair[i].hourPair.length; ++j) {
                     for (
-                        let c = 0;
-                        c < pair[c].dayPair[i].hourPair[j].minutePair.length;
-                        ++c
+                        let k = 0;
+                        k < pair[c].dayPair[i].hourPair[j].minutePair.length;
+                        ++k
                     ) {
                         let obj = {}
                         obj.token1PriceClose =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].token1Price
                         obj.token1PriceLow =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].token1PriceLow
                         obj.token1PriceOpen =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].token1PriceOpen
                         obj.token1PriceHigh =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].token1PriceHigh
                         obj.timestamp =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].timestamp
                         obj.volumeToken1In =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].volumeToken1In
                         obj.volumeToken1Out =
                             pair[c].dayPair[i].hourPair[j].minutePair[
-                                c
+                                k
                             ].volumeToken1Out
                         pairs.push(obj)
                     }
                 }
             }
         }
-
-        for (let i = 0; i < 60 * 24 * days; ++i) {
-            let beginTimestamp = startTimestamp + i * 60
-            let endTimestamp = startTimestamp + (i + 1) * 60
+        // for(let i = 0; i < 60*24*days; ++i)
+        // {
+        let beginTimestamp = startTimestamp
+        let endTimestamp = startTimestamp + 60
+        for (let j = 0; j < pairs.length; ++j) {
             let obj = {
                 beginTimestamp: beginTimestamp,
                 endTimestamp: endTimestamp,
@@ -358,21 +359,40 @@ export async function getPairsInfoMinutes(
                 volumeToken1In: 0,
                 volumeToken1Out: 0,
             }
-            for (let j = 0; j < pairs.length; ++j) {
-                if (
-                    beginTimestamp <= pairs[j].timestamp &&
-                    pairs[j].timestamp < endTimestamp
-                ) {
-                    obj.token1PriceOpen = pairs[j].token1PriceOpen
-                    obj.token1PriceClose = pairs[j].token1PriceClose
-                    obj.token1PriceHigh = pairs[j].token1PriceHigh
-                    obj.token1PriceLow = pairs[j].token1PriceLow
-                    obj.volumeToken1In = pairs[j].volumeToken1In
-                    obj.volumeToken1Out = pairs[j].volumeToken1Out
+            if (pairs[j].timestamp > endTimestamp) {
+                let c = 1
+                while (endTimestamp < pairs[j].timestamp) {
+                    obj = {
+                        beginTimestamp: beginTimestamp,
+                        endTimestamp: endTimestamp,
+                        token1PriceOpen: 0,
+                        token1PriceClose: 0,
+                        token1PriceHigh: 0,
+                        token1PriceLow: 0,
+                        volumeToken1In: 0,
+                        volumeToken1Out: 0,
+                    }
+                    beginTimestamp = beginTimestamp + c * 60
+                    endTimestamp = endTimestamp + (c + 1) * 60
+                    data.push(obj)
+                    ++c
                 }
+                obj.beginTimestamp = beginTimestamp
+                obj.endTimestamp = endTimestamp
+                obj.token1PriceOpen = pairs[j].token1PriceOpen
+                obj.token1PriceClose = pairs[j].token1PriceClose
+                obj.token1PriceHigh = pairs[j].token1PriceHigh
+                obj.token1PriceLow = pairs[j].token1PriceLow
+                obj.volumeToken1In = pairs[j].volumeToken1In
+                obj.volumeToken1Out = pairs[j].volumeToken1Out
+                obj.timestamp = pairs[j].timestamp
+                data.push(obj)
             }
-            data.push(obj)
+            beginTimestamp += 60
+            endTimestamp += 60
         }
+        // data.push(obj)
+        // }
         return data
     } catch (err) {
         console.log(err)

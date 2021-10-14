@@ -11,6 +11,8 @@ import {
     mapBonds,
 } from '../dataFetch/bonds'
 
+import moment from 'moment'
+
 import { methodPropsChartConfigs } from './config'
 
 export const getMappedScData = async (startTime, delta, method, timeframe) => {
@@ -27,7 +29,7 @@ export const getMappedScData = async (startTime, delta, method, timeframe) => {
                 case 1:
                     stakes = await getStakesInfoHours(startTime, delta)
                     break
-                case 1:
+                case 2:
                     stakes = await getStakesInfoMinutes(startTime, delta)
                     break
                 default:
@@ -52,11 +54,15 @@ export const getMappedScData = async (startTime, delta, method, timeframe) => {
             }
             mappedData = mapBonds(bonds)
             break
-        // case 'treasury':
-        //     mappedData = await methodPropsChartConfigs[method].getMappedData(
-        //         startTime,
-        //         delta
-        //     )
+        case 'treasury':
+            const endTime = moment(startTime * 1000)
+                .add(delta, 'days')
+                .unix()
+            const data = await methodPropsChartConfigs[method].getDataFunctions[
+                timeframe
+            ](startTime, endTime)
+            mappedData = methodPropsChartConfigs[method].mapDataFunction(data)
+            break
         default:
             break
     }
