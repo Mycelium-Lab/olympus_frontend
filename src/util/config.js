@@ -1,3 +1,10 @@
+import { getTotalReserveByDay } from '../dataFetch/treasury/total_reserve/totalReserveGetInformationForDays'
+import { getDepositByDay } from '../dataFetch/treasury/deposit/depositGetInformationForDays'
+import { getManageByDay } from '../dataFetch/treasury/manage/manageGetInformationForDays'
+import { getMintRewardsByDays } from '../dataFetch/treasury/mint/mintGetInformationForDays'
+
+import moment from 'moment'
+
 export const chartConfig = {
     width: 600,
     height: 300,
@@ -26,6 +33,12 @@ export const chartConfig = {
             color: 'rgb(231,232,232)',
         },
     },
+    timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+        rightOffset: 10,
+        minBarSpacing: 3,
+    },
 }
 
 const baseHistConfig = {
@@ -42,6 +55,47 @@ const baseLineConfig = {
     },
     color: 'rgba(165, 165, 239, 0.89)',
 }
+
+export const baseGranularityUnix = 86400
+
+export const timeframesConfig = (() => {
+    const todayMidnight = moment().subtract(1, 'days').startOf('day')
+    const todayHourStart = moment().add(1, 'hours').startOf('hour')
+
+    const dailyFetchBackDelta = 200
+    const hourlyFetchBackDelta = 10
+    const minutelyFetchBackDelta = 1
+
+    const initialDailyTimestamp = parseInt(
+        todayMidnight.subtract(dailyFetchBackDelta - 3, 'days').unix()
+    )
+
+    const initialHourlyTimestamp = parseInt(
+        todayHourStart.subtract(hourlyFetchBackDelta, 'days').unix()
+    )
+
+    const initialMinutelyTimestamp = parseInt(
+        todayMidnight.subtract(minutelyFetchBackDelta - 3, 'days').unix()
+    )
+
+    return [
+        {
+            name: '1D',
+            initialTimestamp: initialDailyTimestamp,
+            fetchBackDelta: dailyFetchBackDelta,
+        },
+        {
+            name: '1H',
+            initialTimestamp: initialHourlyTimestamp,
+            fetchBackDelta: hourlyFetchBackDelta,
+        },
+        {
+            name: '1M',
+            initialTimestamp: initialMinutelyTimestamp,
+            fetchBackDelta: minutelyFetchBackDelta,
+        },
+    ]
+})()
 
 class MethodPropsChartConfig {
     constructor(title, setChart, info) {
@@ -62,6 +116,14 @@ class MethodPropsChartConfigBonds extends MethodPropsChartConfig {
     constructor(title, setChart, info) {
         super(title, setChart, info)
         this.type = 'bonds'
+    }
+}
+
+class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
+    constructor(title, setChart, info, getMappedData) {
+        super(title, setChart, info, getMappedData)
+        this.getMappedData = getMappedData
+        this.type = 'treasury'
     }
 }
 
@@ -166,14 +228,14 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    // new MethodPropsChartConfigBonds(
-    //     'Bond Purchase Volume, LP OHMDAI',
-    //     (chart, data) => {
-    //         const line = chart.addLineSeries(baseLineConfig)
-    //         line.setData(data.amountOhmDai)
-    //     },
-    //     null
-    // ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMDAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.amountOhmDai)
+        },
+        null
+    ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMFRAX',
         (chart, data) => {
@@ -214,14 +276,14 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
-    // new MethodPropsChartConfigBonds(
-    //     'Bond Times Purchased, LP OHMDAI',
-    //     (chart, data) => {
-    //         const line = chart.addLineSeries(baseLineConfig)
-    //         line.setData(data.depositCountOhmDai)
-    //     },
-    //     null
-    // ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, LP OHMDAI',
+        (chart, data) => {
+            const line = chart.addLineSeries(baseLineConfig)
+            line.setData(data.depositCountOhmDai)
+        },
+        null
+    ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LP OHMFRAX',
         (chart, data) => {
@@ -230,4 +292,35 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
+    // treasury
+    // new MethodPropsChartConfigTreasury(
+    //     'Total Reserve',
+    //     (chart, data) => {
+    //         const line = chart.addLineSeries(baseLineConfig)
+    //         line.setData(data.depositCountOhmFrax)
+    //     },
+    //     null,
+    //     getTotalReserveByDay
+    // ),
 ]
+
+const typesLength = methodPropsChartConfigs.reduce(
+    (acc, e) => {
+        if (e.type === 'staking') acc.staking += 1
+        if (e.type === 'bonds') acc.bonds += 1
+        return acc
+    },
+    { staking: 0, bonds: 0 }
+)
+
+export const stakingLength = typesLength.staking
+export const bondsAndStakingLength = stakingLength + typesLength.bonds
+
+export const createCrosshairConfig = (flag) => ({
+    crosshair: {
+        horzLine: {
+            visible: flag,
+            labelVisible: flag,
+        },
+    },
+})

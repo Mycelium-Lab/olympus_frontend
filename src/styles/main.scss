@@ -48,7 +48,9 @@
     font-size: 14px;
 
     &-staking,
-    &-bonds {
+    &-bonds,
+    &-treasury,
+    &-switch-interval {
         text-align: left;
         & > div {
             display: flex;
@@ -60,8 +62,29 @@
         }
     }
 
-    &-bonds {
+    &-staking,
+    &-bonds,
+    &-treasury {
         margin-top: 40px;
+    }
+
+    &-switch-interval {
+        width: 120px;
+
+        & > div {
+            display: flex;
+            justify-content: space-between;
+            & > div {
+                cursor: pointer;
+                background-color: rgb(180, 175, 175);
+                text-align: center;
+                width: 36px;
+                &:hover,
+                &:active {
+                    background-color: rosybrown;
+                }
+            }
+        }
     }
 
     .input__info-label {

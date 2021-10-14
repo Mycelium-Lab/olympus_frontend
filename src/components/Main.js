@@ -2,45 +2,52 @@ import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 
-import { getStakesInfoDays, mapStakes } from '../dataFetch/stakes'
-import { getDepositsInfoDays, mapBonds } from '../dataFetch/bonds'
-import { getPairsInfoDays, mapPairs } from '../dataFetch/pairs'
-import { chartConfig, methodPropsChartConfigs } from '../util/config'
+import {
+    getStakesInfoDays,
+    getStakesInfoHours,
+    getStakesInfoMinutes,
+    mapStakes,
+} from '../dataFetch/stakes'
+import {
+    getDepositsInfoDays,
+    getDepositsInfoHours,
+    getDepositsInfoMinutes,
+    mapBonds,
+} from '../dataFetch/bonds'
+import {
+    getPairsInfoDays,
+    getPairsInfoHours,
+    getPairsInfoMinutes,
+    mapPairs,
+} from '../dataFetch/pairs'
+import {
+    chartConfig,
+    methodPropsChartConfigs,
+    stakingLength,
+    bondsAndStakingLength,
+    timeframesConfig,
+    createCrosshairConfig,
+    baseGranularityUnix,
+} from '../util/config'
+import { getMappedScData } from '../util/dataTranformations'
 
 import '../styles/main.scss'
 
-const createCrosshairOptions = (flag) => ({
-    crosshair: {
-        horzLine: {
-            visible: flag,
-            labelVisible: flag,
-        },
-    },
-})
-
-const stakingLength = methodPropsChartConfigs.reduce((acc, e) => {
-    if (e.type === 'staking') acc += 1
-    return acc
-}, 0)
-
-const fillChart = async (chart, startTime, delta, method) => {
-    let mappedData
-
-    const typeOfData = methodPropsChartConfigs[method].type
-    switch (typeOfData) {
-        case 'staking':
-            const stakes = await getStakesInfoDays(startTime, delta)
-            mappedData = await mapStakes(stakes)
-            break
-        case 'bonds':
-            const bonds = await getDepositsInfoDays(startTime, delta)
-            mappedData = await mapBonds(bonds)
-            break
-        default:
-            break
-    }
-
+const fillChart = async (chart, method, mappedData) => {
     methodPropsChartConfigs[method].setChart(chart, mappedData)
+}
+
+const getPairsInfoFunction = (timeframe) => {
+    switch (timeframe) {
+        case 0:
+            return getPairsInfoDays
+        case 1:
+            return getPairsInfoHours
+        case 2:
+            return getPairsInfoMinutes
+        default:
+            return
+    }
 }
 
 export default function Main() {
@@ -57,6 +64,13 @@ export default function Main() {
         if (newMethod !== method) {
             updateRefs()
             setMethod(parseInt(newMethod))
+        }
+    }
+
+    const changeTimeframe = (newTimeframe) => {
+        if (timeframe !== newTimeframe) {
+            updateRefs()
+            setTimeframe(newTimeframe)
         }
     }
 
@@ -77,16 +91,21 @@ export default function Main() {
             return createChart(refs[i].current, chartConfig)
         })
 
-        // data and charts' config
-
-        const tsmain = 1616457600
-        const delta =
-            Math.ceil((Math.floor(Date.now() / 1000) - tsmain) / 86400) + 1
-
         // main data (dex price + volume)
 
-        const pairs = await getPairsInfoDays(tsmain, delta)
-        const pairsMapped = await mapPairs(pairs)
+        let pairs, pairsMapped
+
+        let { fetchBackDelta, initialTimestamp } = timeframesConfig[timeframe]
+
+        const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
+        pairs = await getPairsInfo(
+            initialTimestamp,
+            fetchBackDelta,
+            2021,
+            'OHM',
+            'DAI'
+        )
+        pairsMapped = await mapPairs(pairs)
 
         const candleSeries = charts[0].addCandlestickSeries({
             upColor: 'rgb(37,166,154)',
@@ -122,7 +141,14 @@ export default function Main() {
 
         // additional data from smart contracts
 
-        await fillChart(charts[2], tsmain, delta, method)
+        let scMapped = await getMappedScData(
+            initialTimestamp,
+            fetchBackDelta,
+            method,
+            timeframe
+        )
+
+        fillChart(charts[2], method, scMapped)
 
         // crosshair
 
@@ -151,29 +177,87 @@ export default function Main() {
                     if (i == idx) e = true
                     else e = false
 
-                    charts[idx].applyOptions(createCrosshairOptions(e))
+                    charts[idx].applyOptions(createCrosshairConfig(e))
                 })
             })
         })
 
+        let chartNeedsUpdate = false
         charts.forEach((chart, idx) => {
-            chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
-                charts
-                    .slice(0, idx)
-                    .concat(charts.slice(idx + 1))
-                    .forEach((c) => c.timeScale().setVisibleLogicalRange(range))
-            })
+            chart
+                .timeScale()
+                .subscribeVisibleLogicalRangeChange(async (range) => {
+                    charts
+                        .slice(0, idx)
+                        .concat(charts.slice(idx + 1))
+                        .forEach((c) =>
+                            c.timeScale().setVisibleLogicalRange(range)
+                        )
+
+                    if (range.from < 0 && !chartNeedsUpdate) {
+                        chartNeedsUpdate = true
+                        initialTimestamp =
+                            initialTimestamp -
+                            fetchBackDelta * baseGranularityUnix
+                        const newPairsData = await getPairsInfo(
+                            initialTimestamp,
+                            fetchBackDelta,
+                            2021,
+                            'OHM',
+                            'DAI'
+                        )
+                        const newPairsMapped = mapPairs(newPairsData)
+                        pairsMapped.priceCandles = [
+                            ...newPairsMapped.priceCandles,
+                            ...pairsMapped.priceCandles,
+                        ]
+                        pairsMapped.volumeUp = [
+                            ...newPairsMapped.volumeUp,
+                            ...pairsMapped.volumeUp,
+                        ]
+                        pairsMapped.volumeDown = [
+                            ...newPairsMapped.volumeDown,
+                            ...pairsMapped.volumeDown,
+                        ]
+
+                        candleSeries.setData(pairsMapped.priceCandles)
+                        volumeUpHist.setData(pairsMapped.volumeUp)
+                        volumeDownHist.setData(pairsMapped.volumeDown)
+
+                        const newScMapped = await getMappedScData(
+                            initialTimestamp,
+                            fetchBackDelta,
+                            method,
+                            timeframe
+                        )
+
+                        Object.keys(scMapped).forEach((key) => {
+                            scMapped[key] = [
+                                ...newScMapped[key],
+                                ...scMapped[key],
+                            ]
+                        })
+
+                        fillChart(charts[2], method, scMapped)
+
+                        chartNeedsUpdate = false
+                    }
+                })
         })
-
-        // charts[0].timeScale().applyOptions({ visible: false })
-        // charts[1].timeScale().applyOptions({ visible: false })
-
         return () => {}
-    }, [method])
+    }, [method, timeframe])
 
     return (
         <div className="main">
             <div className="inputs">
+                <div className="inputs-switch-interval">
+                    <span>Intervals:</span>
+                    <div>
+                        <div onClick={() => changeTimeframe(0)}>1D</div>
+                        <div onClick={() => changeTimeframe(1)}>1H</div>
+                        {/* <div onClick={() => changeTimeframe(2)}>1M</div> */}
+                    </div>
+                </div>
                 <div className="inputs-staking">
                     <span>Staking:</span>
                     {methodPropsChartConfigs
@@ -200,7 +284,7 @@ export default function Main() {
                     {methodPropsChartConfigs
                         .filter((e) => e.type === 'bonds')
                         .map((e, idx) => (
-                            <div key={idx + stakingLength}>
+                            <div key={idx}>
                                 <input
                                     type="radio"
                                     value={idx + stakingLength}
@@ -216,23 +300,47 @@ export default function Main() {
                             </div>
                         ))}
                 </div>
+                {/* <div className="inputs-treasury">
+                    <span>Treasury:</span>
+                    {methodPropsChartConfigs
+                        .filter((e) => e.type === 'treasury')
+                        .map((e, idx) => (
+                            <div key={idx}>
+                                <input
+                                    type="radio"
+                                    value={idx + bondsAndStakingLength}
+                                    checked={
+                                        method === idx + bondsAndStakingLength
+                                    }
+                                    onChange={changeMethod}
+                                />
+                                <label>{e.title}</label>
+                                {e.info && (
+                                    <span className="input__info-label">
+                                        : {e.info}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                </div> */}
             </div>
             <div key={key} className="dex-container">
                 <div className="dex-price-outer">
                     <span className="dex-price-title">
-                        SushiSwap OHM/DAI, 1D
+                        SushiSwap OHM/DAI, {timeframesConfig[timeframe].name}
                     </span>
                     <div className="dex-price" ref={refs[0]}></div>
                 </div>
                 <div className="dex-volume-outer">
                     <span className="dex-volume-title">
-                        SushiSwap OHM/DAI Volume, 1D
+                        SushiSwap OHM/DAI Volume,{' '}
+                        {timeframesConfig[timeframe].name}
                     </span>
                     <div className="dex-volume" ref={refs[1]}></div>
                 </div>
                 <div className="staking-volume-outer">
                     <span className="staking-volume-title">
-                        {`${methodPropsChartConfigs[method].title}, 1D`}
+                        {`${methodPropsChartConfigs[method].title}, ${timeframesConfig[timeframe].name}`}
                     </span>
                     <div className="staking-volume" ref={refs[2]}></div>
                 </div>

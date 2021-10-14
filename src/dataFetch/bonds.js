@@ -1,5 +1,4 @@
 import axios from 'axios'
-import moment from 'moment'
 /**
  * @dev : Get deposits (days)
  */
@@ -95,7 +94,7 @@ export async function getDepositsInfoDays(startTimestamp, days) {
                 amountEth: 0,
                 amountFrax: 0,
                 amountLusd: 0,
-                amountOhmdai: 0,
+                amountOhmDai: 0,
                 amountOhmFrax: 0,
                 depositCountDai: 0,
                 depositCountEth: 0,
@@ -156,7 +155,7 @@ export async function getDepositsInfoDays(startTimestamp, days) {
                         ohmDaiDeposits[0].dayDeposit[j].timestamp &&
                     ohmDaiDeposits[0].dayDeposit[j].timestamp < endTimestamp
                 ) {
-                    obj.amountOhmdai = ohmDaiDeposits[0].dayDeposit[j].amount
+                    obj.amountOhmDai = ohmDaiDeposits[0].dayDeposit[j].amount
                     obj.depositCountOhmDai =
                         ohmDaiDeposits[0].dayDeposit[j].depositCount
                 }
@@ -296,7 +295,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountDaiHour =
+                obj.amountDai =
                     daiDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountDai =
                     daiDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -312,7 +311,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountEthHour =
+                obj.amountEth =
                     ethDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountEth =
                     ethDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -329,7 +328,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountFraxHour =
+                obj.amountFrax =
                     fraxDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountFrax =
                     fraxDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -346,7 +345,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountLusdHour =
+                obj.amountLusd =
                     lusdDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountLusd =
                     lusdDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -362,7 +361,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountOhmDaiHour =
+                obj.amountOhmDai =
                     ohmDaiDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountOhmDai =
                     ohmDaiDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -378,7 +377,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                 ++k
             ) {
                 let obj = {}
-                obj.amountOhmFraxHour =
+                obj.amountOhmFrax =
                     ohmFraxDeposits[0].dayDeposit[i].hourDeposit[k].amount
                 obj.depositCountOhmFrax =
                     ohmFraxDeposits[0].dayDeposit[i].hourDeposit[k].depositCount
@@ -392,12 +391,12 @@ export async function getDepositsInfoHours(startTimestamp, days) {
             let beginTimestamp = startTimestamp + i * 3600
             let endTimestamp = startTimestamp + (i + 1) * 3600
             let obj = {
-                amountDaiHour: 0,
-                amountEthHour: 0,
-                amountFraxHour: 0,
-                amountLusdHour: 0,
-                amountOhmDaiHour: 0,
-                amountOhmFraxHour: 0,
+                amountDai: 0,
+                amountEth: 0,
+                amountFrax: 0,
+                amountLusd: 0,
+                amountOhmDai: 0,
+                amountOhmFrax: 0,
                 depositCountDai: 0,
                 depositCountEth: 0,
                 depositCountFrax: 0,
@@ -411,7 +410,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= daiArray[j].timestamp &&
                     daiArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountDaiHour = daiArray[j].amountDaiHour
+                    obj.amountDai = daiArray[j].amountDai
                     obj.depositCountDai = daiArray[j].depositCountDai
                 }
             }
@@ -420,7 +419,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= ethArray[j].timestamp &&
                     ethArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountEthHour = ethArray[j].amountEthHour
+                    obj.amountEth = ethArray[j].amountEth
                     obj.depositCountEth = ethArray[j].depositCountEth
                 }
             }
@@ -429,7 +428,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= fraxArray[j].timestamp &&
                     fraxArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountFraxHour = fraxArray[j].amountFraxHour
+                    obj.amountFrax = fraxArray[j].amountFrax
                     obj.depositCountFrax = fraxArray[j].depositCountFrax
                 }
             }
@@ -438,7 +437,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= lusdArray[j].timestamp &&
                     lusdArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountLusdHour = lusdArray[j].amountLusdHour
+                    obj.amountLusd = lusdArray[j].amountLusd
                     obj.depositCountLusd = lusdArray[j].depositCountLusd
                 }
             }
@@ -447,7 +446,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= ohmDaiArray[j].timestamp &&
                     ohmDaiArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountOhmDaiHour = ohmDaiArray[j].amountOhmDaiHour
+                    obj.amountOhmDai = ohmDaiArray[j].amountOhmDai
                     obj.depositCountOhmDai = ohmDaiArray[j].depositCountOhmDai
                 }
             }
@@ -456,7 +455,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     beginTimestamp <= ohmFraxArray[j].timestamp &&
                     ohmFraxArray[j].timestamp < endTimestamp
                 ) {
-                    obj.amountOhmFraxHour = ohmFraxArray[j].amountOhmFraxHour
+                    obj.amountOhmFrax = ohmFraxArray[j].amountOhmFrax
                     obj.depositCountOhmFrax =
                         ohmFraxArray[j].depositCountOhmFrax
                 }
@@ -930,12 +929,10 @@ class TVTimeValueObject {
     }
 }
 
-export async function mapBonds(bonds) {
+export function mapBonds(bonds) {
     return bonds.reduce(
         (acc, e) => {
-            const time = moment
-                .unix(parseInt(e.beginTimestamp))
-                .format('YYYY-MM-DD')
+            const time = parseInt(e.beginTimestamp)
 
             // amounts
             acc.amountDai.push(new TVTimeValueObject(Number(e.amountDai), time))
@@ -946,8 +943,8 @@ export async function mapBonds(bonds) {
             acc.amountLusd.push(
                 new TVTimeValueObject(Number(e.amountLusd), time)
             )
-            acc.amountOhmdai.push(
-                new TVTimeValueObject(Number(e.amountOhmdai), time)
+            acc.amountOhmDai.push(
+                new TVTimeValueObject(Number(e.amountOhmDai), time)
             )
             acc.amountOhmFrax.push(
                 new TVTimeValueObject(Number(e.amountOhmFrax), time)
@@ -979,7 +976,7 @@ export async function mapBonds(bonds) {
             amountEth: [],
             amountFrax: [],
             amountLusd: [],
-            amountOhmdai: [],
+            amountOhmDai: [],
             amountOhmFrax: [],
             depositCountDai: [],
             depositCountEth: [],
