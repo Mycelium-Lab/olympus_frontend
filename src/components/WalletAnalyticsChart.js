@@ -1,31 +1,28 @@
-import React, { createRef, useEffect } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import { createChart } from '../tv-lightweight'
-
 import { chartConfig } from '../util/config'
 
-import axios from 'axios'
+export default function WalletAnalyticsChart({ data, isLoading }) {
+    const [ref, setRef] = useState(null)
+    useEffect(() => {
+        if (data) {
+            const newRef = createRef()
+            setRef(newRef)
+        }
+    }, [data])
 
-export default function WalletAnalyticsChart() {
-    const ref = createRef()
-    useEffect(async () => {
-        const result = await axios.get(
-            'http://62.84.119.83:8000/api/get_top_days/?start=1617291702&days=250'
-        )
+    useEffect(() => {
+        if (ref) {
+            const chart = createChart(ref.current, chartConfig)
+            const line = chart.addAreaSeries({
+                base: 0,
+                priceFormat: {
+                    type: 'volume',
+                },
+            })
 
-        const realData = result.data.data.map((e) => ({
-            time: e.timestamp,
-            value: e.balance,
-        }))
-
-        const chart = createChart(ref.current, chartConfig)
-        const line = chart.addAreaSeries({
-            base: 0,
-            priceFormat: {
-                type: 'volume',
-            },
-        })
-
-        line.setData(realData)
-    }, [])
+            line.setData(data)
+        }
+    }, [ref])
     return <div ref={ref}></div>
 }
