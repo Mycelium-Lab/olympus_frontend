@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import '../styles/dashboard.scss'
 
 import twitter from '../images/twitter.png'
 
 export default function Dashboard() {
+    const ref = useRef()
+
+    useEffect(() => {
+        const script = document.createElement('script')
+
+        script.src = 'https://platform.twitter.com/widgets.js'
+        script.async = ref.current.appendChild(script)
+
+        return () => {
+            ref.current.removeChild(script)
+        }
+    }, [])
+
     return (
         <div className="main-content">
             <div className="page-content">
@@ -86,7 +99,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/28707/57953/2b4d24fd-6f9f-4100-9df3-2743a452d388"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -108,7 +121,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/30413/61311/a7789484-a119-44c4-931b-bbc52db36b9f"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -130,7 +143,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/28168/57095/40ae3282-c0ae-4f61-9a1f-3fea4f2c88e4"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -155,7 +168,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/28707/57953/ade096a4-613f-4950-8d39-d68526a368aa"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -177,7 +190,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/34202/69216/0e5e8b30-a6c9-4ec0-845a-d68f21afbd5e"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -202,7 +215,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/27661/57966/1fb96685-071d-4971-96b2-2ca1c220cff5"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -224,7 +237,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/30395/61276/a2b3294c-1f07-4532-9791-a3815210c1ad"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -246,7 +259,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/30178/60856/44e344f2-9fb3-43b8-b546-8b5f22417e91"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -271,7 +284,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/29778/60051/394cdb35-a8b8-4f10-806d-63eb8c0057e9"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -296,7 +309,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/199006/371572/6303e9df-7815-40f7-98ee-12395a08afe1"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -318,7 +331,7 @@ export default function Dashboard() {
                                 >
                                     <iframe
                                         src="https://dune.xyz/embeds/199006/371574/b387e448-cfd2-4c61-84de-139b59e57dc9"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         style={{
                                             width: '100%',
                                             height: '100%',
@@ -339,6 +352,7 @@ export default function Dashboard() {
                             style={{ margin: '0 auto 30px', display: 'block' }}
                         />
                         <div
+                            ref={ref}
                             style={{
                                 width: '100%',
                                 height: '388px',
@@ -351,11 +365,6 @@ export default function Dashboard() {
                             >
                                 Tweets by ohmzeus
                             </a>{' '}
-                            <script
-                                async
-                                src="https://platform.twitter.com/widgets.js"
-                                charset="utf-8"
-                            ></script>
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -381,7 +390,7 @@ export default function Dashboard() {
                         >
                             <iframe
                                 src="https://snapshot.org/#/olympusdao.eth"
-                                frameborder="0"
+                                frameBorder="0"
                                 style={{ width: '100%', height: '100%' }}
                             ></iframe>
                         </div>
