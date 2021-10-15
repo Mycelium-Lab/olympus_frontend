@@ -1,5 +1,5 @@
 import {
-    getTotalReserveByMinute,
+    getTotalReservesByMinute,
     getTotalReservesByDay,
     getTotalReservesByHour,
     mapTotalReserves,
@@ -307,7 +307,7 @@ export const methodPropsChartConfigs = [
         [
             getTotalReservesByDay,
             getTotalReservesByHour,
-            getTotalReserveByMinute,
+            getTotalReservesByMinute,
         ],
         mapTotalReserves
     ),

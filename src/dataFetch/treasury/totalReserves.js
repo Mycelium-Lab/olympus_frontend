@@ -80,7 +80,7 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
         if (timestamp > endTimestamp) return out
         if (timestamp >= startTimestamp) {
             out.push({
-                totalReverse: bigArray[i - 1].finalTotalReserves,
+                totalReserves: bigArray[i - 1].finalTotalReserves,
                 timestamp: timestamp,
                 audited: bigArray[i - 1].audited,
             })
@@ -90,7 +90,7 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
         while (timestamp < nextTimestamp) {
             if (timestamp >= startTimestamp) {
                 out.push({
-                    totalReverse: bigArray[i - 1].finalTotalReserves,
+                    totalReserves: bigArray[i - 1].finalTotalReserves,
                     timestamp: timestamp,
                     audited: false,
                 })
@@ -102,13 +102,26 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
     }
 
     out.push({
-        totalReverse: bigArray[bigArray.length - 1].finalTotalReserves,
+        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
         timestamp: getWholePeriodOfTime(
             parseInt(bigArray[bigArray.length - 1].timestamp),
             day
         ), ////?
         audited: bigArray[bigArray.length - 1].audited,
     })
+    let timestamp = getWholePeriodOfTime(
+        parseInt(bigArray[bigArray.length - 1].timestamp),
+        day
+    )
+    timestamp += day
+    while (timestamp <= endTimestamp) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp,
+            audited: false,
+        })
+        timestamp += day
+    }
     return out
 }
 
@@ -212,7 +225,7 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
         if (timestamp > endTimestamp) return out
         if (timestamp >= startTimestamp) {
             out.push({
-                totalReverse: bigArray[i - 1].finalTotalReserves,
+                totalReserves: bigArray[i - 1].finalTotalReserves,
                 timestamp: timestamp,
                 audited: bigArray[i - 1].audited,
             })
@@ -222,7 +235,7 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
         while (timestamp < nextTimestamp) {
             if (timestamp >= startTimestamp) {
                 out.push({
-                    totalReverse: bigArray[i - 1].finalTotalReserves,
+                    totalReserves: bigArray[i - 1].finalTotalReserves,
                     timestamp: timestamp,
                     audited: false,
                 })
@@ -233,13 +246,26 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
     }
 
     out.push({
-        totalReverse: bigArray[bigArray.length - 1].finalTotalReserves,
+        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
         timestamp: getWholePeriodOfTime(
             parseInt(bigArray[bigArray.length - 1].timestamp),
             hour
         ),
         audited: bigArray[bigArray.length - 1].audited,
     })
+    let timestamp = getWholePeriodOfTime(
+        parseInt(bigArray[bigArray.length - 1].timestamp),
+        hour
+    )
+    timestamp += hour
+    while (timestamp <= endTimestamp) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp,
+            audited: false,
+        })
+        timestamp += hour
+    }
     return out
 }
 /**
@@ -264,7 +290,7 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
         if (timestamp > endTimestamp) return out
         if (timestamp >= startTimestamp) {
             out.push({
-                totalReverse: bigArray[i - 1].finalTotalReserves,
+                totalReserves: bigArray[i - 1].finalTotalReserves,
                 timestamp: timestamp,
                 audited: bigArray[i - 1].audited,
             })
@@ -274,7 +300,7 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
         while (timestamp < nextTimestamp) {
             if (timestamp >= startTimestamp) {
                 out.push({
-                    totalReverse: bigArray[i - 1].finalTotalReserves,
+                    totalReserves: bigArray[i - 1].finalTotalReserves,
                     timestamp: timestamp,
                     audited: false,
                 })
@@ -285,13 +311,26 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
     }
 
     out.push({
-        totalReverse: bigArray[bigArray.length - 1].finalTotalReserves,
+        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
         timestamp: getWholePeriodOfTime(
             parseInt(bigArray[bigArray.length - 1].timestamp),
             4 * hour
         ),
         audited: bigArray[bigArray.length - 1].audited,
     })
+    let timestamp = getWholePeriodOfTime(
+        parseInt(bigArray[bigArray.length - 1].timestamp),
+        4 * hour
+    )
+    timestamp += 4 * hour
+    while (timestamp <= endTimestamp) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp,
+            audited: false,
+        })
+        timestamp += 4 * hour
+    }
     return out
 }
 
@@ -311,10 +350,9 @@ const minuteQuery = `
     }
   }
 }
-
   `
 
-export async function getTotalReserveByMinute(
+export async function getTotalReservesByMinute(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000
 ) {
@@ -400,7 +438,7 @@ function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
         if (timestamp > endTimestamp) return out
         if (timestamp >= startTimestamp) {
             out.push({
-                totalReverse: bigArray[i - 1].finalTotalReserves,
+                totalReserves: bigArray[i - 1].finalTotalReserves,
                 timestamp: timestamp,
                 audited: bigArray[i - 1].audited,
             })
@@ -410,7 +448,7 @@ function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
         while (timestamp < nextTimestamp) {
             if (timestamp >= startTimestamp) {
                 out.push({
-                    totalReverse: bigArray[i - 1].finalTotalReserves,
+                    totalReserves: bigArray[i - 1].finalTotalReserves,
                     timestamp: timestamp,
                     audited: false,
                 })
@@ -419,20 +457,34 @@ function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
             if (timestamp > endTimestamp) return out
         }
     }
+
     out.push({
-        totalReverse: bigArray[bigArray.length - 1].finalTotalReserves,
+        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
         timestamp: getWholePeriodOfTime(
             parseInt(bigArray[bigArray.length - 1].timestamp),
             minute
         ),
         audited: bigArray[bigArray.length - 1].audited,
     })
+    let timestamp = getWholePeriodOfTime(
+        parseInt(bigArray[bigArray.length - 1].timestamp),
+        minute
+    )
+    timestamp += minute
+    while (timestamp <= endTimestamp) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp,
+            audited: false,
+        })
+        timestamp += minute
+    }
     return out
 }
 
 export function mapTotalReserves(total_reserves) {
     return total_reserves.map((e) => ({
         time: parseInt(e.timestamp),
-        value: Number(e.totalReverse),
+        value: Number(e.totalReserves),
     }))
 }
