@@ -425,3 +425,16 @@ export function mapPairs(pairs) {
         { priceCandles: [], volumeUp: [], volumeDown: [] }
     )
 }
+
+export function getPairsInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return getPairsInfoDays
+        case 1:
+            return getPairsInfoHours
+        case 2:
+            return getPairsInfoMinutes
+        default:
+            return
+    }
+}

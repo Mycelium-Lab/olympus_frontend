@@ -2,12 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 
-import {
-    getPairsInfoDays,
-    getPairsInfoHours,
-    getPairsInfoMinutes,
-    mapPairs,
-} from '../dataFetch/pairs'
+import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 import {
     chartConfig,
     methodPropsChartConfigs,
@@ -23,19 +18,6 @@ import '../styles/main.scss'
 
 const fillChart = async (chart, method, mappedData) => {
     methodPropsChartConfigs[method].setChart(chart, mappedData)
-}
-
-const getPairsInfoFunction = (timeframe) => {
-    switch (timeframe) {
-        case 0:
-            return getPairsInfoDays
-        case 1:
-            return getPairsInfoHours
-        case 2:
-            return getPairsInfoMinutes
-        default:
-            return
-    }
 }
 
 export default function Main() {
@@ -85,19 +67,26 @@ export default function Main() {
 
         // main data (dex price + volume)
 
-        let pairs, pairsMapped
+        let pairs, pairsMapped, scMapped
 
         let { fetchBackDelta, initialTimestamp } = timeframesConfig[timeframe]
 
         const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
-        pairs = await getPairsInfo(
-            initialTimestamp,
-            fetchBackDelta,
-            2021,
-            'OHM',
-            'DAI'
-        )
-        pairsMapped = await mapPairs(pairs)
+
+        const promises = [
+            getPairsInfo(initialTimestamp, fetchBackDelta, 2021, 'OHM', 'DAI'),
+            getMappedScData(
+                initialTimestamp,
+                fetchBackDelta,
+                method,
+                timeframe
+            ),
+        ]
+
+        const resolvedDataFetch = await Promise.all(promises)
+        pairs = resolvedDataFetch[0]
+        pairsMapped = mapPairs(pairs)
+        scMapped = resolvedDataFetch[1]
 
         const candleSeries = charts[0].addCandlestickSeries({
             upColor: 'rgb(37,166,154)',
@@ -132,13 +121,6 @@ export default function Main() {
         volumeDownHist.setData(pairsMapped.volumeDown)
 
         // additional data from smart contracts
-
-        let scMapped = await getMappedScData(
-            initialTimestamp,
-            fetchBackDelta,
-            method,
-            timeframe
-        )
 
         fillChart(charts[2], method, scMapped)
 

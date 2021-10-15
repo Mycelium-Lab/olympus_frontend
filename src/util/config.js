@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import {
     getTotalReservesByMinute,
     getTotalReservesByDay,
@@ -5,7 +7,24 @@ import {
     mapTotalReserves,
 } from '../dataFetch/treasury/totalReserves'
 
-import moment from 'moment'
+import {
+    getDepositByDay,
+    getDepositByHour,
+    getDepositByMinute,
+    mapDeposit,
+} from '../dataFetch/treasury/deposit'
+import {
+    getMintRewardsByDay,
+    getMintRewardsByHour,
+    getMintRewardsByMinute,
+    mapMintRewards,
+} from '../dataFetch/treasury/mintRewards'
+import {
+    getManageByDay,
+    getManageByHour,
+    getManageByMinute,
+    mapManage,
+} from '../dataFetch/treasury/manage'
 
 export const chartConfig = {
     width: 600,
@@ -296,12 +315,13 @@ export const methodPropsChartConfigs = [
         },
         null
     ),
+
     // treasury
     new MethodPropsChartConfigTreasury(
-        'Total Reserves',
+        'Total Reserves (Rough Contract Estimate), OHM',
         (chart, data) => {
-            const line = chart.addLineSeries(baseLineConfig)
-            line.setData(data)
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.total_reserves)
         },
         null,
         [
@@ -310,6 +330,148 @@ export const methodPropsChartConfigs = [
             getTotalReservesByMinute,
         ],
         mapTotalReserves
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LP OHMFRAX',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LP OHMDAI',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LUSD',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, DAI',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0x6b175474e89094c44da98b954eedeac495271d0f')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, FRAX',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0x853d955acef822db058eb8505911ed77f175b99e')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LP OHMLUSD',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getDepositByDay, getDepositByHour, getDepositByMinute],
+        (deposit) =>
+            mapDeposit(deposit, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LP OHMFRAX',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LP OHMDAI',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LUSD',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), DAI',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), FRAX',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LP OHMLUSD',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.amount)
+        },
+        null,
+        [getManageByDay, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Minted Rewards for Staking, OHM',
+        (chart, data) => {
+            const hist = chart.addHistogramSeries(baseLineConfig)
+            hist.setData(data.minted_rewards)
+        },
+        null,
+        [getMintRewardsByDay, getMintRewardsByHour, getMintRewardsByMinute],
+        mapMintRewards
     ),
 ]
 
