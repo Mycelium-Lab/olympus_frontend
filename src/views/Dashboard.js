@@ -360,10 +360,10 @@ export default function Dashboard() {
                             }}
                         >
                             <a
-                                className="twitter-timeline"
-                                href="https://twitter.com/ohmzeus?ref_src=twsrc%5Etfw"
+                                class="twitter-timeline"
+                                href="https://twitter.com/OlympMonitoring/lists/1449359533021835272?ref_src=twsrc%5Etfw"
                             >
-                                Tweets by ohmzeus
+                                A Twitter List by OlympMonitoring
                             </a>{' '}
                         </div>
                     </div>
