@@ -18,7 +18,7 @@ import {
 export default function WalletAnalytics() {
     let { path, url } = useRouteMatch()
     return (
-        <div className="main-content">
+        <div className="main-content wallet-analytics-view">
             <div className="page-content">
                 <div className="row">
                     <div className="col-12">

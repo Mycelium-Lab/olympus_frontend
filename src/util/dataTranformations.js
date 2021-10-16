@@ -56,7 +56,7 @@ export const getMappedScData = async (startTime, delta, method, timeframe) => {
             break
         case 'treasury':
             const endTime = moment(startTime * 1000)
-                .add(delta - 2, 'days')
+                .add(delta, 'days')
                 .unix()
             const data = await methodPropsChartConfigs[method].getDataFunctions[
                 timeframe

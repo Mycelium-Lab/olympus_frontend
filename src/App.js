@@ -1,5 +1,5 @@
-import Main from './components/Main'
 import Dashboard from './views/Dashboard'
+import GeneralAnalytics from './views/GeneralAnalytics'
 
 import NavbarRoute from './routes/NavbarRoute'
 
@@ -16,10 +16,10 @@ function App() {
                             path="/wallet_analytics"
                             component={() => <WalletAnalytics />}
                         />
-                        <Route
+                        <NavbarRoute
                             exact
                             path="/general_analytics"
-                            component={() => <Main />}
+                            component={() => <GeneralAnalytics />}
                         />
                         <NavbarRoute
                             exact

@@ -18,7 +18,7 @@ export default function Dashboard() {
     }, [])
 
     return (
-        <div className="main-content">
+        <div className="main-content dashboard-view">
             <div className="page-content">
                 <div className="row">
                     <div className="col-12">
