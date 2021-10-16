@@ -1,7 +1,8 @@
 import React from 'react'
+import logo from '../images/logo.png'
+import avatar from '../images/avatar.jpg'
 
 export default function Navbar() {
-    console.log(window.location.pathname)
     return (
         <header id="page-topbar">
             <div className="navbar-header">
@@ -9,18 +10,10 @@ export default function Navbar() {
                     <div className="navbar-brand-box">
                         <a href="#" className="logo logo-light">
                             <span className="logo-sm">
-                                <img
-                                    src="assets/images/logo.png"
-                                    alt=""
-                                    height="30"
-                                />
+                                <img src={logo} alt="" height="30" />
                             </span>
                             <span className="logo-lg">
-                                <img
-                                    src="assets/images/logo.png"
-                                    alt=""
-                                    height="30"
-                                />
+                                <img src={logo} alt="" height="30" />
                             </span>
                         </a>
                     </div>
@@ -80,8 +73,9 @@ export default function Navbar() {
                                     <li className="nav-item">
                                         <a
                                             style={
-                                                window.location.pathname ===
-                                                '/wallet_analytics'
+                                                window.location.pathname.includes(
+                                                    '/wallet_analytics'
+                                                )
                                                     ? {
                                                           color: 'rgba(255,255,255)',
                                                       }
@@ -173,7 +167,7 @@ export default function Navbar() {
                         >
                             <img
                                 className="rounded-circle header-profile-user"
-                                src="assets/images/avatar.jpg"
+                                src={avatar}
                                 alt="Header Avatar"
                             />
                             <span className="d-none d-xl-inline-block ml-1">

@@ -1,12 +1,10 @@
 import Main from './components/Main'
-import WalletAnalyticsChart from './components/WalletAnalyticsChart'
-import FirstNWallets from './components/walletAnalytics/FirstNWallets'
 import Dashboard from './views/Dashboard'
 
 import NavbarRoute from './routes/NavbarRoute'
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import LargeHolders from './components/walletAnalytics/LargeHolders'
+import WalletAnalytics from './views/WalletAnalytics'
 
 function App() {
     return (
@@ -14,29 +12,9 @@ function App() {
             <div className="container-fluid">
                 <div id="layout-wrapper">
                     <Switch>
-                        <Route
-                            exact
+                        <NavbarRoute
                             path="/wallet_analytics"
-                            component={() => (
-                                <>
-                                    <FirstNWallets
-                                        startTime={1617291702}
-                                        days={250}
-                                        n_wallets={10}
-                                        render={(state) => (
-                                            <WalletAnalyticsChart {...state} />
-                                        )}
-                                    />
-                                    <LargeHolders
-                                        startTime={1617291702}
-                                        days={250}
-                                        min_amount={10000}
-                                        render={(state) => (
-                                            <WalletAnalyticsChart {...state} />
-                                        )}
-                                    />
-                                </>
-                            )}
+                            component={() => <WalletAnalytics />}
                         />
                         <Route
                             exact

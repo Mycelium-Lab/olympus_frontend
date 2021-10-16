@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 export default class LargeHolders extends Component {
     constructor(props) {
@@ -9,7 +9,8 @@ export default class LargeHolders extends Component {
             isLoading: false,
         }
     }
-    componentDidMount() {
+
+    fetchWallets = () => {
         const { startTime, days, min_amount } = this.props
         this.setState({
             ...this.state,
@@ -21,13 +22,23 @@ export default class LargeHolders extends Component {
         }).then((result) => {
             const data = result.data.data.map((e) => ({
                 time: e.timestamp,
-                value: e.balance,
+                value: Number(e.balance),
             }))
             this.setState({
                 data,
                 isLoading: false,
             })
         })
+    }
+
+    componentDidMount() {
+        this.fetchWallets()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.min_amount !== this.props.min_amount) {
+            this.fetchWallets()
+        }
     }
 
     render() {
