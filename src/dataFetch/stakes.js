@@ -23,7 +23,7 @@ export async function getStakesInfoDays(startTimestamp, days) {
 
     try {
         const stakeData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: stakeQuery,
@@ -125,7 +125,7 @@ export async function getStakesInfoHours(startTimestamp, days) {
 
     try {
         const stakeData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: stakeQuery,
@@ -244,7 +244,7 @@ export async function getStakesInfoMinutes(startTimestamp, days) {
 
     try {
         const stakeData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: stakeQuery,
@@ -364,6 +364,7 @@ class TVTimeValueObject {
 }
 
 export function mapStakes(stakes) {
+    console.log(stakes)
     return stakes.reduce(
         (acc, e) => {
             const time = parseInt(e.beginTimestamp)
@@ -390,18 +391,6 @@ export function mapStakes(stakes) {
             acc.stakedAvg.push(new TVTimeValueObject(Number(e.stakeAvg), time))
             acc.unstakedAvg.push(
                 new TVTimeValueObject(Number(e.unstakeAvg), time)
-            )
-            acc.unstakedToTotalStakedPercent.push(
-                new TVTimeValueObject(
-                    Number(e.unstakedToTotalStakedPercent),
-                    time
-                )
-            )
-            acc.unstakedToTotalStakedPercent.push(
-                new TVTimeValueObject(
-                    Number(e.unstakedToTotalStakedPercent),
-                    time
-                )
             )
             acc.stakeCount.push(
                 new TVTimeValueObject(Number(e.stakeCount), time)

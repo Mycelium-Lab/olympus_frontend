@@ -292,6 +292,14 @@ export const methodPropsChartConfigs = [
         null
     ),
     new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMLUSD',
+        (chart, data) => {
+            const line = chart.addHistogramSeries(baseLineConfig)
+            line.setData(data.amountOhmLusd)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
         'Bond Times Purchased, DAI',
         (chart, data) => {
             const line = chart.addHistogramSeries(baseLineConfig)
@@ -336,6 +344,14 @@ export const methodPropsChartConfigs = [
         (chart, data) => {
             const line = chart.addHistogramSeries(baseLineConfig)
             line.setData(data.depositCountOhmFrax)
+        },
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMLUSD',
+        (chart, data) => {
+            const line = chart.addHistogramSeries(baseLineConfig)
+            line.setData(data.amountOhmLusd)
         },
         null
     ),

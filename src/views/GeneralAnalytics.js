@@ -186,6 +186,8 @@ export default function GeneralAnalytics() {
                         initialTimestamp =
                             initialTimestamp -
                             fetchBackDelta * baseGranularityUnix
+
+                        // update price and volume chart
                         const newPairsData = await getPairsInfo(
                             initialTimestamp,
                             fetchBackDelta,
@@ -194,23 +196,31 @@ export default function GeneralAnalytics() {
                             'DAI'
                         )
                         const newPairsMapped = mapPairs(newPairsData)
-                        pairsMapped.priceCandles = [
-                            ...newPairsMapped.priceCandles,
-                            ...pairsMapped.priceCandles,
-                        ]
-                        pairsMapped.volumeUp = [
-                            ...newPairsMapped.volumeUp,
-                            ...pairsMapped.volumeUp,
-                        ]
-                        pairsMapped.volumeDown = [
-                            ...newPairsMapped.volumeDown,
-                            ...pairsMapped.volumeDown,
-                        ]
 
-                        candleSeries.setData(pairsMapped.priceCandles)
-                        volumeUpHist.setData(pairsMapped.volumeUp)
-                        volumeDownHist.setData(pairsMapped.volumeDown)
+                        if (
+                            newPairsMapped.priceCandles.length > 0 &&
+                            newPairsMapped.volumeUp.length > 0 &&
+                            newPairsMapped.volumeDown.length > 0
+                        ) {
+                            pairsMapped.priceCandles = [
+                                ...newPairsMapped.priceCandles,
+                                ...pairsMapped.priceCandles,
+                            ]
+                            pairsMapped.volumeUp = [
+                                ...newPairsMapped.volumeUp,
+                                ...pairsMapped.volumeUp,
+                            ]
+                            pairsMapped.volumeDown = [
+                                ...newPairsMapped.volumeDown,
+                                ...pairsMapped.volumeDown,
+                            ]
 
+                            candleSeries.setData(pairsMapped.priceCandles)
+                            volumeUpHist.setData(pairsMapped.volumeUp)
+                            volumeDownHist.setData(pairsMapped.volumeDown)
+                        }
+
+                        // update sc chart
                         const newScMapped = await getMappedScData(
                             initialTimestamp,
                             fetchBackDelta,
@@ -218,14 +228,20 @@ export default function GeneralAnalytics() {
                             timeframe
                         )
 
-                        Object.keys(scMapped).forEach((key) => {
-                            scMapped[key] = [
-                                ...newScMapped[key],
-                                ...scMapped[key],
-                            ]
-                        })
+                        // Object.keys(scMapped).forEach((key) => {
+                        //     if (newScMapped[key].length > 0) {
+                        //         scMapped[key] = [
+                        //             ...newScMapped[key],
+                        //             ...scMapped[key],
+                        //         ]
+                        //     }
+                        // })
 
-                        fillChart(charts[charts.length - 1], method, scMapped)
+                        fillChart(
+                            charts[charts.length - 1],
+                            method,
+                            newScMapped
+                        )
 
                         chartNeedsUpdate = false
                     }

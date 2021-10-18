@@ -4,100 +4,114 @@ import axios from 'axios'
  */
 export async function getDepositsInfoDays(startTimestamp, days) {
     let depositQuery = `
-     {
-         depositYearDaiEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-             amount
-             depositCount
-             timestamp
-             redeemCount
-             payout
-           }
-         }
-         depositYearETHEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-             amount
-             depositCount
-             timestamp
-             redeemCount
-             payout
-           }
-         }
-         depositYearFraxEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-                   amount
-                   depositCount
-                   timestamp
-                   redeemCount
-                   payout
-           }
-         }
-         
-         depositYearLusdEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-                   amount
-                   depositCount
-                   timestamp
-                   redeemCount
-                   payout
-           }
-         }
-         
-         depositYearOHMDAIEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-                   amount
-                   depositCount
-                   timestamp
-                   redeemCount
-                   payout
-           }
-         }
-         
-         depositYearOHMFRAXEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             id
-                   amount
-                   depositCount
-                   timestamp
-                   redeemCount
-                   payout
-           }
-         }
-       }
- 
-     `
+    {
+        depositYearDaiEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"DAI"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+            amount
+            depositCount
+            timestamp
+            redeemCount
+            payout
+          }
+        }
+        depositYearETHEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"WETH"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+            amount
+            depositCount
+            timestamp
+            redeemCount
+            payout
+          }
+        }
+        depositYearFraxEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"FRAX"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+                  amount
+                  depositCount
+                  timestamp
+                  redeemCount
+                  payout
+          }
+        }
+        
+        depositYearLusdEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"LUSD"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+                  amount
+                  depositCount
+                  timestamp
+                  redeemCount
+                  payout
+          }
+        }
+        
+        depositYearOHMDAIEntities:depositYearEntities(first: 100 orderBy:timestamp where:{token:"OHM-DAI"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+                  amount
+                  depositCount
+                  timestamp
+                  redeemCount
+                  payout
+          }
+        }
+        
+        depositYearOHMFRAXEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"OHM-FRAX"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            id
+                  amount
+                  depositCount
+                  timestamp
+                  redeemCount
+                  payout
+          }
+        }
+        depositYearOHMLUSDEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"OHM-LUSD"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+              
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+            }
+          }
+  
+      }
+    `
 
     try {
         const depositData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQuery,
             },
         })
+        console.log(depositData.data.data)
         const daiDeposits = depositData.data.data.depositYearDaiEntities
         const ethDeposits = depositData.data.data.depositYearETHEntities
         const fraxDeposits = depositData.data.data.depositYearFraxEntities
         const lusdDeposits = depositData.data.data.depositYearLusdEntities
         const ohmDaiDeposits = depositData.data.data.depositYearOHMDAIEntities
         const ohmFraxDeposits = depositData.data.data.depositYearOHMFRAXEntities
+        const ohmLusdDeposits = depositData.data.data.depositYearOHMLUSDEntities
         let data = []
         for (let i = 0; i < days - 1; ++i) {
             let beginTimestamp = startTimestamp + i * 86400
@@ -109,30 +123,35 @@ export async function getDepositsInfoDays(startTimestamp, days) {
                 amountLusd: 0,
                 amountOhmDai: 0,
                 amountOhmFrax: 0,
+                amountOhmLusd: 0,
                 amountDaiAvg: 0,
                 amountEthAvg: 0,
                 amountLusdAvg: 0,
                 amountFraxAvg: 0,
                 amountOhmDaiAvg: 0,
                 amountOhmFraxAvg: 0,
+                amountOhmLusdAvg: 0,
                 payoutDai: 0,
                 payoutEth: 0,
                 payoutFrax: 0,
                 payoutLusd: 0,
                 payoutOhmDai: 0,
                 payoutOhmFrax: 0,
+                payoutOhmLusd: 0,
                 depositCountDai: 0,
                 depositCountEth: 0,
                 depositCountLusd: 0,
                 depositCountFrax: 0,
                 depositCountOhmDai: 0,
                 depositCountOhmFrax: 0,
+                depositCountOhmLusd: 0,
                 redeemCountDai: 0,
                 redeemCountLusd: 0,
                 redeemCountEth: 0,
                 redeemCountFrax: 0,
                 redeemCountOhmDai: 0,
                 redeemCountOhmFrax: 0,
+                redeemCountOhmLusd: 0,
                 beginTimestamp: beginTimestamp,
                 endTimestamp: endTimestamp,
             }
@@ -323,6 +342,40 @@ export async function getDepositsInfoDays(startTimestamp, days) {
                 }
             }
 
+            if (ohmLusdDeposits.length != 0) {
+                for (let k = 0; k < ohmLusdDeposits.length; ++k) {
+                    for (
+                        let j = 0;
+                        j < ohmLusdDeposits[k].dayDeposit.length;
+                        ++j
+                    ) {
+                        if (
+                            beginTimestamp <=
+                                ohmLusdDeposits[k].dayDeposit[j].timestamp &&
+                            ohmLusdDeposits[k].dayDeposit[j].timestamp <
+                                endTimestamp
+                        ) {
+                            obj.amountOhmLusd =
+                                ohmLusdDeposits[k].dayDeposit[j].amount
+                            obj.depositCountOhmLusd =
+                                ohmLusdDeposits[k].dayDeposit[j].depositCount
+                            obj.redeemCountOhmLusd =
+                                ohmLusdDeposits[k].dayDeposit[j].redeemCount
+                            obj.payoutOhmLusd =
+                                ohmLusdDeposits[k].dayDeposit[j].payout
+                            if (
+                                ohmLusdDeposits[k].dayDeposit[j].depositCount !=
+                                0
+                            ) {
+                                obj.amountOhmLusdAvg =
+                                    ohmLusdDeposits[k].dayDeposit[j].amount /
+                                    ohmLusdDeposits[k].dayDeposit[j]
+                                        .depositCount
+                            }
+                        }
+                    }
+                }
+            }
             data.push(obj)
         }
         return data
@@ -331,116 +384,129 @@ export async function getDepositsInfoDays(startTimestamp, days) {
     }
 }
 /**
- 
-     * @dev : Get deposits (hours)
- 
+ * @dev : Get deposits (hours)
  */
 export async function getDepositsInfoHours(startTimestamp, days) {
     let depositQuery = `
-     {
-         depositYearDaiEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-               id
-                   amount
-                   timestamp
-                   depositCount
-                   redeemCount
-                   payout
-               
-             }
-           }
-         }
-         depositYearETHEntities(first: 100 orderBy:timestamp) {
-           
-             dayDeposit(first: 365 orderBy:timestamp) {
-                 
-               hourDeposit(first: 24 orderBy:timestamp) {
-                 id
-                     amount
-                     timestamp
-                     depositCount
-                     redeemCount
-                     payout
-               }
-             }
-           }
-           depositYearFraxEntities(first: 100 orderBy:timestamp) {
-           
-             dayDeposit(first: 365 orderBy:timestamp) {
-                 
-               hourDeposit(first: 24 orderBy:timestamp) {
-                 id
-                     amount
-                     timestamp
-                     depositCount
-                     redeemCount
-                     payout
-               }
-             }
-           }
-           depositYearLusdEntities(first: 100 orderBy:timestamp) {
-           
-             dayDeposit(first: 365 orderBy:timestamp) {
-                 
-               hourDeposit(first: 24 orderBy:timestamp) {
-                 id
-                     amount
-                     timestamp
-                     depositCount
-                     redeemCount
-                     payout
-               }
-             }
-           }
-           depositYearOHMDAIEntities(first: 100 orderBy:timestamp) {
-           
-             dayDeposit(first: 365 orderBy:timestamp) {
-                 
-               hourDeposit(first: 24 orderBy:timestamp) {
-                 id
-                     amount
-                     timestamp
-                     depositCount
-                     redeemCount
-                     payout
-               }
-             }
-           }
-           depositYearOHMFRAXEntities(first: 100 orderBy:timestamp) {
-           
-             dayDeposit(first: 365 orderBy:timestamp) {
-                 
-               hourDeposit(first: 24 orderBy:timestamp) {
-                 id
-                     amount
-                     timestamp
-                     depositCount
-                     redeemCount
-                     payout
-               }
-             }
-           }
- 
-       }
-     
-     `
+    {
+        depositYearDaiEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"DAI"}) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+              id
+                  amount
+                  timestamp
+                  depositCount
+                  redeemCount
+                  payout
+              
+            }
+          }
+        }
+        depositYearETHEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"WETH"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+          depositYearFraxEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"FRAX"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+          depositYearLusdEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"LUSD"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+          depositYearOHMDAIEntities:depositYearEntities(first: 100 orderBy:timestamp where:{token:"OHM-DAI"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+          depositYearOHMFRAXEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"OHM-FRAX"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+          depositYearOHMLUSDEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"OHM-LUSD"}) {
+          
+            dayDeposit(first: 365 orderBy:timestamp) {
+                
+              hourDeposit(first: 24 orderBy:timestamp) {
+                id
+                    amount
+                    timestamp
+                    depositCount
+                    redeemCount
+                    payout
+              }
+            }
+          }
+      }
+    
+    `
     try {
         const depositData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQuery,
             },
         })
+        console.log(depositData.data.data)
         const daiDeposits = depositData.data.data.depositYearDaiEntities
         const ethDeposits = depositData.data.data.depositYearETHEntities
         const fraxDeposits = depositData.data.data.depositYearFraxEntities
         const lusdDeposits = depositData.data.data.depositYearLusdEntities
         const ohmDaiDeposits = depositData.data.data.depositYearOHMDAIEntities
         const ohmFraxDeposits = depositData.data.data.depositYearOHMFRAXEntities
+        const ohmLusdDeposits = depositData.data.data.depositYearOHMLUSDEntities
         let data = []
 
         let daiArray = []
@@ -449,6 +515,7 @@ export async function getDepositsInfoHours(startTimestamp, days) {
         let lusdArray = []
         let ohmDaiArray = []
         let ohmFraxArray = []
+        let ohmLusdArray = []
 
         if (daiDeposits.length != 0) {
             for (let c = 0; c < daiDeposits.length; ++c) {
@@ -644,6 +711,41 @@ export async function getDepositsInfoHours(startTimestamp, days) {
             }
         }
 
+        if (ohmLusdDeposits.length != 0) {
+            for (let c = 0; c < ohmLusdDeposits.length; ++c) {
+                for (let i = 0; i < ohmLusdDeposits[0].dayDeposit.length; ++i) {
+                    for (
+                        let k = 0;
+                        k < ohmLusdDeposits[0].dayDeposit[i].hourDeposit.length;
+                        ++k
+                    ) {
+                        let obj = {}
+                        obj.amountOhmLusd =
+                            ohmLusdDeposits[c].dayDeposit[i].hourDeposit[
+                                k
+                            ].amount
+                        obj.payoutOhmLusd =
+                            ohmLusdDeposits[c].dayDeposit[i].hourDeposit[
+                                k
+                            ].payout
+                        obj.depositCountOhmLusd =
+                            ohmLusdDeposits[c].dayDeposit[i].hourDeposit[
+                                k
+                            ].depositCount
+                        obj.redeemCountOhmLusd =
+                            ohmLusdDeposits[c].dayDeposit[i].hourDeposit[
+                                k
+                            ].redeemCount
+                        obj.timestamp =
+                            ohmLusdDeposits[c].dayDeposit[i].hourDeposit[
+                                k
+                            ].timestamp
+                        ohmLusdArray.push(obj)
+                    }
+                }
+            }
+        }
+
         for (let i = 0; i < 24 * days; ++i) {
             let beginTimestamp = startTimestamp + i * 3600
             let endTimestamp = startTimestamp + (i + 1) * 3600
@@ -776,6 +878,23 @@ export async function getDepositsInfoHours(startTimestamp, days) {
                     }
                 }
             }
+            for (let j = 0; j < ohmLusdArray.length; ++j) {
+                if (
+                    beginTimestamp <= ohmLusdArray[j].timestamp &&
+                    ohmLusdArray[j].timestamp < endTimestamp
+                ) {
+                    obj.amountOhmLusd = ohmLusdArray[j].amountOhmLusd
+                    obj.depositCountOhmLusd =
+                        ohmLusdArray[j].depositCountOhmLusd
+                    obj.redeemCountOhmLusd = ohmLusdArray[j].redeemCountOhmLusd
+                    obj.payoutOhmLusd = ohmLusdArray[j].payoutOhmLusd
+                    if (ohmLusdArray[j].depositCountOhmLusd != 0) {
+                        obj.amountOhmLusdAvg =
+                            ohmLusdArray[j].amountOhmLusd /
+                            ohmLusdArray[j].depositCountOhmLusd
+                    }
+                }
+            }
             data.push(obj)
         }
         return data
@@ -784,165 +903,163 @@ export async function getDepositsInfoHours(startTimestamp, days) {
     }
 }
 /**
- 
-     * @dev : Get deposits (minutes)
- 
+ * @dev : Get deposits (minutes)
  */
 export async function getDepositsInfoMinutes(startTimestamp, days) {
     let depositQueryDai = `
-     {
-         depositYearDaiEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     
-     `
+    {
+        depositYearDaiEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    
+    `
     let depositQueryEth = `
-     {
-         depositYearETHEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     
-     `
+    {
+        depositYearETHEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    
+    `
     let depositQueryFrax = `
-     {
-         depositYearFraxEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     `
+    {
+        depositYearFraxEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    `
     let depositQueryLusd = `
-     {
-         depositYearLusdEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     `
+    {
+        depositYearLusdEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    `
 
     let depositQueryOhmDai = `
-     {
-         depositYearOHMDAIEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     `
+    {
+        depositYearOHMDAIEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    `
 
     let depositQueryOhmFrax = `
-     {
-         depositYearOHMFRAXEntities(first: 100 orderBy:timestamp) {
-           
-           dayDeposit(first: 365 orderBy:timestamp) {
-             
-             hourDeposit(first: 24 orderBy:timestamp) {
-                 minuteDeposit(first: 60 orderBy:timestamp)
-                 {
-                     id
-                     amount
-                     depositCount
-                     timestamp
-                     redeemCount
-                     payout
-                 }
-               
-             }
-           }
-         }
-       }
-     `
+    {
+        depositYearOHMFRAXEntities(first: 100 orderBy:timestamp) {
+          
+          dayDeposit(first: 365 orderBy:timestamp) {
+            
+            hourDeposit(first: 24 orderBy:timestamp) {
+                minuteDeposit(first: 60 orderBy:timestamp)
+                {
+                    id
+                    amount
+                    depositCount
+                    timestamp
+                    redeemCount
+                    payout
+                }
+              
+            }
+          }
+        }
+      }
+    `
 
     try {
         const depositDataDai = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryDai,
             },
         })
         const depositDataEth = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryEth,
             },
         })
         const depositDataFrax = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryFrax,
@@ -950,21 +1067,21 @@ export async function getDepositsInfoMinutes(startTimestamp, days) {
         })
 
         const depositDataLusd = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryLusd,
             },
         })
         const depositDataOhmDai = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryOhmDai,
             },
         })
         const depositDataOhmFrax = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmPR96VPnd3y4zrtaEJ2bttPffC6VHt971UVKorEn5qM2w',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: depositQueryOhmFrax,
@@ -1413,6 +1530,9 @@ export function mapBonds(bonds) {
             acc.amountOhmFrax.push(
                 new TVTimeValueObject(Number(e.amountOhmFrax), time)
             )
+            acc.amountOhmLusd.push(
+                new TVTimeValueObject(Number(e.amountOhmLusd), time)
+            )
 
             // count
             acc.depositCountDai.push(
@@ -1433,6 +1553,9 @@ export function mapBonds(bonds) {
             acc.depositCountOhmFrax.push(
                 new TVTimeValueObject(Number(e.depositCountOhmFrax), time)
             )
+            acc.depositCountOhmLusd.push(
+                new TVTimeValueObject(Number(e.depositCountOhmLusd), time)
+            )
             return acc
         },
         {
@@ -1442,12 +1565,14 @@ export function mapBonds(bonds) {
             amountLusd: [],
             amountOhmDai: [],
             amountOhmFrax: [],
+            amountOhmLusd: [],
             depositCountDai: [],
             depositCountEth: [],
             depositCountFrax: [],
             depositCountLusd: [],
             depositCountOhmDai: [],
             depositCountOhmFrax: [],
+            depositCountOhmLusd: [],
         }
     )
 }
