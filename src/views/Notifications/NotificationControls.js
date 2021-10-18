@@ -1,6 +1,7 @@
 import React from 'react'
 import NotificationUnstaking from '../../components/notifications/NotificationUnstaking'
 import NotificationTransfer from '../../components/notifications/NotificationTransfer'
+import NotificationDAO from '../../components/notifications/NotificationDao'
 
 import '../../styles/notifications.scss'
 
@@ -18,8 +19,47 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
+                    <NotificationUnstaking />
+                    <NotificationDAO />
+                </div>
+                <div className="row">
+                    <NotificationTransfer />
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
+                            <div className="card-body">
+                                <div className="float-right">
+                                    <div className="notification notification-warning">
+                                        Warning
+                                    </div>
+                                </div>
+                                <h5 className="card-title">
+                                    DEX trading volume monitoring{' '}
+                                </h5>
+                                <p />
+                                <hr className="notification-hr" />
+                                <div className="notification-desc">
+                                    <div className="notification-desc-left">
+                                        <p className="notification-text">
+                                            Notify when trading volume reaches{' '}
+                                            <input
+                                                type="text"
+                                                defaultValue={10}
+                                                className="notification-input"
+                                            />{' '}
+                                            OHM
+                                        </p>
+                                    </div>
+                                    <button className="btn btn-success change-button-notification">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-warning">
@@ -51,7 +91,7 @@ export default function NotificationControls() {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-info">
@@ -86,7 +126,7 @@ export default function NotificationControls() {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-danger">
@@ -110,7 +150,7 @@ export default function NotificationControls() {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-info">
@@ -137,7 +177,7 @@ export default function NotificationControls() {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-warning">
@@ -170,7 +210,7 @@ export default function NotificationControls() {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-info">
@@ -196,7 +236,7 @@ export default function NotificationControls() {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-warning">
@@ -220,7 +260,7 @@ export default function NotificationControls() {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-warning">
@@ -273,40 +313,7 @@ export default function NotificationControls() {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="card notification-card">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-danger">
-                                        Danger
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    DAO balance monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about the withdrawal from the
-                                            DAO balance more than{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="card notification-card">
+                        <div className="card notification-card not-work">
                             <div className="card-body">
                                 <div className="float-right">
                                     <div className="notification notification-warning">
@@ -350,44 +357,6 @@ export default function NotificationControls() {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="row">
-                    <NotificationTransfer />
-                    <div className="col-md-6">
-                        <div className="card notification-card">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    DEX trading volume monitoring{' '}
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify when trading volume reaches{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <NotificationUnstaking />
                 </div>
             </div>
         </div>
