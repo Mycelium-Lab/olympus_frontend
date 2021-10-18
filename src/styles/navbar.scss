@@ -1,0 +1,11 @@
+@media (max-width: 992px) {
+    a.active-collapse {
+        text-decoration: underline !important;
+    }
+}
+
+@media (min-width: 992px) {
+    a.active-collapse {
+        color: #fff !important;
+    }
+}

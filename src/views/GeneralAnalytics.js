@@ -22,7 +22,7 @@ const fillChart = async (chart, method, mappedData) => {
 }
 
 export default function GeneralAnalytics() {
-    const nCharts = 3
+    const nCharts = 2
 
     const [refs, setRefs] = useState(
         Array.from(Array(nCharts).keys()).map((_) => createRef())
@@ -76,7 +76,7 @@ export default function GeneralAnalytics() {
 
         const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
 
-        const promises = [
+        let promises = [
             getPairsInfo(initialTimestamp, fetchBackDelta, 2021, 'OHM', 'DAI'),
             getMappedScData(
                 initialTimestamp,
@@ -111,14 +111,19 @@ export default function GeneralAnalytics() {
             priceFormat: {
                 type: 'volume',
             },
+            overlay: true,
+            scaleMargins: {
+                top: 0.6,
+                bottom: 0,
+            },
         }
 
-        const volumeUpHist = charts[1].addHistogramSeries({
+        const volumeUpHist = charts[0].addHistogramSeries({
             ...volumeHistConfig,
             color: 'rgb(147,210,204)',
         })
 
-        const volumeDownHist = charts[1].addHistogramSeries({
+        const volumeDownHist = charts[0].addHistogramSeries({
             ...volumeHistConfig,
             color: 'rgb(247,169,167)',
         })
@@ -128,7 +133,7 @@ export default function GeneralAnalytics() {
 
         // additional data from smart contracts
 
-        fillChart(charts[2], method, scMapped)
+        fillChart(charts[charts.length - 1], method, scMapped)
 
         // crosshair
 
@@ -220,7 +225,7 @@ export default function GeneralAnalytics() {
                             ]
                         })
 
-                        fillChart(charts[2], method, scMapped)
+                        fillChart(charts[charts.length - 1], method, scMapped)
 
                         chartNeedsUpdate = false
                     }
@@ -274,7 +279,8 @@ export default function GeneralAnalytics() {
                                             >
                                                 <div className="dex-price-outer">
                                                     <span className="dex-price-title">
-                                                        SushiSwap OHM/DAI,{' '}
+                                                        SushiSwap OHM/DAI Price
+                                                        and Volume,{' '}
                                                         {
                                                             timeframesConfig[
                                                                 timeframe
@@ -286,28 +292,13 @@ export default function GeneralAnalytics() {
                                                         ref={refs[0]}
                                                     ></div>
                                                 </div>
-                                                <div className="dex-volume-outer">
-                                                    <span className="dex-volume-title">
-                                                        SushiSwap OHM/DAI
-                                                        Volume,{' '}
-                                                        {
-                                                            timeframesConfig[
-                                                                timeframe
-                                                            ].name
-                                                        }
-                                                    </span>
-                                                    <div
-                                                        className="ga-chart dex-volume"
-                                                        ref={refs[1]}
-                                                    ></div>
-                                                </div>
                                                 <div className="staking-volume-outer">
                                                     <span className="staking-volume-title">
                                                         {`${methodPropsChartConfigs[method].title}, ${timeframesConfig[timeframe].name}`}
                                                     </span>
                                                     <div
                                                         className="ga-chart staking-volume"
-                                                        ref={refs[2]}
+                                                        ref={refs[1]}
                                                     ></div>
                                                 </div>
                                             </div>
@@ -346,11 +337,11 @@ export default function GeneralAnalytics() {
                                                                 >
                                                                     1 hour
                                                                 </option>
-                                                                <option
+                                                                {/* <option
                                                                     value={2}
                                                                 >
                                                                     1 minute
-                                                                </option>
+                                                                </option> */}
                                                             </select>
                                                         </div>
                                                     </div>

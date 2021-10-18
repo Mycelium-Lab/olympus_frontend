@@ -33,7 +33,8 @@ export default function LargeHoldersPane() {
                                 Filter
                             </h4>
                             <div className="filter-name mt-3">
-                                Analyze wallets with more than:
+                                Analyze wallets (staking contract not included)
+                                with more than:
                             </div>
 
                             <form className="flex-row align-items-center mt-3">

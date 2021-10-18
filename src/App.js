@@ -3,8 +3,10 @@ import GeneralAnalytics from './views/GeneralAnalytics'
 
 import NavbarRoute from './routes/NavbarRoute'
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import WalletAnalytics from './views/WalletAnalytics'
+import Notifications from './views/Notifications/Notifications'
+import Monitoring from './views/Monitoring/Monitoring'
 
 function App() {
     return (
@@ -25,6 +27,14 @@ function App() {
                             exact
                             path={['/', '/dashboard']}
                             component={() => <Dashboard />}
+                        />
+                        <NavbarRoute
+                            path={'/notifications'}
+                            component={() => <Notifications />}
+                        />
+                        <NavbarRoute
+                            path={'/monitoring'}
+                            component={() => <Monitoring />}
                         />
                     </Switch>
                 </div>

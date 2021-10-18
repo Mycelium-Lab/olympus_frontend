@@ -383,6 +383,26 @@ export function mapStakes(stakes) {
                     time
                 )
             )
+            acc.stakedMax.push(new TVTimeValueObject(Number(e.stakeMax), time))
+            acc.unstakedMax.push(
+                new TVTimeValueObject(Number(e.unstakeMax), time)
+            )
+            acc.stakedAvg.push(new TVTimeValueObject(Number(e.stakeAvg), time))
+            acc.unstakedAvg.push(
+                new TVTimeValueObject(Number(e.unstakeAvg), time)
+            )
+            acc.unstakedToTotalStakedPercent.push(
+                new TVTimeValueObject(
+                    Number(e.unstakedToTotalStakedPercent),
+                    time
+                )
+            )
+            acc.unstakedToTotalStakedPercent.push(
+                new TVTimeValueObject(
+                    Number(e.unstakedToTotalStakedPercent),
+                    time
+                )
+            )
             acc.stakeCount.push(
                 new TVTimeValueObject(Number(e.stakeCount), time)
             )
@@ -395,6 +415,10 @@ export function mapStakes(stakes) {
             staked: [],
             unstaked: [],
             currentStaked: [],
+            stakedMax: [],
+            unstakedMax: [],
+            stakedAvg: [],
+            unstakedAvg: [],
             unstakedToStakedPercent: [],
             unstakedToTotalStakedPercent: [],
             stakeCount: [],

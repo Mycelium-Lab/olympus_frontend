@@ -1,6 +1,26 @@
 import React from 'react'
 import tab1 from '../../../images/tab1.jpg'
 
+import $ from 'jquery'
+import IonRangeSlider from 'react-ion-slider'
+
+var lang = 'en-US'
+var year = 2021
+
+function dateToTS(date) {
+    return date.valueOf()
+}
+
+function tsToDate(ts) {
+    var d = new Date(ts)
+
+    return d.toLocaleDateString(lang, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+    })
+}
+
 export default function BalanceByEntryDatePane() {
     return (
         <div className="tab-pane" role="tabpanel">
@@ -21,19 +41,16 @@ export default function BalanceByEntryDatePane() {
                             </div>
 
                             <form>
-                                <input
-                                    type="text"
-                                    id="range_date"
-                                    className="irs-hidden-input"
-                                    tabIndex="-1"
-                                    readOnly=""
-                                    style={{
-                                        color: 'transparent',
-                                        border: 'none',
-                                        height: '0px',
-                                        padding: 0,
-                                        margin: 0,
-                                    }}
+                                <IonRangeSlider
+                                    skin={'round'}
+                                    type={'double'}
+                                    min={dateToTS(new Date(year, 2, 22))}
+                                    max={new Date(
+                                        Date.now() + 1000 * 3600
+                                    ).valueOf()}
+                                    from={dateToTS(new Date(year, 4, 8))}
+                                    to={dateToTS(new Date(year, 7, 23))}
+                                    prettify={tsToDate}
                                 />
                             </form>
                             <button className="btn btn-success change-button save-button">

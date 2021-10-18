@@ -1,0 +1,245 @@
+.notification-controls,
+.notification-list {
+    .notification {
+        width: 82px;
+        height: 28px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .notification-info {
+        background: #c1ceff;
+        color: #3b5de7;
+    }
+
+    .notification-warning {
+        background: #f2eaca;
+        color: #eeb902;
+    }
+
+    .notification-danger {
+        background: #f4dcd9;
+        color: #ff715b;
+    }
+
+    .notification-time {
+        font-size: 10px;
+        line-height: 21px;
+        color: #8687a7;
+        margin-top: -5px;
+        display: block;
+    }
+    .notification-input {
+        padding: 3px;
+        max-width: 50px;
+        max-height: 24px;
+        font-size: 10px;
+        margin-left: 5px;
+        border-radius: 2px;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+    }
+
+    .notification-text {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        color: #9c9db7;
+        margin-bottom: 0;
+    }
+
+    .notification-hr {
+        margin-top: 5px;
+        margin-bottom: 16px;
+    }
+
+    .notification-card {
+        min-height: 145px;
+    }
+    .input-number {
+        padding: 3px;
+        max-width: 70px;
+        max-height: 24px;
+        font-size: 10px;
+        margin-left: 16px;
+        border-radius: 2px;
+    }
+    .notification-desc {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .notification-desc-left .input-group-btn-vertical {
+        position: absolute;
+        height: 100%;
+        right: 0;
+    }
+
+    .notification-desc-left .input-group-btn-vertical button:first-child {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        padding: 1px;
+    }
+
+    .notification-desc-left .input-group-btn-vertical button:nth-child(2) {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border: none;
+        padding: 1px;
+    }
+    .notification-desc-left {
+        display: flex;
+    }
+    .notification-desc-left .input-group {
+        max-width: 70px;
+        margin-right: 10px;
+    }
+    .change-button-notification {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        width: 77px;
+        height: 22px;
+        font-size: 12px;
+    }
+    .notification {
+        width: 82px;
+        height: 28px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .notification-info {
+        background: #c1ceff;
+        color: #3b5de7;
+    }
+
+    .notification-warning {
+        background: #f2eaca;
+        color: #eeb902;
+    }
+
+    .notification-danger {
+        background: #f4dcd9;
+        color: #ff715b;
+    }
+
+    .notification-time {
+        font-size: 10px;
+        line-height: 21px;
+        color: #8687a7;
+        margin-top: -5px;
+        display: block;
+    }
+
+    .notification-text {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        color: #9c9db7;
+        margin-bottom: 0;
+    }
+
+    .notification-hr {
+        margin-top: 5px;
+        margin-bottom: 16px;
+    }
+
+    .notification-card {
+        min-height: 145px;
+    }
+    .notification-card-full-width {
+        min-height: auto;
+    }
+    .input-number {
+        padding: 3px;
+        max-width: 70px;
+        max-height: 24px;
+        font-size: 10px;
+        margin-left: 16px;
+        border-radius: 2px;
+    }
+    .notification-desc {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .notification-desc-left .input-group-btn-vertical {
+        position: absolute;
+        height: 100%;
+        right: 0;
+    }
+
+    .notification-desc-left .input-group-btn-vertical button:first-child {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        padding: 1px;
+    }
+
+    .notification-desc-left .input-group-btn-vertical button:nth-child(2) {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border: none;
+        padding: 1px;
+    }
+    .notification-desc-left {
+        display: flex;
+    }
+    .notification-desc-left .input-group {
+        max-width: 70px;
+        margin-right: 10px;
+    }
+    .change-button-notification {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        width: 77px;
+        height: 22px;
+        font-size: 12px;
+    }
+    .notification-with-date {
+        display: flex;
+        align-items: center;
+    }
+    .notification-date {
+        margin-right: 16px;
+        font-size: 10px;
+        color: #8687a7;
+    }
+
+    .notification-setting-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .notification-settings {
+        display: flex;
+        width: 333px;
+        justify-content: space-between;
+    }
+    .notification-settings-date {
+        max-width: 180px;
+        background-color: #e8e8e8;
+    }
+    .notification-settings-select {
+        max-width: 140px;
+        background-color: #e8e8e8;
+    }
+}

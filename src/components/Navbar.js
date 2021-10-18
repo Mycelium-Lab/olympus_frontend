@@ -2,13 +2,15 @@ import React from 'react'
 import logo from '../images/logo.png'
 import avatar from '../images/avatar.jpg'
 
+import '../styles/navbar.scss'
+
 export default function Navbar() {
     return (
         <header id="page-topbar">
             <div className="navbar-header">
                 <div className="d-flex">
                     <div className="navbar-brand-box">
-                        <a href="#" className="logo logo-light">
+                        <a href="/" className="logo logo-light">
                             <span className="logo-sm">
                                 <img src={logo} alt="" height="30" />
                             </span>
@@ -36,17 +38,14 @@ export default function Navbar() {
                                 <ul className="navbar-nav">
                                     <li className="nav-item ">
                                         <a
-                                            style={
+                                            className={`nav-link ${
                                                 window.location.pathname ===
                                                     '/' ||
                                                 window.location.pathname ===
                                                     '/dashboard'
-                                                    ? {
-                                                          color: 'rgba(255,255,255)',
-                                                      }
-                                                    : {}
-                                            }
-                                            className="nav-link"
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
                                             href="/dashboard"
                                         >
                                             Dashboard
@@ -55,15 +54,12 @@ export default function Navbar() {
 
                                     <li className="nav-item ">
                                         <a
-                                            style={
+                                            className={`nav-link ${
                                                 window.location.pathname ===
                                                 '/general_analytics'
-                                                    ? {
-                                                          color: 'rgba(255,255,255)',
-                                                      }
-                                                    : {}
-                                            }
-                                            className="nav-link"
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
                                             href="/general_analytics"
                                         >
                                             General Analytics
@@ -72,16 +68,13 @@ export default function Navbar() {
 
                                     <li className="nav-item">
                                         <a
-                                            style={
+                                            className={`nav-link ${
                                                 window.location.pathname.includes(
                                                     '/wallet_analytics'
                                                 )
-                                                    ? {
-                                                          color: 'rgba(255,255,255)',
-                                                      }
-                                                    : {}
-                                            }
-                                            className="nav-link"
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
                                             href="/wallet_analytics"
                                         >
                                             Wallets Analytics
@@ -90,8 +83,14 @@ export default function Navbar() {
 
                                     <li className="nav-item dropdown">
                                         <a
-                                            className="nav-link dropdown-toggle arrow-none"
-                                            href="#"
+                                            className={`nav-link dropdown-toggle arrow-none ${
+                                                window.location.pathname.includes(
+                                                    '/notifications'
+                                                )
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
+                                            href="/notifications"
                                             role="button"
                                             data-toggle="dropdown"
                                             aria-haspopup="true"
@@ -105,24 +104,30 @@ export default function Navbar() {
                                             aria-labelledby="topnav-notifications"
                                         >
                                             <a
-                                                href="#"
+                                                href="/notifications/controls"
                                                 className="dropdown-item"
                                             >
-                                                Notifications 1
+                                                Notification Controls
                                             </a>
                                             <a
-                                                href="#"
+                                                href="/notifications/list"
                                                 className="dropdown-item"
                                             >
-                                                Notifications 2
+                                                Notification List
                                             </a>
                                         </div>
                                     </li>
 
                                     <li className="nav-item dropdown">
                                         <a
-                                            className="nav-link dropdown-toggle arrow-none"
-                                            href="#"
+                                            className={`nav-link dropdown-toggle arrow-none ${
+                                                window.location.pathname.includes(
+                                                    '/monitoring'
+                                                )
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
+                                            href="/monitoring"
                                             role="button"
                                             data-toggle="dropdown"
                                             aria-haspopup="true"
@@ -136,16 +141,16 @@ export default function Navbar() {
                                             aria-labelledby="topnav-monitoring"
                                         >
                                             <a
-                                                href="#"
+                                                href="/monitoring/twitter"
                                                 className="dropdown-item"
                                             >
-                                                Monitoring 1
+                                                Twitter Monitoring
                                             </a>
                                             <a
-                                                href="#"
+                                                href="/monitoring/dao"
                                                 className="dropdown-item"
                                             >
-                                                Monitoring 2
+                                                DAO Monitoring
                                             </a>
                                         </div>
                                     </li>
