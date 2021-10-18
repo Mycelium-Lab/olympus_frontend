@@ -19,7 +19,7 @@ export default class FirstNWallets extends Component {
         })
         axios({
             method: 'get',
-            url: `http://62.84.119.83:8000/api/get_first_n/?start=${startTime}&days=${days}&count=${n_wallets}`,
+            url: `${process.env.REACT_APP_API_URL}/api/get_first_n/?start=${startTime}&days=${days}&count=${n_wallets}`,
         }).then((result) => {
             const data = result.data.data.map((e) => ({
                 time: e.timestamp,

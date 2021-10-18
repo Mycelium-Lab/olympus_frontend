@@ -18,7 +18,7 @@ export default class LargeHolders extends Component {
         })
         axios({
             method: 'get',
-            url: `http://62.84.119.83:8000/api/get_top_days/?start=${startTime}&days=${days}&amount=${min_amount}`,
+            url: `${process.env.REACT_APP_API_URL}/api/get_top_days/?start=${startTime}&days=${days}&amount=${min_amount}`,
         }).then((result) => {
             const data = result.data.data.map((e) => ({
                 time: e.timestamp,
