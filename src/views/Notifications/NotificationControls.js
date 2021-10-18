@@ -1,4 +1,6 @@
 import React from 'react'
+import NotificationUnstaking from '../../components/notifications/NotificationUnstaking'
+import NotificationTransfer from '../../components/notifications/NotificationTransfer'
 
 import '../../styles/notifications.scss'
 
@@ -350,38 +352,7 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-info">
-                                        Info
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Transactions monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about transactions more than{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <NotificationTransfer />
                     <div className="col-md-6">
                         <div className="card notification-card">
                             <div className="card-body">
@@ -416,38 +387,7 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Unstake monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about unstaking more than{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <NotificationUnstaking />
                 </div>
             </div>
         </div>
