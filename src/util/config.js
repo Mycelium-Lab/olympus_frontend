@@ -39,7 +39,7 @@ export const chartConfig = {
         borderVisible: true,
     },
     crosshair: {
-        mode: 0,
+        mode: 1,
     },
     drawTicks: true,
     layout: {
@@ -153,219 +153,167 @@ class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
     }
 }
 
+const setBaseHist = (chart, data, series, dataProperty) => {
+    let hist
+    if (!series) {
+        hist = chart.addHistogramSeries(baseLineConfig)
+    } else {
+        hist = series[0]
+    }
+    hist.setData(data[dataProperty])
+    return [hist]
+}
+
 export const methodPropsChartConfigs = [
     new MethodPropsChartConfigStaking(
         'Staking & Unstaking Volume, OHM',
-        (chart, data) => {
-            const stakedHist = chart.addHistogramSeries({
-                ...baseHistConfig,
-                color: 'rgb(147,210,204)',
-            })
+        (chart, data, series) => {
+            let stakedHist, unstakedHist
 
-            const unstakedHist = chart.addHistogramSeries({
-                ...baseHistConfig,
-                color: 'rgb(247,169,167)',
-            })
+            if (!series) {
+                stakedHist = chart.addHistogramSeries({
+                    ...baseHistConfig,
+                    color: 'rgb(147,210,204)',
+                })
+
+                unstakedHist = chart.addHistogramSeries({
+                    ...baseHistConfig,
+                    color: 'rgb(247,169,167)',
+                })
+            } else {
+                stakedHist = series[0]
+                unstakedHist = series[1]
+            }
 
             stakedHist.setData(data.staked)
             unstakedHist.setData(data.unstaked)
+
+            return [stakedHist, unstakedHist]
         },
         null
     ),
     new MethodPropsChartConfigStaking(
         'Current Staked (Cumulative), OHM',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.currentStaked)
-        },
+        (...args) => setBaseHist(...args, 'currentStaked'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Stake Count',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.stakeCount)
-        },
+        (...args) => setBaseHist(...args, 'stakeCount'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Unstake Count',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.unstakeCount)
-        },
+        (...args) => setBaseHist(...args, 'unstakeCount'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Max Stake, OHM',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.stakedMax)
-        },
+        (...args) => setBaseHist(...args, 'stakedMax'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Max Unstake, OHM',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.unstakedMax)
-        },
+        (...args) => setBaseHist(...args, 'unstakedMax'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Average Stake, OHM',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.stakedAvg)
-        },
+        (...args) => setBaseHist(...args, 'stakedAvg'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Average Unstake, OHM',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.unstakedAvg)
-        },
+        (...args) => setBaseHist(...args, 'unstakedAvg'),
         null
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Staked, %',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.unstakedToStakedPercent)
-        },
+        (...args) => setBaseHist(...args, 'unstakedToStakedPercent'),
         '100 x (Unstaked - Staked) / Staked'
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Total Staked, %',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.unstakedToTotalStakedPercent)
-        },
+        (...args) => setBaseHist(...args, 'unstakedToTotalStakedPercent'),
         '100 x (Unstaked - Total Staked) / Total Staked'
     ),
     // bonds
 
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, DAI',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountDai)
-        },
+        (...args) => setBaseHist(...args, 'amountDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, ETH',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountEth)
-        },
+        (...args) => setBaseHist(...args, 'amountEth'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, FRAX',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountFrax)
-        },
+        (...args) => setBaseHist(...args, 'amountFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LUSD',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountLusd)
-        },
+        (...args) => setBaseHist(...args, 'amountLusd'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMDAI',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountOhmDai)
-        },
+        (...args) => setBaseHist(...args, 'amountOhmDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMFRAX',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountOhmFrax)
-        },
+        (...args) => setBaseHist(...args, 'amountOhmFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMLUSD',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountOhmLusd)
-        },
+        (...args) => setBaseHist(...args, 'amountOhmLusd'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, DAI',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountDai)
-        },
+        (...args) => setBaseHist(...args, 'depositCountDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, ETH',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountEth)
-        },
+        (...args) => setBaseHist(...args, 'depositCountEth'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, FRAX',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountFrax)
-        },
+        (...args) => setBaseHist(...args, 'depositCountFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LUSD',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountLusd)
-        },
+        (...args) => setBaseHist(...args, 'depositCountLusd'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LP OHMDAI',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountOhmDai)
-        },
+        (...args) => setBaseHist(...args, 'depositCountOhmDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LP OHMFRAX',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.depositCountOhmFrax)
-        },
+        (...args) => setBaseHist(...args, 'depositCountOhmFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMLUSD',
-        (chart, data) => {
-            const line = chart.addHistogramSeries(baseLineConfig)
-            line.setData(data.amountOhmLusd)
-        },
+        (...args) => setBaseHist(...args, 'amountOhmLusd'),
         null
     ),
 
     // treasury
     new MethodPropsChartConfigTreasury(
         'Total Reserves (Rough Contract Estimate), OHM',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.total_reserves)
-        },
+        (...args) => setBaseHist(...args, 'total_reserves'),
         null,
         [
             getTotalReservesByDay,
@@ -376,10 +324,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, LP OHMFRAX',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
@@ -387,6 +332,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, LP OHMDAI',
+        (...args) => setBaseHist(...args, 'amount'),
         (chart, data) => {
             const hist = chart.addHistogramSeries(baseLineConfig)
             hist.setData(data.amount)
@@ -398,10 +344,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, LUSD',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
@@ -409,10 +352,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, DAI',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
@@ -420,10 +360,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, FRAX',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
@@ -431,10 +368,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, LP OHMLUSD',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
@@ -442,10 +376,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), LP OHMFRAX',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -453,10 +384,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), LP OHMDAI',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -464,10 +392,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), LUSD',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -475,10 +400,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), DAI',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -486,10 +408,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), FRAX',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -497,10 +416,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), LP OHMLUSD',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
+        (...args) => setBaseHist(...args, 'amount'),
         null,
         [getManageByDay, getManageByHour, getManageByMinute],
         (manage) =>
@@ -508,10 +424,7 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigTreasury(
         'Minted Rewards for Staking, OHM',
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.minted_rewards)
-        },
+        (...args) => setBaseHist(...args, 'minted_rewards'),
         null,
         [getMintRewardsByDay, getMintRewardsByHour, getMintRewardsByMinute],
         mapMintRewards

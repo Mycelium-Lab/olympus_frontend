@@ -17,9 +17,8 @@ import { getMappedScData } from '../util/dataTranformations'
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
 
-const fillChart = async (chart, method, mappedData) => {
-    methodPropsChartConfigs[method].setChart(chart, mappedData)
-}
+const fillChart = (chart, method, mappedData, scSeries) =>
+    methodPropsChartConfigs[method].setChart(chart, mappedData, scSeries)
 
 export default function GeneralAnalytics() {
     const nCharts = 2
@@ -135,7 +134,7 @@ export default function GeneralAnalytics() {
 
         // additional data from smart contracts
 
-        fillChart(charts[charts.length - 1], method, scMapped)
+        let scSeries = fillChart(charts[charts.length - 1], method, scMapped)
 
         // crosshair
 
@@ -227,16 +226,26 @@ export default function GeneralAnalytics() {
                                 intervalDiff
                             )
 
+                            Object.keys(scMapped).forEach((key) => {
+                                if (newScMapped[key].length > 0) {
+                                    scMapped[key] = [
+                                        ...newScMapped[key],
+                                        ...scMapped[key],
+                                    ]
+                                }
+                            })
+
                             // update both
 
                             candleSeries.setData(pairsMapped.priceCandles)
                             volumeUpHist.setData(pairsMapped.volumeUp)
                             volumeDownHist.setData(pairsMapped.volumeDown)
 
-                            fillChart(
+                            scSeries = fillChart(
                                 charts[charts.length - 1],
                                 method,
-                                newScMapped
+                                scMapped,
+                                scSeries
                             )
 
                             chartNeedsUpdate = false
