@@ -94,17 +94,23 @@ export const completeDataSet = (dataSet, startTime, endTime, intervalDiff) => {
     const expectedLength = Math.ceil((endTime - startTime) / intervalDiff)
     const realLength = Object.values(dataSet)[0].length
     const lengthDiff = expectedLength - realLength
-    const fillSteps = lengthDiff > 0 ? lengthDiff : expectedLength
-    return Object.keys(dataSet).reduce((acc, key) => {
-        let currentTimeDifference = endTime - intervalDiff * realLength
+    if (lengthDiff > 0) {
+        return Object.keys(dataSet).reduce((acc, key) => {
+            let currentTimeDifference = endTime - intervalDiff * realLength
 
-        const filler = Array.from(Array(fillSteps).keys()).map((_) => {
-            const obj = new TVTimeValueObject(0, currentTimeDifference)
-            currentTimeDifference -= intervalDiff
-            return obj
-        })
+            const filler = Array.from(Array(lengthDiff).keys()).map((_) => {
+                const obj = new TVTimeValueObject(0, currentTimeDifference)
+                currentTimeDifference -= intervalDiff
+                return obj
+            })
 
-        acc[key] = [...[...filler].reverse(), ...dataSet[key]]
-        return acc
-    }, {})
+            acc[key] = [...[...filler].reverse(), ...dataSet[key]]
+            return acc
+        }, {})
+    } else if (lengthDiff < 0) {
+        return Object.keys(dataSet).reduce((acc, key) => {
+            acc[key] = dataSet[key].slice(0, dataSet[key].length + lengthDiff)
+            return acc
+        }, {})
+    } else return dataSet
 }
