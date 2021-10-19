@@ -333,10 +333,6 @@ export const methodPropsChartConfigs = [
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, LP OHMDAI',
         (...args) => setBaseHist(...args, 'amount'),
-        (chart, data) => {
-            const hist = chart.addHistogramSeries(baseLineConfig)
-            hist.setData(data.amount)
-        },
         null,
         [getDepositByDay, getDepositByHour, getDepositByMinute],
         (deposit) =>
