@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js'
 import { getWholePeriodOfTime } from './utils/date.js'
+import { TVTimeValueObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
 
@@ -495,13 +496,6 @@ function fillBigArrayForMinutes(bigArray, startTimestamp, endTimestamp) {
     }
 
     return out
-}
-
-class TVTimeValueObject {
-    constructor(value, time) {
-        this.time = time
-        this.value = value
-    }
 }
 
 export function mapMintRewards(minted_rewards) {

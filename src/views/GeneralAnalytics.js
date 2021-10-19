@@ -72,7 +72,8 @@ export default function GeneralAnalytics() {
 
         let pairs, pairsMapped, scMapped
 
-        let { fetchBackDelta, initialTimestamp } = timeframesConfig[timeframe]
+        let { fetchBackDelta, initialTimestamp, intervalDiff } =
+            timeframesConfig[timeframe]
 
         const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
 
@@ -82,7 +83,8 @@ export default function GeneralAnalytics() {
                 initialTimestamp,
                 fetchBackDelta,
                 method,
-                timeframe
+                timeframe,
+                intervalDiff
             ),
         ]
 
@@ -114,7 +116,7 @@ export default function GeneralAnalytics() {
             overlay: true,
             scaleMargins: {
                 top: 0.6,
-                bottom: 0,
+                bottom: 0.04,
             },
         }
 
@@ -195,6 +197,7 @@ export default function GeneralAnalytics() {
                             'OHM',
                             'DAI'
                         )
+
                         const newPairsMapped = mapPairs(newPairsData)
 
                         if (
@@ -215,35 +218,29 @@ export default function GeneralAnalytics() {
                                 ...pairsMapped.volumeDown,
                             ]
 
+                            // fetch sc chart data
+                            const newScMapped = await getMappedScData(
+                                initialTimestamp,
+                                fetchBackDelta,
+                                method,
+                                timeframe,
+                                intervalDiff
+                            )
+
+                            // update both
+
                             candleSeries.setData(pairsMapped.priceCandles)
                             volumeUpHist.setData(pairsMapped.volumeUp)
                             volumeDownHist.setData(pairsMapped.volumeDown)
+
+                            fillChart(
+                                charts[charts.length - 1],
+                                method,
+                                newScMapped
+                            )
+
+                            chartNeedsUpdate = false
                         }
-
-                        // update sc chart
-                        const newScMapped = await getMappedScData(
-                            initialTimestamp,
-                            fetchBackDelta,
-                            method,
-                            timeframe
-                        )
-
-                        // Object.keys(scMapped).forEach((key) => {
-                        //     if (newScMapped[key].length > 0) {
-                        //         scMapped[key] = [
-                        //             ...newScMapped[key],
-                        //             ...scMapped[key],
-                        //         ]
-                        //     }
-                        // })
-
-                        fillChart(
-                            charts[charts.length - 1],
-                            method,
-                            newScMapped
-                        )
-
-                        chartNeedsUpdate = false
                     }
                 })
 

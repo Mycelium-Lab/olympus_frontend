@@ -39,7 +39,7 @@ export const chartConfig = {
         borderVisible: true,
     },
     crosshair: {
-        mode: 1,
+        mode: 0,
     },
     drawTicks: true,
     layout: {
@@ -105,16 +105,19 @@ export const timeframesConfig = (() => {
             name: '1D',
             initialTimestamp: initialDailyTimestamp,
             fetchBackDelta: dailyFetchBackDelta,
+            intervalDiff: 86400,
         },
         {
             name: '1H',
             initialTimestamp: initialHourlyTimestamp,
             fetchBackDelta: hourlyFetchBackDelta,
+            intervalDiff: 86400 / 24,
         },
         {
             name: '1M',
             initialTimestamp: initialMinutelyTimestamp,
             fetchBackDelta: minutelyFetchBackDelta,
+            intervalDiff: 86400 / 24 / 60,
         },
     ]
 })()

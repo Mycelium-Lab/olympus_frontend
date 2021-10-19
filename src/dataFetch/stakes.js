@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { TVTimeValueObject } from '../util/tvSeries'
 
 export async function getStakesInfoDays(startTimestamp, days) {
     let stakeQuery = `
@@ -356,15 +357,7 @@ export async function getStakesInfoMinutes(startTimestamp, days) {
     }
 }
 
-class TVTimeValueObject {
-    constructor(value, time) {
-        this.time = time
-        this.value = value
-    }
-}
-
 export function mapStakes(stakes) {
-    console.log(stakes)
     return stakes.reduce(
         (acc, e) => {
             const time = parseInt(e.beginTimestamp)

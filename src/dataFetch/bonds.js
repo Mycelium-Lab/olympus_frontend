@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { TVTimeValueObject } from '../util/tvSeries'
 /**
  * @dev : Get deposits (days)
  */
@@ -1500,13 +1501,6 @@ export async function getDepositsInfoMinutes(startTimestamp, days) {
         return data
     } catch (err) {
         console.log(err)
-    }
-}
-
-class TVTimeValueObject {
-    constructor(value, time) {
-        this.time = time
-        this.value = value
     }
 }
 
