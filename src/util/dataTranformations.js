@@ -104,7 +104,10 @@ export const completeDataSet = (dataSet, startTime, endTime, intervalDiff) => {
                 return obj
             })
 
-            acc[key] = [...[...filler].reverse(), ...dataSet[key]]
+            acc[key] = [
+                ...[...filler].reverse(),
+                ...dataSet[key].slice(0, dataSet[key].length - 1),
+            ]
             return acc
         }, {})
     } else if (lengthDiff < 0) {

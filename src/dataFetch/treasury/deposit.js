@@ -124,6 +124,8 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
         if (timestamp > endTimestamp) return out
 
         while (timestamp < nextTimestamp) {
+            if (timestamp > endTimestamp) return out
+
             if (timestamp >= startTimestamp) {
                 out.push({
                     timestamp: timestamp,
@@ -160,17 +162,21 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
     )
     timestamp += day
     while (timestamp <= endTimestamp) {
-        out.push({
-            timestamp: timestamp,
-            profit: 0,
-            amount: 0,
-            value: 0,
-            sender: [],
-            sumValue: bigArray[bigArray.length - 1].sumValue,
-            sumProfit: bigArray[bigArray.length - 1].sumProfit,
-            sumAmount: bigArray[bigArray.length - 1].sumAmount,
-        })
-        timestamp += day
+        if (timestamp > endTimestamp) return out
+
+        if (timestamp >= startTimestamp) {
+            out.push({
+                timestamp: timestamp,
+                profit: 0,
+                amount: 0,
+                value: 0,
+                sender: [],
+                sumValue: bigArray[bigArray.length - 1].sumValue,
+                sumProfit: bigArray[bigArray.length - 1].sumProfit,
+                sumAmount: bigArray[bigArray.length - 1].sumAmount,
+            })
+            timestamp += day
+        }
     }
     return out
 }
@@ -310,6 +316,8 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
             parseInt(bigArray[i].timestamp),
             hour
         )
+        if (timestamp > endTimestamp) return out
+
         if (timestamp >= startTimestamp) {
             out.push({
                 timestamp: timestamp,
@@ -324,16 +332,20 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
         }
         timestamp += hour
         while (timestamp < nextTimestamp) {
-            out.push({
-                timestamp: timestamp,
-                profit: 0,
-                amount: 0,
-                value: 0,
-                sender: [],
-                sumValue: bigArray[i - 1].sumValue,
-                sumProfit: bigArray[i - 1].sumProfit,
-                sumAmount: bigArray[i - 1].sumAmount,
-            })
+            if (timestamp > endTimestamp) return out
+
+            if (timestamp >= startTimestamp) {
+                out.push({
+                    timestamp: timestamp,
+                    profit: 0,
+                    amount: 0,
+                    value: 0,
+                    sender: [],
+                    sumValue: bigArray[i - 1].sumValue,
+                    sumProfit: bigArray[i - 1].sumProfit,
+                    sumAmount: bigArray[i - 1].sumAmount,
+                })
+            }
             timestamp += hour
         }
     }
@@ -357,17 +369,19 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
     )
     timestamp += hour
     while (timestamp <= endTimestamp) {
-        out.push({
-            timestamp: timestamp,
-            profit: 0,
-            amount: 0,
-            value: 0,
-            sender: [],
-            sumValue: bigArray[bigArray.length - 1].sumValue,
-            sumProfit: bigArray[bigArray.length - 1].sumProfit,
-            sumAmount: bigArray[bigArray.length - 1].sumAmount,
-        })
-        timestamp += 4 * hour
+        if (timestamp >= startTimestamp) {
+            out.push({
+                timestamp: timestamp,
+                profit: 0,
+                amount: 0,
+                value: 0,
+                sender: [],
+                sumValue: bigArray[bigArray.length - 1].sumValue,
+                sumProfit: bigArray[bigArray.length - 1].sumProfit,
+                sumAmount: bigArray[bigArray.length - 1].sumAmount,
+            })
+        }
+        timestamp += hour
     }
     return out
 }
@@ -667,6 +681,7 @@ function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
 }
 
 export function mapDeposit(deposit, token) {
+    console.log(deposit)
     return deposit
         .filter((i) => i.token === token)[0]
         .array.reduce(
