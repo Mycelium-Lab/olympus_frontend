@@ -681,7 +681,6 @@ function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
 }
 
 export function mapDeposit(deposit, token) {
-    console.log(deposit)
     return deposit
         .filter((i) => i.token === token)[0]
         .array.reduce(

@@ -12,7 +12,7 @@ import {
     createCrosshairConfig,
     baseGranularityUnix,
 } from '../util/config'
-import { getMappedScData } from '../util/dataTranformations'
+import { getMappedScData, completeDataSetEnd } from '../util/dataTranformations'
 
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
@@ -57,33 +57,45 @@ export default function GeneralAnalytics() {
     }
 
     useEffect(async () => {
+        const timeVisibleConfig = {
+            timeScale: {
+                ...chartConfig.timeScale,
+                timeVisible: timeframe > 0,
+            },
+        }
+
         const charts = refs.map((_, i) => {
             if (i === 1) {
                 return createChart(refs[i].current, {
                     ...chartConfig,
+                    ...timeVisibleConfig,
                     height: 200,
                 })
             }
-            return createChart(refs[i].current, chartConfig)
+            return createChart(refs[i].current, {
+                ...chartConfig,
+                ...timeVisibleConfig,
+            })
         })
 
         // main data (dex price + volume)
 
         let pairs, pairsMapped, scMapped
 
-        let { fetchBackDelta, initialTimestamp, intervalDiff } =
+        let { fetchBackDelta, initialTimestamp, endTimestamp, intervalDiff } =
             timeframesConfig[timeframe]
 
         const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
 
         let promises = [
-            getPairsInfo(initialTimestamp, fetchBackDelta, 2021, 'OHM', 'DAI'),
+            getPairsInfo(initialTimestamp, endTimestamp, 'OHM', 'DAI'),
             getMappedScData(
                 initialTimestamp,
-                fetchBackDelta,
+                endTimestamp,
                 method,
                 timeframe,
-                intervalDiff
+                intervalDiff,
+                true
             ),
         ]
 
@@ -92,7 +104,7 @@ export default function GeneralAnalytics() {
         setIsLoading(false)
 
         pairs = resolvedDataFetch[0]
-        pairsMapped = mapPairs(pairs)
+        pairsMapped = completeDataSetEnd(mapPairs(pairs))
         scMapped = resolvedDataFetch[1]
 
         const candleSeries = charts[0].addCandlestickSeries({
@@ -184,6 +196,7 @@ export default function GeneralAnalytics() {
 
                     if (range.from < 0 && !chartNeedsUpdate) {
                         chartNeedsUpdate = true
+                        endTimestamp = initialTimestamp
                         initialTimestamp =
                             initialTimestamp -
                             fetchBackDelta * baseGranularityUnix
@@ -193,8 +206,7 @@ export default function GeneralAnalytics() {
 
                         const newPairsData = await getPairsInfo(
                             initialTimestamp,
-                            fetchBackDelta,
-                            2021,
+                            endTimestamp,
                             'OHM',
                             'DAI'
                         )
@@ -222,10 +234,11 @@ export default function GeneralAnalytics() {
                             // fetch sc chart data
                             const newScMapped = await getMappedScData(
                                 initialTimestamp,
-                                fetchBackDelta,
+                                endTimestamp,
                                 method,
                                 timeframe,
-                                intervalDiff
+                                intervalDiff,
+                                false
                             )
 
                             Object.keys(scMapped).forEach((key) => {
@@ -339,6 +352,9 @@ export default function GeneralAnalytics() {
                                                     <div className="form-group row">
                                                         <div className="col-md-12">
                                                             <select
+                                                                defaultValue={
+                                                                    timeframe
+                                                                }
                                                                 disabled={
                                                                     isLoading
                                                                 }
@@ -365,11 +381,11 @@ export default function GeneralAnalytics() {
                                                                 >
                                                                     1 hour
                                                                 </option>
-                                                                {/* <option
+                                                                <option
                                                                     value={2}
                                                                 >
                                                                     1 minute
-                                                                </option> */}
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>

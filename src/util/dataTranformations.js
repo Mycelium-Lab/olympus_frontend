@@ -18,10 +18,11 @@ import { TVTimeValueObject } from './tvSeries'
 
 export const getMappedScData = async (
     startTime,
-    delta,
+    endTime,
     method,
     timeframe,
-    intervalDiff
+    intervalDiff,
+    isInitialload
 ) => {
     let mappedData
 
@@ -31,13 +32,13 @@ export const getMappedScData = async (
             let stakes
             switch (timeframe) {
                 case 0:
-                    stakes = await getStakesInfoDays(startTime, delta)
+                    stakes = await getStakesInfoDays(startTime, endTime)
                     break
                 case 1:
-                    stakes = await getStakesInfoHours(startTime, delta)
+                    stakes = await getStakesInfoHours(startTime, endTime)
                     break
                 case 2:
-                    stakes = await getStakesInfoMinutes(startTime, delta)
+                    stakes = await getStakesInfoMinutes(startTime, endTime)
                     break
                 default:
                     break
@@ -48,13 +49,13 @@ export const getMappedScData = async (
             let bonds
             switch (timeframe) {
                 case 0:
-                    bonds = await getDepositsInfoDays(startTime, delta)
+                    bonds = await getDepositsInfoDays(startTime, endTime)
                     break
                 case 1:
-                    bonds = await getDepositsInfoHours(startTime, delta)
+                    bonds = await getDepositsInfoHours(startTime, endTime)
                     break
                 case 2:
-                    bonds = await getDepositsInfoMinutes(startTime, delta)
+                    bonds = await getDepositsInfoMinutes(startTime, endTime)
                     break
                 default:
                     break
@@ -62,21 +63,12 @@ export const getMappedScData = async (
             mappedData = mapBonds(bonds)
             break
         case 'treasury':
-            // TBD: create a normal endTime solution
-            const endTime =
-                timeframe === 0
-                    ? moment(startTime * 1000)
-                          .add(delta - 2, 'days')
-                          .unix()
-                    : moment(startTime * 1000)
-                          .add(delta, 'days')
-                          .unix()
             const data = await methodPropsChartConfigs[method].getDataFunctions[
                 timeframe
             ](startTime, endTime)
             const mappedRaw =
                 methodPropsChartConfigs[method].mapDataFunction(data)
-            mappedData = completeDataSet(
+            mappedData = completeDataSetStart(
                 mappedRaw,
                 startTime,
                 endTime,
@@ -86,10 +78,16 @@ export const getMappedScData = async (
         default:
             break
     }
-    return mappedData
+    if (isInitialload) return completeDataSetEnd(mappedData)
+    else return completeDataSetEnd(mappedData)
 }
 
-export const completeDataSet = (dataSet, startTime, endTime, intervalDiff) => {
+export const completeDataSetStart = (
+    dataSet,
+    startTime,
+    endTime,
+    intervalDiff
+) => {
     // TBD: remove temporary Math.ceil solution
     const expectedLength = Math.ceil((endTime - startTime) / intervalDiff)
     const realLength = Object.values(dataSet)[0].length
@@ -116,4 +114,20 @@ export const completeDataSet = (dataSet, startTime, endTime, intervalDiff) => {
             return acc
         }, {})
     } else return dataSet
+}
+
+export const completeDataSetEnd = (dataSet) => {
+    const now = moment.utc().unix()
+    return Object.keys(dataSet).reduce((acc, key) => {
+        let breakIndex = dataSet[key].length
+        for (let i = dataSet[key].length - 1; i >= 0; i--) {
+            if (now < dataSet[key][i].time) {
+                breakIndex = i
+            } else {
+                break
+            }
+        }
+        acc[key] = dataSet[key].slice(0, breakIndex)
+        return acc
+    }, {})
 }

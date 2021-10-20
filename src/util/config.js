@@ -80,42 +80,48 @@ const baseLineConfig = {
 export const baseGranularityUnix = 86400
 
 export const timeframesConfig = (() => {
-    const todayMidnight = moment().utc().subtract(1, 'days').startOf('day')
-    const todayHourStart = moment().utc().add(1, 'hours').startOf('hour')
-    const todayMinuteStart = moment().utc().add(1, 'minutes').startOf('minute')
+    const nextDayMidnight = moment().utc().add(1, 'days').startOf('day')
 
     const dailyFetchBackDelta = 200
     const hourlyFetchBackDelta = 10
-    const minutelyFetchBackDelta = 1
+    const minutelyFetchBackDelta = 2
 
-    const initialDailyTimestamp = parseInt(
-        todayMidnight.subtract(dailyFetchBackDelta - 3, 'days').unix()
-    )
+    const initialDailyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(dailyFetchBackDelta, 'days')
+        .unix()
 
-    const initialHourlyTimestamp = parseInt(
-        todayHourStart.subtract(hourlyFetchBackDelta, 'days').unix()
-    )
+    const initialHourlyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(hourlyFetchBackDelta, 'days')
+        .unix()
 
-    const initialMinutelyTimestamp = parseInt(
-        todayMinuteStart.subtract(minutelyFetchBackDelta, 'days').unix()
-    )
+    const initialMinutelyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(minutelyFetchBackDelta, 'days')
+        .unix()
+
+    const endTimestamp = nextDayMidnight.unix()
 
     return [
         {
             name: '1D',
             initialTimestamp: initialDailyTimestamp,
+            endTimestamp,
             fetchBackDelta: dailyFetchBackDelta,
             intervalDiff: 86400,
         },
         {
             name: '1H',
             initialTimestamp: initialHourlyTimestamp,
+            endTimestamp,
             fetchBackDelta: hourlyFetchBackDelta,
             intervalDiff: 86400 / 24,
         },
         {
             name: '1M',
             initialTimestamp: initialMinutelyTimestamp,
+            endTimestamp,
             fetchBackDelta: minutelyFetchBackDelta,
             intervalDiff: 86400 / 24 / 60,
         },
