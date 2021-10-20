@@ -339,6 +339,9 @@ export default function GeneralAnalytics() {
                                                     <div className="form-group row">
                                                         <div className="col-md-12">
                                                             <select
+                                                                disabled={
+                                                                    isLoading
+                                                                }
                                                                 onChange={(
                                                                     e
                                                                 ) => {
