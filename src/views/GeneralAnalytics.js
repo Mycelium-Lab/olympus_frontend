@@ -189,6 +189,8 @@ export default function GeneralAnalytics() {
                             fetchBackDelta * baseGranularityUnix
 
                         // update price and volume chart
+                        setIsLoading(true)
+
                         const newPairsData = await getPairsInfo(
                             initialTimestamp,
                             fetchBackDelta,
@@ -249,6 +251,7 @@ export default function GeneralAnalytics() {
                             )
 
                             chartNeedsUpdate = false
+                            setIsLoading(false)
                         }
                     }
                 })
@@ -401,6 +404,9 @@ export default function GeneralAnalytics() {
                                                                                 className="custom-control custom-radio select-chart-data-holder select-chart-data-holder mb-2"
                                                                             >
                                                                                 <input
+                                                                                    disabled={
+                                                                                        isLoading
+                                                                                    }
                                                                                     type="radio"
                                                                                     value={
                                                                                         idx
@@ -447,6 +453,9 @@ export default function GeneralAnalytics() {
                                                                                 className="custom-control custom-radio select-chart-data-holder mb-2"
                                                                             >
                                                                                 <input
+                                                                                    disabled={
+                                                                                        isLoading
+                                                                                    }
                                                                                     type="radio"
                                                                                     value={
                                                                                         idx +
@@ -495,6 +504,9 @@ export default function GeneralAnalytics() {
                                                                                 className="custom-control custom-radio select-chart-data-holder mb-2"
                                                                             >
                                                                                 <input
+                                                                                    disabled={
+                                                                                        isLoading
+                                                                                    }
                                                                                     type="radio"
                                                                                     value={
                                                                                         idx +
