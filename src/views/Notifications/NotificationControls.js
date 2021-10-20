@@ -1,11 +1,26 @@
-import React from 'react'
-import NotificationUnstaking from '../../components/notifications/NotificationUnstaking'
-import NotificationTransfer from '../../components/notifications/NotificationTransfer'
-import NotificationDAO from '../../components/notifications/NotificationDao'
+import React, { useEffect, useState } from 'react'
+
+import NotificationType from '../../components/notifications/NotificationType'
 
 import '../../styles/notifications.scss'
 
+import axios from 'axios'
+
 export default function NotificationControls() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [values, setValues] = useState(null)
+    useEffect(() => {
+        setIsLoading(true)
+        axios({
+            type: 'get',
+            url: `${process.env.REACT_APP_API_URL}/api/notifications_states`,
+        })
+            .then((response) => {
+                setValues(response.data.data)
+            })
+            .catch((error) => console.error(error))
+            .finally(() => setIsLoading(false))
+    }, [])
     return (
         <div className="notification-controls">
             <div className="page-content">
@@ -19,11 +34,37 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <NotificationUnstaking />
-                    <NotificationDAO />
+                    <NotificationType
+                        isInitialValueLoading={isLoading}
+                        currentValue={values ? values.unstake : ''}
+                        propertyTitle="unstake"
+                        path={'/change_unstake'}
+                        title="Unstake monitoring"
+                        text="Notify about unstakings for
+                        more than ___ OHM"
+                        status={1}
+                    />
+                    <NotificationType
+                        isInitialValueLoading={isLoading}
+                        currentValue={values ? values.dao_transfer : ''}
+                        propertyTitle="dao_transfer"
+                        path={'/change_dao_transfer'}
+                        title="DAO balance monitoring"
+                        text="Notify about withdrawals from the DAO contract for
+                        more than ___ OHM"
+                        status={2}
+                    />
                 </div>
                 <div className="row">
-                    <NotificationTransfer />
+                    <NotificationType
+                        isInitialValueLoading={isLoading}
+                        currentValue={values ? values.transfer : ''}
+                        propertyTitle="transfer"
+                        path={'/change_large_transfer'}
+                        title="Transactions monitoring"
+                        text="Notify about transactions for more than ___ OHM"
+                        status={0}
+                    />
                     <div className="col-md-6">
                         <div className="card notification-card not-work">
                             <div className="card-body">
