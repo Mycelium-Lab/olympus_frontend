@@ -5,7 +5,7 @@ import WalletAnalyticsChart from '../WalletAnalyticsChart'
 import moment from 'moment'
 
 const initNValue = 10
-const startTime = 1617291702
+const startTime = 1616376464
 const days = Math.floor((moment().unix() - startTime) / 86400) + 1
 
 export default function FirstNWalletsPane() {
