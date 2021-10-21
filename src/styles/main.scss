@@ -7,29 +7,53 @@
 .dex-container {
     width: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 .dex-price-title,
 .dex-volume-title,
 .staking-volume-title {
+    max-width: 60%;
     position: absolute;
     top: 10px;
     left: 10px;
     color: rgb(18, 23, 34);
     z-index: 1000;
     font-family: 'Lato', sans-serif;
-    font-size: 14px;
+}
+
+@media (min-width: 600px) {
+    .dex-price-title,
+    .dex-volume-title,
+    .staking-volume-title {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dex-price-title,
+    .dex-volume-title,
+    .staking-volume-title {
+        font-size: 10px;
+    }
 }
 
 .dex-volume-outer,
 .dex-price-outer,
 .staking-volume-outer {
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .dex-volume-outer,
 .staking-volume-outer {
     // border-top: 1px solid rgba(0, 185, 255, 0.8);
+}
+
+.ga-chart {
+    position: relative;
 }
 
 .tv-lightweight-charts > table > tr:first-child > td:nth-child(3) {

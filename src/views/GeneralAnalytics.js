@@ -2,6 +2,8 @@ import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 
+import { Skeleton } from '@mui/material'
+
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 import {
     chartConfig,
@@ -13,6 +15,8 @@ import {
     baseGranularityUnix,
 } from '../util/config'
 import { getMappedScData, completeDataSetEnd } from '../util/dataTranformations'
+
+import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
 
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
@@ -36,7 +40,8 @@ export default function GeneralAnalytics() {
     )
     const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 0)
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isGlobalLoading, setIsGlobalLoading] = useState(false)
+    const [isPartialLoading, setIsPartialLoading] = useState(false)
 
     const changeMethod = (e) => {
         const newMethod = e.currentTarget.value
@@ -104,9 +109,9 @@ export default function GeneralAnalytics() {
             ),
         ]
 
-        setIsLoading(true)
+        setIsGlobalLoading(true)
         const resolvedDataFetch = await Promise.all(promises)
-        setIsLoading(false)
+        setIsGlobalLoading(false)
 
         pairs = resolvedDataFetch[0]
         pairsMapped = completeDataSetEnd(mapPairs(pairs))
@@ -207,7 +212,7 @@ export default function GeneralAnalytics() {
                             fetchBackDelta * baseGranularityUnix
 
                         // update price and volume chart
-                        setIsLoading(true)
+                        setIsPartialLoading(true)
 
                         const newPairsData = await getPairsInfo(
                             initialTimestamp,
@@ -269,7 +274,7 @@ export default function GeneralAnalytics() {
                             )
 
                             chartNeedsUpdate = false
-                            setIsLoading(false)
+                            setIsPartialLoading(false)
                         }
                     }
                 })
@@ -321,6 +326,20 @@ export default function GeneralAnalytics() {
                                                 className="dex-container"
                                             >
                                                 <div className="dex-price-outer">
+                                                    {isGlobalLoading && (
+                                                        <Skeleton
+                                                            style={{
+                                                                width: 'inherit',
+                                                                position:
+                                                                    'absolute',
+                                                                zIndex: 5,
+                                                            }}
+                                                            variant="rect"
+                                                            animation="wave"
+                                                            width="100%"
+                                                            height={370}
+                                                        />
+                                                    )}
                                                     <span className="dex-price-title">
                                                         SushiSwap OHM/DAI Price
                                                         and Volume,{' '}
@@ -330,16 +349,50 @@ export default function GeneralAnalytics() {
                                                             ].name
                                                         }
                                                     </span>
+                                                    {isPartialLoading && (
+                                                        <div className="loading-spinner">
+                                                            <LoadingSpinner />
+                                                        </div>
+                                                    )}
                                                     <div
+                                                        style={
+                                                            isGlobalLoading
+                                                                ? { zIndex: -1 }
+                                                                : {}
+                                                        }
                                                         className="ga-chart dex-price"
                                                         ref={refs[0]}
                                                     ></div>
                                                 </div>
                                                 <div className="staking-volume-outer">
+                                                    {isGlobalLoading && (
+                                                        <Skeleton
+                                                            style={{
+                                                                width: 'inherit',
+                                                                position:
+                                                                    'absolute',
+                                                                zIndex: 5,
+                                                            }}
+                                                            variant="rect"
+                                                            animation="wave"
+                                                            width="100%"
+                                                            height={200}
+                                                        />
+                                                    )}
                                                     <span className="staking-volume-title">
                                                         {`${methodPropsChartConfigs[method].title}, ${timeframesConfig[timeframe].name}`}
                                                     </span>
+                                                    {isPartialLoading && (
+                                                        <div className="loading-spinner">
+                                                            <LoadingSpinner />
+                                                        </div>
+                                                    )}
                                                     <div
+                                                        style={
+                                                            isGlobalLoading
+                                                                ? { zIndex: -1 }
+                                                                : {}
+                                                        }
                                                         className="ga-chart staking-volume"
                                                         ref={refs[1]}
                                                     ></div>
@@ -361,7 +414,7 @@ export default function GeneralAnalytics() {
                                                                     timeframe
                                                                 }
                                                                 disabled={
-                                                                    isLoading
+                                                                    isGlobalLoading
                                                                 }
                                                                 onChange={(
                                                                     e
@@ -455,7 +508,7 @@ export default function GeneralAnalytics() {
                                                                             >
                                                                                 <input
                                                                                     disabled={
-                                                                                        isLoading
+                                                                                        isGlobalLoading
                                                                                     }
                                                                                     type="radio"
                                                                                     value={
@@ -504,7 +557,7 @@ export default function GeneralAnalytics() {
                                                                             >
                                                                                 <input
                                                                                     disabled={
-                                                                                        isLoading
+                                                                                        isGlobalLoading
                                                                                     }
                                                                                     type="radio"
                                                                                     value={
@@ -555,7 +608,7 @@ export default function GeneralAnalytics() {
                                                                             >
                                                                                 <input
                                                                                     disabled={
-                                                                                        isLoading
+                                                                                        isGlobalLoading
                                                                                     }
                                                                                     type="radio"
                                                                                     value={
