@@ -20,6 +20,8 @@ import '../styles/generalAnalytics.scss'
 const fillChart = (chart, method, mappedData, scSeries) =>
     methodPropsChartConfigs[method].setChart(chart, mappedData, scSeries)
 
+const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
+
 export default function GeneralAnalytics() {
     const nCharts = 2
 
@@ -29,7 +31,10 @@ export default function GeneralAnalytics() {
 
     const [key, setKey] = useState(null)
     const [method, setMethod] = useState(0)
-    const [timeframe, setTimeframe] = useState(0)
+    const [currentDefaultTimeframe, setCurrentDefaultTimeframe] = useState(
+        defaultTimeframe ? parseInt(defaultTimeframe) : null
+    )
+    const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 0)
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -349,8 +354,8 @@ export default function GeneralAnalytics() {
                                                     Timeframe
                                                 </h4>
                                                 <form className="flex-row mt-3">
-                                                    <div className="form-group row">
-                                                        <div className="col-md-12">
+                                                    <div className="tv-selector-container">
+                                                        <div>
                                                             <select
                                                                 defaultValue={
                                                                     timeframe
@@ -374,19 +379,45 @@ export default function GeneralAnalytics() {
                                                                 <option
                                                                     value={0}
                                                                 >
-                                                                    1 day
+                                                                    1 Day
                                                                 </option>
                                                                 <option
                                                                     value={1}
                                                                 >
-                                                                    1 hour
+                                                                    1 Hour
                                                                 </option>
                                                                 <option
                                                                     value={2}
                                                                 >
-                                                                    1 minute
+                                                                    1 Minute
                                                                 </option>
                                                             </select>
+                                                        </div>
+                                                        <div>
+                                                            <button
+                                                                disabled={
+                                                                    currentDefaultTimeframe ===
+                                                                    timeframe
+                                                                }
+                                                                onClick={(
+                                                                    e
+                                                                ) => {
+                                                                    e.preventDefault()
+                                                                    localStorage.setItem(
+                                                                        'ga_default_timeframe',
+                                                                        timeframe
+                                                                    )
+                                                                    setCurrentDefaultTimeframe(
+                                                                        timeframe
+                                                                    )
+                                                                }}
+                                                                className="btn btn-info"
+                                                            >
+                                                                {currentDefaultTimeframe ===
+                                                                timeframe
+                                                                    ? 'Default'
+                                                                    : 'Set as Default'}
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </form>

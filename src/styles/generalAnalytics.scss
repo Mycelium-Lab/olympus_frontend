@@ -39,4 +39,23 @@
             margin-bottom: 0 !important;
         }
     }
+
+    @media (min-width: 1100px) {
+        .tv-selector-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+
+    @media (max-width: 1100px) {
+        .tv-selector-container {
+            display: flex;
+            flex-direction: column;
+
+            & div:not(:first-child) {
+                margin-top: 1rem;
+            }
+        }
+    }
 }
