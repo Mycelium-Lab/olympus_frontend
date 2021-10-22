@@ -244,30 +244,17 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Role change monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about changes in key Treasury
-                                            management roles
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <BasicNotification
+                        isInitialValueLoading={isLoading}
+                        currentValues={values}
+                        propertyNames={[]}
+                        returnPropertyNames={[]}
+                        path={null}
+                        title="Treasury role changes monitoring"
+                        text="Notify about changes in key Treasury
+                        management roles"
+                        status={1}
+                    />
                     <div className="col-md-6">
                         <div className="card notification-card not-work">
                             <div className="card-body">

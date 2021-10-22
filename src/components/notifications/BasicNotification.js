@@ -97,7 +97,7 @@ export default function BasicNotification({
                         <div
                             className={`notification notification-${statuses[status]}`}
                         >
-                            Danger
+                            {statuses[status]}
                         </div>
                     </div>
                     <h5 className="card-title">{title}</h5>
@@ -106,36 +106,43 @@ export default function BasicNotification({
                     <div className="notification-desc">
                         <div className="notification-desc-left">
                             <p className="notification-text">
-                                {splitText.map((text, idx) => (
-                                    <Fragment key={idx}>
-                                        {text}
-                                        {idx !== splitText.length - 1 && (
-                                            <input
-                                                onChange={(e) =>
-                                                    setValues(
-                                                        values.map((a, i) =>
-                                                            idx !== i
-                                                                ? a
-                                                                : e.target.value
-                                                        )
-                                                    )
-                                                }
-                                                type="number"
-                                                value={values[idx]}
-                                                className="notification-input"
-                                            />
-                                        )}
-                                    </Fragment>
-                                ))}
+                                {splitText.length < 2
+                                    ? splitText[0]
+                                    : splitText.map((text, idx) => (
+                                          <Fragment key={idx}>
+                                              {text}
+                                              {idx !== splitText.length - 1 && (
+                                                  <input
+                                                      onChange={(e) =>
+                                                          setValues(
+                                                              values.map(
+                                                                  (a, i) =>
+                                                                      idx !== i
+                                                                          ? a
+                                                                          : e
+                                                                                .target
+                                                                                .value
+                                                              )
+                                                          )
+                                                      }
+                                                      type="number"
+                                                      value={values[idx]}
+                                                      className="notification-input"
+                                                  />
+                                              )}
+                                          </Fragment>
+                                      ))}
                             </p>
                         </div>
-                        <button
-                            disabled={isLoading}
-                            onClick={applyValuesChange}
-                            className="btn btn-success change-button-notification"
-                        >
-                            Save
-                        </button>
+                        {path && (
+                            <button
+                                disabled={isLoading}
+                                onClick={applyValuesChange}
+                                className="btn btn-success change-button-notification"
+                            >
+                                Save
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
