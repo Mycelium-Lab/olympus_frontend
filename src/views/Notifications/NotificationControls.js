@@ -147,30 +147,17 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-danger">
-                                        Danger
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Monitoring changes in the minter's role
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Receive notification when minter's
-                                            wallet changes in the token contract
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <BasicNotification
+                        isInitialValueLoading={isLoading}
+                        currentValues={values}
+                        propertyNames={[]}
+                        returnPropertyNames={[]}
+                        path={null}
+                        title="Monitoring changes in the token contract's minter role"
+                        text="Notify when the minter's
+                        address changes in the token contract"
+                        status={2}
+                    />
                     <div className="col-md-6">
                         <div className="card notification-card not-work">
                             <div className="card-body">
