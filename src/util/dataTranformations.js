@@ -2,12 +2,14 @@ import {
     getStakesInfoDays,
     getStakesInfoHours,
     getStakesInfoMinutes,
+    getStakesInfoNHours,
     mapStakes,
 } from '../dataFetch/stakes'
 import {
     getDepositsInfoDays,
     getDepositsInfoHours,
     getDepositsInfoMinutes,
+    getDepositsInfoNHours,
     mapBonds,
 } from '../dataFetch/bonds'
 
@@ -35,15 +37,19 @@ export const getMappedScData = async (
                     stakes = await getStakesInfoDays(startTime, endTime)
                     break
                 case 1:
-                    stakes = await getStakesInfoHours(startTime, endTime)
+                    stakes = await getStakesInfoNHours(startTime, endTime, 4)
                     break
                 case 2:
+                    stakes = await getStakesInfoHours(startTime, endTime)
+                    break
+                case 3:
                     stakes = await getStakesInfoMinutes(startTime, endTime)
                     break
                 default:
                     break
             }
             mappedData = mapStakes(stakes)
+            console.log(mappedData)
             break
         case 'bonds':
             let bonds
@@ -52,9 +58,12 @@ export const getMappedScData = async (
                     bonds = await getDepositsInfoDays(startTime, endTime)
                     break
                 case 1:
-                    bonds = await getDepositsInfoHours(startTime, endTime)
+                    bonds = await getDepositsInfoNHours(startTime, endTime, 4)
                     break
                 case 2:
+                    bonds = await getDepositsInfoHours(startTime, endTime)
+                    break
+                case 3:
                     bonds = await getDepositsInfoMinutes(startTime, endTime)
                     break
                 default:

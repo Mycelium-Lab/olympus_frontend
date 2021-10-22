@@ -148,6 +148,7 @@ const hourQuery = `
       }
     }
   }
+
   `
 
 export async function getMintRewardsByHour(
@@ -293,6 +294,18 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
     let amount = 0
     let j = 0
     while (bigArray[j].timestamp < startTimestamp) j++
+    if (bigArray[0].timestamp > startTimestamp) {
+        let timestamp = getWholePeriodOfTime(startTimestamp, 4 * hour)
+        while (timestamp <= bigArray[0].timestamp) {
+            out.push({
+                amount: 0,
+                timestamp: timestamp,
+                recipient: [],
+                caller: [],
+            })
+            timestamp += 4 * hour
+        }
+    }
     for (let i = j == 0 ? 1 : j; i < bigArray.length; i++) {
         let nextTimestamp = getWholePeriodOfTime(
             parseInt(bigArray[i].timestamp),
@@ -306,8 +319,17 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
         caller.concat(bigArray[i - 1].caller)
         recipient.concat(bigArray[i - 1].recipient)
         if (timestamp > endTimestamp) return out
+        if (out.length > 0 && timestamp == out[out.length - 1].timestamp) {
+            out[out.length - 1].amount += amount
+            out[out.length - 1].caller.concat(caller)
+            out[out.length - 1].recipient.concat(recipient)
+            amount = 0
+            recipient = []
+            caller = []
+            continue
+        }
         if (timestamp >= startTimestamp) {
-            if (fragment % 4 == 3) {
+            if (timestamp % (4 * hour) == 0) {
                 out.push({
                     amount: bigArray[i - 1].amount,
                     timestamp: timestamp,
@@ -322,9 +344,19 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
         timestamp += hour
         fragment++
         while (timestamp < nextTimestamp) {
+            if (out.length > 0 && timestamp == out[out.length - 1].timestamp) {
+                out[out.length - 1].amount += amount
+                out[out.length - 1].caller.concat(caller)
+                out[out.length - 1].recipient.concat(recipient)
+                amount = 0
+                recipient = []
+                caller = []
+                timestamp += hour
+                continue
+            }
             if (timestamp > endTimestamp) return out
             if (timestamp >= startTimestamp) {
-                if (fragment % 4 == 3) {
+                if (timestamp % (4 * hour) == 0) {
                     out.push({
                         amount: amount,
                         timestamp: timestamp,
@@ -340,15 +372,33 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
             fragment++
         }
     }
-    out.push({
-        timestamp: getWholePeriodOfTime(
+
+    if (
+        out.length > 0 &&
+        getWholePeriodOfTime(
             parseInt(bigArray[bigArray.length - 1].timestamp),
             4 * hour
-        ),
-        amount: bigArray[bigArray.length - 1].amount,
-        recipient: bigArray[bigArray.length - 1].recipient,
-        caller: bigArray[bigArray.length - 1].caller,
-    })
+        ) == out[out.length - 1].timestamp
+    ) {
+        out[out.length - 1].amount +=
+            amount + bigArray[bigArray.length - 1].amount
+        out[out.length - 1].recipient
+            .concat(recipient)
+            .concat(bigArray[bigArray.length - 1].recipient)
+        out[out.length - 1].recipient
+            .concat(caller)
+            .concat(bigArray[bigArray.length - 1].caller)
+    } else {
+        out.push({
+            timestamp: getWholePeriodOfTime(
+                parseInt(bigArray[bigArray.length - 1].timestamp),
+                4 * hour
+            ),
+            amount: bigArray[bigArray.length - 1].amount,
+            recipient: bigArray[bigArray.length - 1].recipient,
+            caller: bigArray[bigArray.length - 1].caller,
+        })
+    }
     let timestamp = getWholePeriodOfTime(
         parseInt(bigArray[bigArray.length - 1].timestamp),
         4 * hour

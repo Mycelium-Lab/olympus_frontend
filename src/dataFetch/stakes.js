@@ -349,7 +349,7 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
     }
 }
 
-export async function getStakesInfoNHour(startTimestamp, endTime, hours) {
+export async function getStakesInfoNHours(startTimestamp, endTime, hours) {
     let stakeQuery = `
   {
       stakeYears(first: 100 orderBy:timestamp) {

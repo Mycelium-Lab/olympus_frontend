@@ -342,7 +342,7 @@ export default function GeneralAnalytics() {
                                                     )}
                                                     <span className="dex-price-title">
                                                         SushiSwap OHM/DAI Price
-                                                        and Volume,{' '}
+                                                        & Volume,{' '}
                                                         {
                                                             timeframesConfig[
                                                                 timeframe
@@ -437,10 +437,15 @@ export default function GeneralAnalytics() {
                                                                 <option
                                                                     value={1}
                                                                 >
-                                                                    1 Hour
+                                                                    4 Hours
                                                                 </option>
                                                                 <option
                                                                     value={2}
+                                                                >
+                                                                    1 Hour
+                                                                </option>
+                                                                <option
+                                                                    value={3}
                                                                 >
                                                                     1 Minute
                                                                 </option>
