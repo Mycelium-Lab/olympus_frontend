@@ -238,10 +238,11 @@ export async function getDepositBy4Hours(
         )
 
         for (let i = 0; i < bigArray.length; i++) {
-            bigArray[i].array = fillBigArrayFor4Hours(
+            bigArray[i].array = fillBigArrayForNHours(
                 bigArray[i].array,
                 startTimestamp,
-                endTimestamp
+                endTimestamp,
+                4
             )
         }
 
@@ -391,185 +392,201 @@ function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
  * @param {*} bigArray
  * @returns
  */
-function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
-    let fragment = 0
-    let profit = 0
-    let amount = 0
-    let value = 0
-    let sender = []
-    let out = []
-    let j = 0
-    while (bigArray.length > j && bigArray[j].timestamp < startTimestamp) j++
-    if (bigArray[0].timestamp > startTimestamp) {
-        let timestamp = getWholePeriodOfTime(startTimestamp, 4 * hour)
-        while (timestamp <= bigArray[0].timestamp) {
-            out.push({
-                timestamp,
-                profit: 0,
-                amount: 0,
-                value: 0,
-                sender: [],
-                sumValue: 0,
-                sumProfit: 0,
-                sumAmount: 0,
-            })
-            timestamp += 4 * hour
-        }
-    }
-    for (let i = j == 0 ? 1 : j; i < bigArray.length; i++) {
-        let timestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i - 1].timestamp),
-            hour
-        )
-        if (timestamp == 1633651200 && i == 1) {
-            console.log('timestamp')
-        }
-        let nextTimestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i].timestamp),
-            hour
-        )
-        profit += bigArray[i - 1].profit
-        if (timestamp > endTimestamp) return out
-        amount += bigArray[i - 1].amount
-        value += bigArray[i - 1].value
-        sender = sender.concat(bigArray[i - 1].sender)
-        if (out.length > 0 && timestamp == out[out.length - 1].timestamp) {
-            out[out.length - 1].profit += profit
-            out[out.length - 1].value += value
-            out[out.length - 1].amount += amount
-            out[out.length - 1].sender.concat(sender)
-            out[out.length - 1].sumValue = bigArray[i - 1].sumValue
-            out[out.length - 1].sumProfit = bigArray[i - 1].sumProfit
-            out[out.length - 1].sumAmount = bigArray[i - 1].sumAmount
-            profit = 0
-            amount = 0
-            value = 0
-            sender = []
-            continue
-        }
-        if (timestamp >= startTimestamp) {
-            if (timestamp % (4 * hour) == 0) {
-                out.push({
-                    timestamp: timestamp,
-                    profit: profit,
-                    amount: amount,
-                    value: value,
-                    sender: sender,
-                    sumValue: bigArray[i - 1].sumValue,
-                    sumProfit: bigArray[i - 1].sumProfit,
-                    sumAmount: bigArray[i - 1].sumAmount,
-                })
-                profit = 0
-                amount = 0
-                value = 0
-                sender = []
-            }
-        }
-        fragment++
-        timestamp += hour
-        if (timestamp > endTimestamp) return out
-        while (timestamp < nextTimestamp) {
-            if (timestamp >= startTimestamp) {
-                if (timestamp % (4 * hour) == 0) {
-                    if (
-                        out.length > 0 &&
-                        timestamp == out[out.length - 1].timestamp
-                    ) {
-                        out[out.length - 1].profit += profit
-                        out[out.length - 1].value += value
-                        out[out.length - 1].amount += amount
-                        out[out.length - 1].sender.concat(sender)
-                        out[out.length - 1].sumValue = bigArray[i - 1].sumValue
-                        out[out.length - 1].sumProfit =
-                            bigArray[i - 1].sumProfit
-                        out[out.length - 1].sumAmount =
-                            bigArray[i - 1].sumAmount
-                        profit = 0
-                        amount = 0
-                        value = 0
-                        sender = []
-                        timestamp += hour
-                        continue
-                    }
+// function fillBigArrayFor4Hours(bigArray,startTimestamp,endTimestamp){
+//     let fragment=0;
+//     let profit=0
+//     let amount=0
+//     let value=0
+//     let sender=[]
+//     let out = [];
+//     let j=0;
+//     while(bigArray.length>j&&bigArray[j].timestamp<startTimestamp) j++;
+//     if(bigArray[0].timestamp>startTimestamp){
+//         let timestamp =getWholePeriodOfTime(startTimestamp,4*hour);
+//         while(timestamp<=bigArray[0].timestamp){
+//             out.push({
+//                 timestamp,
+//                 profit:0,
+//                 amount:0,
+//                 value:0,
+//                 sender:[],
+//                 sumValue:0,
+//                 sumProfit:0,
+//                 sumAmount:0,
+//             });
+//             timestamp+=4*hour;
+//         }
+//     }
+//     for(let i=j==0?1:j;i<bigArray.length;i++){
+//         let timestamp=getWholePeriodOfTime(parseInt(bigArray[i-1].timestamp),hour)
+//         if(timestamp==1633651200&&i==1){
+//             console.log("timestamp")
+//         }
+//         let nextTimestamp=getWholePeriodOfTime(parseInt(bigArray[i].timestamp),hour)
+//         profit+=bigArray[i-1].profit
+//         if (timestamp>endTimestamp) return out;
+//         amount+=bigArray[i-1].amount
+//         value+=bigArray[i-1].value
+//         sender=sender.concat(bigArray[i-1].sender)
+//         if(out.length>0&&timestamp==out[out.length-1].timestamp){
+//             out[out.length-1].profit+=profit;
+//             out[out.length-1].value+=value;
+//             out[out.length-1].amount+=amount;
+//             out[out.length-1].sender.concat(sender);
+//             out[out.length-1].sumValue=bigArray[i-1].sumValue;
+//             out[out.length-1].sumProfit=bigArray[i-1].sumProfit;
+//             out[out.length-1].sumAmount=bigArray[i-1].sumAmount;
+//             profit=0
+//             amount=0
+//             value=0
+//             sender=[]
+//             continue;
+//         }
+//          if(timestamp>=startTimestamp){
+//             if(timestamp%(4*hour)==0)
+//             {
+//                 out.push({
+//                     timestamp:timestamp,
+//                     profit:profit,
+//                     amount:amount,
+//                     value:value,
+//                     sender:sender,
+//                     sumValue:bigArray[i-1].sumValue,
+//                     sumProfit:bigArray[i-1].sumProfit,
+//                     sumAmount:bigArray[i-1].sumAmount,
+//                 });
+//                 profit=0
+//                 amount=0
+//                 value=0
+//                 sender=[]
+//             }
+//         }
+//         fragment++;
+//         timestamp+=hour;
+//         if (timestamp>endTimestamp) return out;
+//         while(timestamp<nextTimestamp){
+//             if(timestamp>=startTimestamp){
+//                 if(timestamp%(4*hour)==0)
+//                 {
+//                     if(out.length>0&&timestamp==out[out.length-1].timestamp){
+//                         out[out.length-1].profit+=profit;
+//                         out[out.length-1].value+=value;
+//                         out[out.length-1].amount+=amount;
+//                         out[out.length-1].sender.concat(sender);
+//                         out[out.length-1].sumValue=bigArray[i-1].sumValue;
+//                         out[out.length-1].sumProfit=bigArray[i-1].sumProfit;
+//                         out[out.length-1].sumAmount=bigArray[i-1].sumAmount;
+//                         profit=0
+//                         amount=0
+//                         value=0
+//                         sender=[]
+//                         timestamp+=hour;
+//                         continue;
+//                     }
 
-                    out.push({
-                        timestamp: timestamp,
-                        profit: profit,
-                        amount: amount,
-                        value: value,
-                        sender: sender,
-                        sumValue: bigArray[i - 1].sumValue,
-                        sumProfit: bigArray[i - 1].sumProfit,
-                        sumAmount: bigArray[i - 1].sumAmount,
-                    })
-                    profit = 0
-                    amount = 0
-                    value = 0
-                    sender = []
-                }
-            }
-            fragment++
-            timestamp += hour
-            if (timestamp > endTimestamp) return out
-        }
-    }
+//                     out.push({
+//                         timestamp:timestamp,
+//                         profit:profit,
+//                         amount:amount,
+//                         value:value,
+//                         sender:sender,
+//                         sumValue:bigArray[i-1].sumValue,
+//                         sumProfit:bigArray[i-1].sumProfit,
+//                         sumAmount:bigArray[i-1].sumAmount,
+//                     });
+//                     profit=0
+//                     amount=0
+//                     value=0
+//                     sender=[]
+//                 }
+//             }
+//             fragment++;
+//             timestamp+=hour;
+//         if (timestamp>endTimestamp) return out;
 
-    if (
-        out.length > 0 &&
-        getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            4 * hour
-        ) == out[out.length - 1].timestamp
+//         }
+
+//     }
+
+//     if(out.length>0&&getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour)==out[out.length-1].timestamp){
+//         out[out.length-1].profit+=profit+bigArray[bigArray.length-1].profit;
+//         out[out.length-1].value+=value+bigArray[bigArray.length-1].value;
+//         out[out.length-1].amount+=amount+bigArray[bigArray.length-1].amount;
+//         out[out.length-1].sender.concat(sender).concat(+bigArray[bigArray.length-1].sender);
+//         out[out.length-1].sumValue=bigArray[bigArray.length-1].sumValue;
+//         out[out.length-1].sumProfit=bigArray[bigArray.length-1].sumProfit;
+//         out[out.length-1].sumAmount=bigArray[bigArray.length-1].sumAmount;
+//         profit=0
+//         amount=0
+//         value=0
+//         sender=[]
+
+//     }else{
+//         out.push({
+//             timestamp:getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour),
+//             profit:bigArray[bigArray.length-1].profit,
+//             amount:bigArray[bigArray.length-1].amount,
+//             value:bigArray[bigArray.length-1].value,
+//             sender:bigArray[bigArray.length-1].sender,
+//             sumValue:bigArray[bigArray.length-1].sumValue,
+//             sumProfit:bigArray[bigArray.length-1].sumProfit,
+//             sumAmount:bigArray[bigArray.length-1].sumAmount,
+//         })
+//     }
+//     let timestamp =getWholePeriodOfTime(parseInt(bigArray[bigArray.length-1].timestamp),4*hour);
+//     timestamp+=4*hour;
+//     while(timestamp<=endTimestamp){
+//         out.push({
+//             timestamp:timestamp,
+//             profit:0,
+//             amount:0,
+//             value:0,
+//             sender:[],
+//             sumValue:bigArray[bigArray.length-1].sumValue,
+//             sumProfit:bigArray[bigArray.length-1].sumProfit,
+//             sumAmount:bigArray[bigArray.length-1].sumAmount,
+//         });
+//         timestamp+=4*hour;
+//     }
+//     return out;
+// }
+
+function fillBigArrayForNHours(stakes, startTimestamp, endTime, hours) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + hours * 3600;
+        beginTimestamp < endTime;
+        beginTimestamp += hours * 3600, endTimestamp += hours * 3600
     ) {
-        out[out.length - 1].profit +=
-            profit + bigArray[bigArray.length - 1].profit
-        out[out.length - 1].value += value + bigArray[bigArray.length - 1].value
-        out[out.length - 1].amount +=
-            amount + bigArray[bigArray.length - 1].amount
-        out[out.length - 1].sender
-            .concat(sender)
-            .concat(+bigArray[bigArray.length - 1].sender)
-        out[out.length - 1].sumValue = bigArray[bigArray.length - 1].sumValue
-        out[out.length - 1].sumProfit = bigArray[bigArray.length - 1].sumProfit
-        out[out.length - 1].sumAmount = bigArray[bigArray.length - 1].sumAmount
-        profit = 0
-        amount = 0
-        value = 0
-        sender = []
-    } else {
-        out.push({
-            timestamp: getWholePeriodOfTime(
-                parseInt(bigArray[bigArray.length - 1].timestamp),
-                4 * hour
-            ),
-            profit: bigArray[bigArray.length - 1].profit,
-            amount: bigArray[bigArray.length - 1].amount,
-            value: bigArray[bigArray.length - 1].value,
-            sender: bigArray[bigArray.length - 1].sender,
-            sumValue: bigArray[bigArray.length - 1].sumValue,
-            sumProfit: bigArray[bigArray.length - 1].sumProfit,
-            sumAmount: bigArray[bigArray.length - 1].sumAmount,
-        })
-    }
-    let timestamp = getWholePeriodOfTime(
-        parseInt(bigArray[bigArray.length - 1].timestamp),
-        4 * hour
-    )
-    timestamp += 4 * hour
-    while (timestamp <= endTimestamp) {
-        out.push({
-            timestamp: timestamp,
-            profit: 0,
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
             amount: 0,
+            profit: 0,
             value: 0,
+            sumAmount: data.length == 0 ? 0 : data[data.length - 1].sumAmount,
+            sumProfit: data.length == 0 ? 0 : data[data.length - 1].sumProfit,
+            sumValue: data.length == 0 ? 0 : data[data.length - 1].sumValue,
             sender: [],
-            sumValue: bigArray[bigArray.length - 1].sumValue,
-            sumProfit: bigArray[bigArray.length - 1].sumProfit,
-            sumAmount: bigArray[bigArray.length - 1].sumAmount,
-        })
-        timestamp += 4 * hour
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.profit += Number(stakes[j].profit)
+                obj.value += Number(stakes[j].value)
+                obj.sumValue = Number(stakes[j].sumValue)
+                obj.sumProfit = Number(stakes[j].sumProfit)
+                obj.sumAmount = Number(stakes[j].sumAmount)
+                obj.sender.concat(stakes[j].sender)
+            }
+        }
+        data.push(obj)
     }
-    return out
+    return data
 }
 
 const minute = 60

@@ -49,7 +49,6 @@ export const getMappedScData = async (
                     break
             }
             mappedData = mapStakes(stakes)
-            console.log(mappedData)
             break
         case 'bonds':
             let bonds
