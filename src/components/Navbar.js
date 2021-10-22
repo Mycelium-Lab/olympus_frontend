@@ -77,7 +77,7 @@ export default function Navbar() {
                                             }`}
                                             href="/wallet_analytics"
                                         >
-                                            Wallets Analytics
+                                            Wallet Analytics
                                         </a>
                                     </li>
 

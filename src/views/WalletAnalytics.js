@@ -47,7 +47,7 @@ export default function WalletAnalytics() {
                                         >
                                             <span className="d-block d-sm-none"></span>
                                             <span className="d-none d-sm-block">
-                                                First wallets analytics
+                                                First wallets' analytics
                                             </span>
                                         </NavLink>
                                     </li>
@@ -103,7 +103,7 @@ export default function WalletAnalytics() {
                                         >
                                             <span className="d-block d-sm-none"></span>
                                             <span className="d-none d-sm-block">
-                                                Wallets lists analytics
+                                                Wallet lists' analytics
                                             </span>
                                         </NavLink>
                                     </li>
