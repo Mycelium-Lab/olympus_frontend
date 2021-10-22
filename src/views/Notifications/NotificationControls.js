@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import NotificationType from '../../components/notifications/NotificationType'
+import BasicNotification from '../../components/notifications/BasicNotification'
 
 import '../../styles/notifications.scss'
 
@@ -34,20 +34,22 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <NotificationType
+                    <BasicNotification
                         isInitialValueLoading={isLoading}
-                        currentValue={values ? values.unstake : ''}
-                        propertyTitle="unstake"
+                        currentValues={values}
+                        propertyNames={['amount']}
+                        returnPropertyNames={['unstake']}
                         path={'/change_unstake'}
                         title="Unstake monitoring"
                         text="Notify about unstakings for
                         more than ___ OHM"
                         status={1}
                     />
-                    <NotificationType
+                    <BasicNotification
                         isInitialValueLoading={isLoading}
-                        currentValue={values ? values.dao_transfer : ''}
-                        propertyTitle="dao_transfer"
+                        currentValues={values}
+                        propertyNames={['amount']}
+                        returnPropertyNames={['dao_transfer']}
                         path={'/change_dao_transfer'}
                         title="DAO balance monitoring"
                         text="Notify about withdrawals from the DAO contract for
@@ -56,10 +58,11 @@ export default function NotificationControls() {
                     />
                 </div>
                 <div className="row">
-                    <NotificationType
+                    <BasicNotification
                         isInitialValueLoading={isLoading}
-                        currentValue={values ? values.transfer : ''}
-                        propertyTitle="transfer"
+                        currentValues={values}
+                        propertyNames={['amount']}
+                        returnPropertyNames={['transfer']}
                         path={'/change_large_transfer'}
                         title="Transactions monitoring"
                         text="Notify about transactions for more than ___ OHM"
@@ -217,39 +220,26 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Treasury balance monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about the withdrawal from the
-                                            Treasury more than{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            USD
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <BasicNotification
+                        isInitialValueLoading={isLoading}
+                        currentValues={values}
+                        propertyNames={[
+                            'amount_dai',
+                            'amount_frax',
+                            'amount_weth',
+                            'amount_lusd',
+                        ]}
+                        returnPropertyNames={[
+                            'reserves_dai',
+                            'reserves_frax',
+                            'reserves_weth',
+                            'reserves_lusd',
+                        ]}
+                        path={'/change_reserves'}
+                        title="Treasury balance monitoring"
+                        text="Notify about withdrawal from Treasury for more than ___ DAI, ___ FRAX, ___ WETH, ___ LUSD"
+                        status={1}
+                    />
                     <div className="col-md-6">
                         <div className="card notification-card not-work">
                             <div className="card-body">
