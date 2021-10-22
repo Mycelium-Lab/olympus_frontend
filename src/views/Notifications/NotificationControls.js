@@ -320,53 +320,6 @@ export default function NotificationControls() {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    OHM price monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify of a drop in the OHM price by
-                                            more than{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            percentages for{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     )
