@@ -102,38 +102,16 @@ export default function NotificationControls() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Large minting monitoring
-                                </h5>
-                                <p />
-                                <hr className="notification-hr" />
-                                <div className="notification-desc">
-                                    <div className="notification-desc-left">
-                                        <p className="notification-text">
-                                            Notify about mintings larger that{' '}
-                                            <input
-                                                type="text"
-                                                defaultValue={10}
-                                                className="notification-input"
-                                            />{' '}
-                                            OHM
-                                        </p>
-                                    </div>
-                                    <button className="btn btn-success change-button-notification">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <BasicNotification
+                        isInitialValueLoading={isLoading}
+                        currentValues={values}
+                        propertyNames={['amount']}
+                        returnPropertyNames={['mint']}
+                        path={'/change_mint'}
+                        title="Large minting monitoring"
+                        text="Notify about mintings larger than ___ OHM"
+                        status={1}
+                    />
                     <div className="col-md-6">
                         <div className="card notification-card not-work">
                             <div className="card-body">
