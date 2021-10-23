@@ -56,7 +56,13 @@ export default function WalletAnalyticsChart({ data, isLoading }) {
         return () => document.removeEventListener('resize', el)
     }, [ref])
     return isLoading ? (
-        <Skeleton variant="rect" animation="wave" width="100%" height={400} />
+        <Skeleton
+            style={{ borderRadius: 4 }}
+            variant="rect"
+            animation="wave"
+            width="100%"
+            height={400}
+        />
     ) : (
         <div className="wa-chart-wrapper">
             <div className="wa-chart" ref={ref}></div>

@@ -333,6 +333,7 @@ export default function GeneralAnalytics() {
                                                                 position:
                                                                     'absolute',
                                                                 zIndex: 5,
+                                                                borderRadius: 4,
                                                             }}
                                                             variant="rect"
                                                             animation="wave"
@@ -372,6 +373,7 @@ export default function GeneralAnalytics() {
                                                                 position:
                                                                     'absolute',
                                                                 zIndex: 5,
+                                                                borderRadius: 4,
                                                             }}
                                                             variant="rect"
                                                             animation="wave"
