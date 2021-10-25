@@ -1,6 +1,7 @@
 import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
+import moment from 'moment'
 
 import { Skeleton } from '@mui/material'
 
@@ -14,7 +15,12 @@ import {
     createCrosshairConfig,
     baseGranularityUnix,
 } from '../util/config'
-import { getMappedScData, completeDataSetEnd } from '../util/dataTranformations'
+import {
+    getMappedScData,
+    trimDataSetEnd,
+    mergeObjectsArrays,
+    mergeObjectsArraysOverrideTime,
+} from '../util/dataTranformations'
 
 import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
 
@@ -42,6 +48,8 @@ export default function GeneralAnalytics() {
 
     const [isGlobalLoading, setIsGlobalLoading] = useState(false)
     const [isPartialLoading, setIsPartialLoading] = useState(false)
+
+    const [updateInterval, setUpdateInterval] = useState(null)
 
     const changeMethod = (e) => {
         const newMethod = e.currentTarget.value
@@ -114,7 +122,7 @@ export default function GeneralAnalytics() {
         setIsGlobalLoading(false)
 
         pairs = resolvedDataFetch[0]
-        pairsMapped = completeDataSetEnd(mapPairs(pairs))
+        pairsMapped = trimDataSetEnd(mapPairs(pairs))
         scMapped = resolvedDataFetch[1]
 
         const candleSeries = charts[0].addCandlestickSeries({
@@ -190,6 +198,8 @@ export default function GeneralAnalytics() {
             })
         })
 
+        // fetching past data
+
         let chartNeedsUpdate = false
         let els = Array.from(Array(nCharts).keys()).map((_) => null)
 
@@ -228,18 +238,10 @@ export default function GeneralAnalytics() {
                             newPairsMapped.volumeUp.length > 0 &&
                             newPairsMapped.volumeDown.length > 0
                         ) {
-                            pairsMapped.priceCandles = [
-                                ...newPairsMapped.priceCandles,
-                                ...pairsMapped.priceCandles,
-                            ]
-                            pairsMapped.volumeUp = [
-                                ...newPairsMapped.volumeUp,
-                                ...pairsMapped.volumeUp,
-                            ]
-                            pairsMapped.volumeDown = [
-                                ...newPairsMapped.volumeDown,
-                                ...pairsMapped.volumeDown,
-                            ]
+                            pairsMapped = mergeObjectsArrays(
+                                pairsMapped,
+                                newPairsMapped
+                            )
 
                             // fetch sc chart data
                             const newScMapped = await getMappedScData(
@@ -251,14 +253,7 @@ export default function GeneralAnalytics() {
                                 false
                             )
 
-                            Object.keys(scMapped).forEach((key) => {
-                                if (newScMapped[key].length > 0) {
-                                    scMapped[key] = [
-                                        ...newScMapped[key],
-                                        ...scMapped[key],
-                                    ]
-                                }
-                            })
+                            scMapped = mergeObjectsArrays(scMapped, newScMapped)
 
                             // update both
 
@@ -295,7 +290,68 @@ export default function GeneralAnalytics() {
                 )
             })
         })
+
+        // updating charts
+
+        if (updateInterval) {
+            clearInterval(updateInterval)
+        }
+
+        setUpdateInterval(
+            setInterval(async () => {
+                try {
+                    const startDate = moment().utc().startOf('day').unix()
+                    const endDate = moment().utc().endOf('day').unix()
+                    const updatePromises = await Promise.all([
+                        getPairsInfo(startDate, endDate, 'OHM', 'DAI'),
+                        getMappedScData(
+                            startDate,
+                            endDate,
+                            method,
+                            timeframe,
+                            intervalDiff,
+                            false
+                        ),
+                    ])
+
+                    const updatePairsMapped = mapPairs(updatePromises[0])
+                    const updateScMapped = updatePromises[1]
+
+                    const updatePairsMappedFiltered =
+                        trimDataSetEnd(updatePairsMapped)
+                    const updateScMappedFiltered =
+                        trimDataSetEnd(updateScMapped)
+
+                    pairsMapped = mergeObjectsArraysOverrideTime(
+                        pairsMapped,
+                        updatePairsMappedFiltered
+                    )
+                    scMapped = mergeObjectsArraysOverrideTime(
+                        scMapped,
+                        updateScMappedFiltered
+                    )
+
+                    candleSeries.setData(pairsMapped.priceCandles)
+                    volumeUpHist.setData(pairsMapped.volumeUp)
+                    volumeDownHist.setData(pairsMapped.volumeDown)
+
+                    scSeries = fillChart(
+                        charts[charts.length - 1],
+                        method,
+                        scMapped,
+                        scSeries
+                    )
+                } catch (e) {
+                    console.error(e)
+                }
+            }, 30000)
+        )
+
         return () => {
+            if (updateInterval) {
+                clearInterval(updateInterval)
+            }
+            charts.forEach((c) => c.remove)
             els.forEach((el) => {
                 if (el) document.removeEventListener('resize', el)
             })

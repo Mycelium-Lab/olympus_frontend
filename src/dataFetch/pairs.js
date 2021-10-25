@@ -20,7 +20,6 @@ export async function getSwaps(startTimestamp, period, numberOfPeriods) {
     
       `
         if (i % 220 == 0) {
-            console.log(i)
             // send query then null
             query += '}'
             const stakeData = await axios({
@@ -33,7 +32,6 @@ export async function getSwaps(startTimestamp, period, numberOfPeriods) {
             let pairs = stakeData.data.data
             // console.log(pairs)
             // console.log(Date())
-            console.log(pairs)
             data.concat(pairs)
             query = '{'
         }
@@ -287,7 +285,6 @@ export async function getPairsInfoHours(
       }
     }
     `
-        console.log(Date())
         const pairData = await axios({
             url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
             method: 'post',
@@ -295,7 +292,6 @@ export async function getPairsInfoHours(
                 query: query,
             },
         })
-        console.log(Date())
         const pair = pairData.data.data.pairYears
         let data = []
         let pairs = []
@@ -405,9 +401,10 @@ export async function getPairsInfoHours(
             beginTimestamp += 3600
             endTimestamp += 3600
         }
-        console.log(Date())
         return data
-    } catch (err) {}
+    } catch (err) {
+        console.log(err)
+    }
 }
 export async function getPairsInfoNHours(
     startTimestamp,
@@ -462,7 +459,6 @@ export async function getPairsInfoNHours(
       }
     }
     `
-        console.log(Date())
         const pairData = await axios({
             url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
             method: 'post',
@@ -470,7 +466,6 @@ export async function getPairsInfoNHours(
                 query: query,
             },
         })
-        console.log(Date())
         const pair = pairData.data.data.pairYears
         let data = []
         let pairs = []
@@ -617,7 +612,6 @@ export async function getPairsInfoMinutes(
     }
   }
   `
-        console.log(Date())
         const pairData = await axios({
             url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
             method: 'post',
@@ -625,7 +619,6 @@ export async function getPairsInfoMinutes(
                 query: query,
             },
         })
-        console.log(Date())
 
         const pair = pairData.data.data.pairYears
         let data = []
@@ -757,7 +750,6 @@ export async function getPairsInfoMinutes(
             beginTimestamp += 60
             endTimestamp += 60
         }
-        console.log(Date())
         return data
     } catch (err) {
         console.log(err)

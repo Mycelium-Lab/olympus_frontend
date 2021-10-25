@@ -86,8 +86,8 @@ export const getMappedScData = async (
         default:
             break
     }
-    if (isInitialload) return completeDataSetEnd(mappedData)
-    else return completeDataSetEnd(mappedData)
+    if (isInitialload) return trimDataSetEnd(mappedData)
+    else return mappedData
 }
 
 export const completeDataSetStart = (
@@ -124,7 +124,7 @@ export const completeDataSetStart = (
     } else return dataSet
 }
 
-export const completeDataSetEnd = (dataSet) => {
+export const trimDataSetEnd = (dataSet) => {
     const now = moment.utc().unix()
     return Object.keys(dataSet).reduce((acc, key) => {
         let breakIndex = dataSet[key].length
@@ -136,6 +136,32 @@ export const completeDataSetEnd = (dataSet) => {
             }
         }
         acc[key] = dataSet[key].slice(0, breakIndex)
+        return acc
+    }, {})
+}
+
+export const mergeObjectsArrays = (oldDataSet, newDataSet) => {
+    return Object.keys(oldDataSet).reduce((acc, key) => {
+        acc[key] = [...newDataSet[key], ...oldDataSet[key]]
+        return acc
+    }, {})
+}
+
+export const mergeObjectsArraysOverrideTime = (oldDataSet, newDataSet) => {
+    return Object.keys(oldDataSet).reduce((acc, key) => {
+        let breakIndex = newDataSet[key].length
+        const lastTimestamp = oldDataSet[key][oldDataSet[key].length - 1].time
+        for (let i = newDataSet[key].length - 1; i >= 0; i--) {
+            if (newDataSet[key][i].time === lastTimestamp) {
+                breakIndex = i
+                break
+            }
+        }
+
+        acc[key] = [
+            ...oldDataSet[key].slice(0, oldDataSet[key].length - 1),
+            ...newDataSet[key].slice(breakIndex, newDataSet[key].length),
+        ]
         return acc
     }, {})
 }
