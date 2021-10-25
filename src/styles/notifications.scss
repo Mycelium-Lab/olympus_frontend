@@ -53,6 +53,7 @@
         line-height: 21px;
         color: #9c9db7;
         margin-bottom: 0;
+        margin-right: 8px;
     }
 
     .notification-hr {
@@ -109,7 +110,7 @@
         align-items: center;
         justify-content: center;
         padding: 0;
-        width: 77px;
+        width: 68px;
         height: 22px;
         font-size: 12px;
     }
@@ -207,15 +208,19 @@
         max-width: 70px;
         margin-right: 10px;
     }
-    .change-button-notification {
+
+    .notification-desc-right {
+        width: 68px;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
-        padding: 0;
-        width: 77px;
-        height: 22px;
-        font-size: 12px;
+        align-items: center;
+
+        > :nth-child(2) {
+            margin-top: 10px;
+        }
     }
+
     .notification-with-date {
         display: flex;
         align-items: center;

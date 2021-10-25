@@ -39,6 +39,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={['amount']}
                         returnPropertyNames={['unstake']}
+                        isEnabledPropertyName="unstake"
                         path={'/change_unstake'}
                         title="Unstake monitoring"
                         text="Notify about unstakings for
@@ -50,6 +51,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={['amount']}
                         returnPropertyNames={['dao_transfer']}
+                        isEnabledPropertyName="dao_transfer"
                         path={'/change_dao_transfer'}
                         title="DAO balance monitoring"
                         text="Notify about withdrawals from the DAO contract for
@@ -63,6 +65,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={['amount']}
                         returnPropertyNames={['transfer']}
+                        isEnabledPropertyName="transfer"
                         path={'/change_large_transfer'}
                         title="Transactions monitoring"
                         text="Notify about transactions for more than ___ OHM"
@@ -107,6 +110,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={['amount']}
                         returnPropertyNames={['mint']}
+                        isEnabledPropertyName="minting"
                         path={'/change_mint'}
                         title="Large minting monitoring"
                         text="Notify about mintings larger than ___ OHM"
@@ -152,6 +156,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={[]}
                         returnPropertyNames={[]}
+                        isEnabledPropertyName="minter_role"
                         path={null}
                         title="Monitoring changes in the token contract's minter role"
                         text="Notify when the minter's
@@ -200,6 +205,7 @@ export default function NotificationControls() {
                             'reserves_weth',
                             'reserves_lusd',
                         ]}
+                        isEnabledPropertyName="treasury_balance"
                         path={'/change_reserves'}
                         title="Treasury balance monitoring"
                         text="Notify about withdrawal from Treasury for more than ___ DAI, ___ FRAX, ___ WETH, ___ LUSD"
@@ -236,6 +242,7 @@ export default function NotificationControls() {
                         currentValues={values}
                         propertyNames={[]}
                         returnPropertyNames={[]}
+                        isEnabledPropertyName="change_role"
                         path={null}
                         title="Treasury role changes monitoring"
                         text="Notify about changes in key Treasury
