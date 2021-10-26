@@ -160,7 +160,12 @@ export default function BasicNotification({
                                                                           ? a
                                                                           : e
                                                                                 .target
+                                                                                .value >=
+                                                                            0
+                                                                          ? e
+                                                                                .target
                                                                                 .value
+                                                                          : 0
                                                               )
                                                           )
                                                       }
