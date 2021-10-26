@@ -3,6 +3,9 @@ import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 import moment from 'moment'
 
+import { setMessage } from '../redux/actions/messageActions'
+import { useDispatch } from 'react-redux'
+
 import { Skeleton } from '@mui/material'
 
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
@@ -32,7 +35,15 @@ const fillChart = (chart, method, mappedData, scSeries) =>
 
 const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
 
+const errorMessage = (refreshRateSeconds) => ({
+    severity: 3,
+    text: `Refresh request failed, trying again in ${refreshRateSeconds} seconds.`,
+})
+
 export default function GeneralAnalytics() {
+    const dispatch = useDispatch()
+
+    const refreshRateSeconds = 30
     const nCharts = 2
 
     const [refs, setRefs] = useState(
@@ -317,18 +328,13 @@ export default function GeneralAnalytics() {
                     const updatePairsMapped = mapPairs(updatePromises[0])
                     const updateScMapped = updatePromises[1]
 
-                    const updatePairsMappedFiltered =
-                        trimDataSetEnd(updatePairsMapped)
-                    const updateScMappedFiltered =
-                        trimDataSetEnd(updateScMapped)
-
                     pairsMapped = mergeObjectsArraysOverrideTime(
                         pairsMapped,
-                        updatePairsMappedFiltered
+                        trimDataSetEnd(updatePairsMapped)
                     )
                     scMapped = mergeObjectsArraysOverrideTime(
                         scMapped,
-                        updateScMappedFiltered
+                        trimDataSetEnd(updateScMapped)
                     )
 
                     candleSeries.setData(pairsMapped.priceCandles)
@@ -342,9 +348,9 @@ export default function GeneralAnalytics() {
                         scSeries
                     )
                 } catch (e) {
-                    console.error(e)
+                    dispatch(setMessage(errorMessage(refreshRateSeconds)))
                 }
-            }, 30000)
+            }, refreshRateSeconds * 1000)
         )
 
         return () => {

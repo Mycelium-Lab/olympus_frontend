@@ -2,6 +2,9 @@ import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 import { Switch } from '@mui/material'
 
+import { setMessage } from '../../redux/actions/messageActions'
+import { useDispatch } from 'react-redux'
+
 const statuses = ['info', 'warning', 'danger']
 
 const validateValues = (values) => {
@@ -14,6 +17,21 @@ const validateValues = (values) => {
         }
     })
     return valid
+}
+
+const successMessage = {
+    severity: 0,
+    text: 'Values changed successfully!',
+}
+
+const warningMessage = {
+    severity: 2,
+    text: 'Please make sure you fields are filled correctly.',
+}
+
+const errorMessage = {
+    severity: 3,
+    text: 'Cannot apply this change. Please try again later.',
 }
 
 export default function BasicNotification({
@@ -35,6 +53,8 @@ export default function BasicNotification({
     const [isLoading, setIsLoading] = useState(isInitialValuesLoading)
 
     const splitText = text.split('___')
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (isInitialValuesLoading !== isLoading)
@@ -63,13 +83,12 @@ export default function BasicNotification({
                 const { states } = response.data.data
                 if (states[isEnabledPropertyName] !== +newIsEnabled) {
                     setIsEnabled(!newIsEnabled)
-                    alert('Cannot apply this change. Please try again later.')
+                    dispatch(setMessage(errorMessage))
                 }
             })
             .catch((err) => {
-                console.error(err)
                 setIsEnabled(!newIsEnabled)
-                alert('Cannot apply this change. Please try again later.')
+                dispatch(setMessage(errorMessage))
             })
             .finally(() => setIsLoading(false))
     }
@@ -95,22 +114,17 @@ export default function BasicNotification({
                         }
                     })
                     if (isChangedSuccessfully) {
-                        alert('Values changed successfully.')
+                        dispatch(setMessage(successMessage))
                     } else {
-                        alert(
-                            'An error occured while processing you change request. Please try again later.'
-                        )
+                        dispatch(setMessage(errorMessage))
                     }
                 })
                 .catch((err) => {
-                    console.error(err)
-                    alert(
-                        'An error occured while processing you change request. Please try again later.'
-                    )
+                    dispatch(setMessage(errorMessage))
                 })
                 .finally(() => setIsLoading(false))
         } else {
-            alert('Please make sure you fields are filled correctly.')
+            dispatch(setMessage(warningMessage))
         }
     }
 

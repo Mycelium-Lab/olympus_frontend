@@ -8,6 +8,8 @@ import WalletAnalytics from './views/WalletAnalytics'
 import Notifications from './views/Notifications/Notifications'
 import Monitoring from './views/Monitoring/Monitoring'
 
+import Messages from './components/messages/Messages'
+
 function App() {
     return (
         <Router>
@@ -37,6 +39,7 @@ function App() {
                             component={() => <Monitoring />}
                         />
                     </Switch>
+                    <Messages />
                 </div>
             </div>
         </Router>
