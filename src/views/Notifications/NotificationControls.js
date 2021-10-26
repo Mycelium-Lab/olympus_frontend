@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-
 import BasicNotification from '../../components/notifications/BasicNotification'
+
+import { useDispatch } from 'react-redux'
+import { setMessage } from '../../redux/actions/messageActions'
+import { basicMessages } from '../../util/messages'
 
 import '../../styles/notifications.scss'
 
@@ -9,6 +12,7 @@ import axios from 'axios'
 export default function NotificationControls() {
     const [isLoading, setIsLoading] = useState(false)
     const [values, setValues] = useState(null)
+    const dispatch = useDispatch()
     useEffect(() => {
         setIsLoading(true)
         axios({
@@ -18,7 +22,9 @@ export default function NotificationControls() {
             .then((response) => {
                 setValues(response.data.data)
             })
-            .catch((error) => console.error(error))
+            .catch(() => {
+                dispatch(setMessage(basicMessages.requestError))
+            })
             .finally(() => setIsLoading(false))
     }, [])
     return (

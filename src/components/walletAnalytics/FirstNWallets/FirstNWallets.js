@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { Component } from 'react'
 
-export default class FirstNWallets extends Component {
+import { connect } from 'react-redux'
+import { setMessage } from '../../../redux/actions/messageActions'
+import { basicMessages } from '../../../util/messages'
+
+class FirstNWallets extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -20,16 +24,27 @@ export default class FirstNWallets extends Component {
         axios({
             method: 'get',
             url: `${process.env.REACT_APP_API_URL}/api/get_first_n/?start=${startTime}&days=${days}&count=${n_wallets}`,
-        }).then((result) => {
-            const data = result.data.data.map((e) => ({
-                time: e.timestamp,
-                value: Number(e.balance),
-            }))
-            this.setState({
-                data,
-                isLoading: false,
-            })
         })
+            .then((result) => {
+                const data = result.data.data.map((e) => ({
+                    time: e.timestamp,
+                    value: Number(e.balance),
+                }))
+
+                this.setState({
+                    ...this.state,
+                    data,
+                })
+            })
+            .catch(() => {
+                this.props.setMessage(basicMessages.requestError)
+            })
+            .finally(() => {
+                this.setState({
+                    ...this.state,
+                    isLoading: false,
+                })
+            })
     }
 
     componentDidMount() {
@@ -50,3 +65,5 @@ export default class FirstNWallets extends Component {
         return this.props.render(this.state)
     }
 }
+
+export default connect(null, { setMessage })(FirstNWallets)
