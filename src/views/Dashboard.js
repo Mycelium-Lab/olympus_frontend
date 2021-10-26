@@ -360,7 +360,7 @@ export default function Dashboard() {
                             }}
                         >
                             <a
-                                class="twitter-timeline"
+                                className="twitter-timeline"
                                 href="https://twitter.com/OlympMonitoring/lists/1449359533021835272?ref_src=twsrc%5Etfw"
                             >
                                 A Twitter List by OlympMonitoring
