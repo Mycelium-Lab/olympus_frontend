@@ -35,9 +35,13 @@ export default class LargeHolders extends Component {
         this.fetchWallets()
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.min_amount !== this.props.min_amount) {
             this.fetchWallets()
+        }
+
+        if (prevState.isLoading !== this.state.isLoading) {
+            this.props.setIsLoading(this.state.isLoading)
         }
     }
 

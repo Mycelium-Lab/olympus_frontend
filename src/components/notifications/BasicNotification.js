@@ -5,19 +5,9 @@ import { Switch } from '@mui/material'
 import { setMessage } from '../../redux/actions/messageActions'
 import { useDispatch } from 'react-redux'
 
-const statuses = ['info', 'warning', 'danger']
+import { validateNumericalInputValues } from '../../util/inputValidation'
 
-const validateValues = (values) => {
-    let valid = true
-    values.forEach((value) => {
-        const pv = parseInt(value)
-        if (isNaN(pv) || pv < 0) {
-            valid = false
-            return
-        }
-    })
-    return valid
-}
+const statuses = ['info', 'warning', 'danger']
 
 const successMessage = {
     severity: 0,
@@ -94,7 +84,7 @@ export default function BasicNotification({
     }
 
     const applyValuesChange = () => {
-        if (validateValues(values)) {
+        if (validateNumericalInputValues(values)) {
             setIsLoading(true)
             axios({
                 method: 'post',

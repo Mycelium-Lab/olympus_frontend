@@ -2,6 +2,11 @@ import React, { useState } from 'react'
 import LargeHolders from './LargeHolders'
 import WalletAnalyticsChart from '../WalletAnalyticsChart'
 
+import { validateNumericalInputValue } from '../../../util/inputValidation'
+
+import { useDispatch } from 'react-redux'
+import { setMessage } from '../../../redux/actions/messageActions'
+
 import moment from 'moment'
 
 const initValue = 10000
@@ -9,14 +14,29 @@ const startTime = 1616376464
 const days = Math.floor((moment().unix() - startTime) / 86400) + 1
 
 export default function LargeHoldersPane() {
+    const [isLoading, setIsLoading] = useState(true)
     const [minAmount, setMinAmount] = useState(initValue)
     const [confirmedMinAmount, setConfirmedMinAmount] = useState(initValue)
+    const dispatch = useDispatch()
+
+    const changeMinAmount = () => {
+        if (validateNumericalInputValue(minAmount)) {
+            setConfirmedMinAmount(minAmount)
+        } else
+            dispatch(
+                setMessage({
+                    severity: 2,
+                    text: 'Please make sure the input is filled correctly.',
+                })
+            )
+    }
     return (
         <div className="tab-pane" role="tabpanel">
             <div className="row">
                 <div className="col-md-9">
                     <div className="card card-body">
                         <LargeHolders
+                            setIsLoading={setIsLoading}
                             startTime={startTime}
                             days={days}
                             min_amount={confirmedMinAmount}
@@ -42,9 +62,9 @@ export default function LargeHoldersPane() {
                                     <input
                                         type="number"
                                         onChange={(e) =>
-                                            setMinAmount(
-                                                parseInt(e.target.value)
-                                            )
+                                            e.target.value >= 0
+                                                ? setMinAmount(e.target.value)
+                                                : setMinAmount(0)
                                         }
                                         value={minAmount}
                                         style={{ width: 100 }}
@@ -53,7 +73,8 @@ export default function LargeHoldersPane() {
                                 <span className="ml-2">OHM</span>
                             </form>
                             <button
-                                onClick={() => setConfirmedMinAmount(minAmount)}
+                                disabled={isLoading}
+                                onClick={() => changeMinAmount()}
                                 className="btn btn-success change-button save-button"
                             >
                                 Save

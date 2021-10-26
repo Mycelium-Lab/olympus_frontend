@@ -36,9 +36,13 @@ export default class FirstNWallets extends Component {
         this.fetchWallets()
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.n_wallets !== this.props.n_wallets) {
             this.fetchWallets()
+        }
+
+        if (prevState.isLoading !== this.state.isLoading) {
+            this.props.setIsLoading(this.state.isLoading)
         }
     }
 
