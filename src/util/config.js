@@ -223,32 +223,32 @@ export const methodPropsChartConfigs = [
     new MethodPropsChartConfigStaking(
         'Stake Count',
         (...args) => setBaseHist(...args, 'stakeCount'),
-        null
+        'Times Staked per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Unstake Count',
         (...args) => setBaseHist(...args, 'unstakeCount'),
-        null
+        'Times Unstaked per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Max Stake, OHM',
         (...args) => setBaseHist(...args, 'stakedMax'),
-        null
+        'Max Amount of 1 Staking per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Max Unstake, OHM',
         (...args) => setBaseHist(...args, 'unstakedMax'),
-        null
+        'Max Amount of 1 Unstaking per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Average Stake, OHM',
         (...args) => setBaseHist(...args, 'stakedAvg'),
-        null
+        'Average Amount of 1 Staking per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Average Unstake, OHM',
         (...args) => setBaseHist(...args, 'unstakedAvg'),
-        null
+        'Average Amount of 1 Unstaking per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Staked, %',
@@ -258,7 +258,7 @@ export const methodPropsChartConfigs = [
     new MethodPropsChartConfigStaking(
         'Unstaked to Total Staked, %',
         (...args) => setBaseHist(...args, 'unstakedToTotalStakedPercent'),
-        '100 x (Unstaked - Total Staked) / Total Staked'
+        '100 x (Unstaked - Current Total Staked) / Current Total Staked'
     ),
     // bonds
 
@@ -378,7 +378,7 @@ export const methodPropsChartConfigs = [
     new MethodPropsChartConfigTreasury(
         'Total Reserves (Rough Contract Estimate), OHM',
         (...args) => setBaseHist(...args, 'total_reserves'),
-        null,
+        'How Treasury Contract Estimates its Reserves (Holdings of 4 Reserve Tokens: DAI, OHM, LUSD, wETH ) in a 1 Token = 1 OHM Proportion via the valueOf function',
         [
             getTotalReservesByDay,
             getTotalReservesBy4Hours,
@@ -387,49 +387,11 @@ export const methodPropsChartConfigs = [
         ],
         mapTotalReserves
     ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Deposited, LP OHMFRAX',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [
-            getDepositByDay,
-            getDepositBy4Hours,
-            getDepositByHour,
-            getDepositByMinute,
-        ],
-        (deposit) =>
-            mapDeposit(deposit, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
-    ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Deposited, LP OHMDAI',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [
-            getDepositByDay,
-            getDepositBy4Hours,
-            getDepositByHour,
-            getDepositByMinute,
-        ],
-        (deposit) =>
-            mapDeposit(deposit, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
-    ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Deposited, LUSD',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [
-            getDepositByDay,
-            getDepositBy4Hours,
-            getDepositByHour,
-            getDepositByMinute,
-        ],
-        (deposit) =>
-            mapDeposit(deposit, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
-    ),
+
     new MethodPropsChartConfigTreasury(
         'Amount Deposited, DAI',
         (...args) => setBaseHist(...args, 'amount'),
-        null,
+        'Amount of DAI Deposited to Treasury Contract',
         [
             getDepositByDay,
             getDepositBy4Hours,
@@ -440,9 +402,18 @@ export const methodPropsChartConfigs = [
             mapDeposit(deposit, '0x6b175474e89094c44da98b954eedeac495271d0f')
     ),
     new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), DAI',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of DAI Withdrawn from Treasury Contract',
+        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
+    ),
+
+    new MethodPropsChartConfigTreasury(
         'Amount Deposited, FRAX',
         (...args) => setBaseHist(...args, 'amount'),
-        null,
+        'Amount of FRAX Deposited to Treasury Contract',
         [
             getDepositByDay,
             getDepositBy4Hours,
@@ -453,9 +424,62 @@ export const methodPropsChartConfigs = [
             mapDeposit(deposit, '0x853d955acef822db058eb8505911ed77f175b99e')
     ),
     new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), FRAX',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of FRAX Withdrawn from Treasury Contract',
+        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
+    ),
+
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LUSD',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of LUSD Deposited to Treasury Contract',
+        [
+            getDepositByDay,
+            getDepositBy4Hours,
+            getDepositByHour,
+            getDepositByMinute,
+        ],
+        (deposit) =>
+            mapDeposit(deposit, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LUSD',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of LUSD Withdrawn from Treasury Contract',
+        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
+    ),
+
+    new MethodPropsChartConfigTreasury(
+        'Amount Deposited, LP OHMDAI',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of LP OHMDAI Deposited to Treasury Contract',
+        [
+            getDepositByDay,
+            getDepositBy4Hours,
+            getDepositByHour,
+            getDepositByMinute,
+        ],
+        (deposit) =>
+            mapDeposit(deposit, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
+    ),
+    new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LP OHMDAI',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of LP OHMDAI Withdrawn from Treasury Contract',
+        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
+    ),
+
+    new MethodPropsChartConfigTreasury(
         'Amount Deposited, LP OHMLUSD',
         (...args) => setBaseHist(...args, 'amount'),
-        null,
+        'Amount of LP OHMLUSD Deposited to Treasury Contract',
         [
             getDepositByDay,
             getDepositBy4Hours,
@@ -466,57 +490,40 @@ export const methodPropsChartConfigs = [
             mapDeposit(deposit, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
     ),
     new MethodPropsChartConfigTreasury(
+        'Amount Managed (Withdrawn), LP OHMLUSD',
+        (...args) => setBaseHist(...args, 'amount'),
+        'Amount of LP OHMLUSD Withdrawn from Treasury Contract',
+        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
+        (manage) =>
+            mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
+    ),
+
+    new MethodPropsChartConfigTreasury(
         'Amount Managed (Withdrawn), LP OHMFRAX',
         (...args) => setBaseHist(...args, 'amount'),
-        null,
+        'Amount of LP OHMFRAX Deposited to Treasury Contract',
         [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
         (manage) =>
             mapManage(manage, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
     ),
     new MethodPropsChartConfigTreasury(
-        'Amount Managed (Withdrawn), LP OHMDAI',
+        'Amount Deposited, LP OHMFRAX',
         (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
-        (manage) =>
-            mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
+        'Amount of LP OHMFRAX Withdrawn from Treasury Contract',
+        [
+            getDepositByDay,
+            getDepositBy4Hours,
+            getDepositByHour,
+            getDepositByMinute,
+        ],
+        (deposit) =>
+            mapDeposit(deposit, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
     ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Managed (Withdrawn), LUSD',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
-        (manage) =>
-            mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
-    ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Managed (Withdrawn), DAI',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
-        (manage) =>
-            mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
-    ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Managed (Withdrawn), FRAX',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
-        (manage) =>
-            mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
-    ),
-    new MethodPropsChartConfigTreasury(
-        'Amount Managed (Withdrawn), LP OHMLUSD',
-        (...args) => setBaseHist(...args, 'amount'),
-        null,
-        [getManageByDay, getManageBy4Hours, getManageByHour, getManageByMinute],
-        (manage) =>
-            mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
-    ),
+
     new MethodPropsChartConfigTreasury(
         'Minted Rewards for Staking, OHM',
         (...args) => setBaseHist(...args, 'minted_rewards'),
-        null,
+        "Rewards Minted by Treasury For Distributing Stakers' Rewards to V1 and V2 Staking Contracts",
         [
             getMintRewardsByDay,
             getMintRewardsBy4Hours,

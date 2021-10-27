@@ -8,6 +8,7 @@ import { setMessage } from '../redux/actions/messageActions'
 import { useDispatch } from 'react-redux'
 
 import { Skeleton } from '@mui/material'
+import TooltippedComponent from '../components/util/TooltippedComponent'
 
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 import {
@@ -600,11 +601,23 @@ export default function GeneralAnalytics() {
                                                                                     className="input-select-chart-data"
                                                                                     name="group1[]"
                                                                                 />
-                                                                                <label>
-                                                                                    {parse(
-                                                                                        e.title
-                                                                                    )}
-                                                                                </label>
+                                                                                <TooltippedComponent
+                                                                                    info={
+                                                                                        e.info
+                                                                                    }
+                                                                                >
+                                                                                    <label
+                                                                                        className={
+                                                                                            e.info
+                                                                                                ? 'label-with-info'
+                                                                                                : ''
+                                                                                        }
+                                                                                    >
+                                                                                        {parse(
+                                                                                            e.title
+                                                                                        )}
+                                                                                    </label>
+                                                                                </TooltippedComponent>
                                                                             </div>
                                                                         )
                                                                     )}
@@ -651,11 +664,23 @@ export default function GeneralAnalytics() {
                                                                                     className="input-select-chart-data"
                                                                                     name="group2[]"
                                                                                 />
-                                                                                <label>
-                                                                                    {parse(
-                                                                                        e.title
-                                                                                    )}
-                                                                                </label>
+                                                                                <TooltippedComponent
+                                                                                    info={
+                                                                                        e.info
+                                                                                    }
+                                                                                >
+                                                                                    <label
+                                                                                        className={
+                                                                                            e.info
+                                                                                                ? 'label-with-info'
+                                                                                                : ''
+                                                                                        }
+                                                                                    >
+                                                                                        {parse(
+                                                                                            e.title
+                                                                                        )}
+                                                                                    </label>
+                                                                                </TooltippedComponent>
                                                                             </div>
                                                                         )
                                                                     )}
@@ -702,11 +727,23 @@ export default function GeneralAnalytics() {
                                                                                     className="input-select-chart-data"
                                                                                     name="group3[]"
                                                                                 />
-                                                                                <label>
-                                                                                    {parse(
-                                                                                        e.title
-                                                                                    )}
-                                                                                </label>
+                                                                                <TooltippedComponent
+                                                                                    info={
+                                                                                        e.info
+                                                                                    }
+                                                                                >
+                                                                                    <label
+                                                                                        className={
+                                                                                            e.info
+                                                                                                ? 'label-with-info'
+                                                                                                : ''
+                                                                                        }
+                                                                                    >
+                                                                                        {parse(
+                                                                                            e.title
+                                                                                        )}
+                                                                                    </label>
+                                                                                </TooltippedComponent>
                                                                             </div>
                                                                         )
                                                                     )}
