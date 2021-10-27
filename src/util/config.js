@@ -176,10 +176,19 @@ class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
     }
 }
 
-const setBaseHist = (chart, data, series, dataProperty) => {
+const setBaseHist = (
+    chart,
+    data,
+    series,
+    dataProperty,
+    seriesConfig = baseLineConfig
+) => {
     let hist
     if (!series) {
-        hist = chart.addHistogramSeries(baseLineConfig)
+        hist = chart.addHistogramSeries({
+            ...baseLineConfig,
+            ...seriesConfig,
+        })
     } else {
         hist = series[0]
     }
@@ -252,12 +261,22 @@ export const methodPropsChartConfigs = [
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Staked, %',
-        (...args) => setBaseHist(...args, 'unstakedToStakedPercent'),
+        (...args) =>
+            setBaseHist(...args, 'unstakedToStakedPercent', {
+                priceFormat: {
+                    type: 'percent',
+                },
+            }),
         '100 x (Unstaked - Staked) / Staked'
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Total Staked, %',
-        (...args) => setBaseHist(...args, 'unstakedToTotalStakedPercent'),
+        (...args) =>
+            setBaseHist(...args, 'unstakedToTotalStakedPercent', {
+                priceFormat: {
+                    type: 'percent',
+                },
+            }),
         '100 x (Unstaked - Current Total Staked) / Current Total Staked'
     ),
     // bonds

@@ -133,13 +133,9 @@ export async function getStakesInfoDays(startTimestamp, endTime) {
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
                     obj.unstakedToStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
-                            stakes[j].amountStaked)
+                        stakes[j].amountUnstaked / stakes[j].amountStaked
                     obj.unstakedToTotalStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].currentStaked) /
-                            stakes[j].currentStaked)
+                        stakes[j].amountUnstaked / stakes[j].currentStaked
 
                     beginTimestamp += 86400
                     endTimestamp += 86400
@@ -321,13 +317,9 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
                     obj.unstakedToStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
-                            stakes[j].amountStaked)
+                        stakes[j].amountUnstaked / stakes[j].amountStaked
                     obj.unstakedToTotalStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].currentStaked) /
-                            stakes[j].currentStaked)
+                        stakes[j].amountUnstaked / stakes[j].currentStaked
 
                     beginTimestamp += 3600
                     endTimestamp += 3600
@@ -654,13 +646,9 @@ export async function getStakesInfoMinutes(startTimestamp, endTime) {
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
                     obj.unstakedToStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
-                            stakes[j].amountStaked)
+                        stakes[j].amountUnstaked / stakes[j].amountStaked
                     obj.unstakedToTotalStakedPercent =
-                        100 *
-                        ((stakes[j].amountUnstaked - stakes[j].currentStaked) /
-                            stakes[j].currentStaked)
+                        stakes[j].amountUnstaked / stakes[j].currentStaked
 
                     beginTimestamp += 60
                     endTimestamp += 60
