@@ -20,62 +20,7 @@ export default function Dashboard() {
     return (
         <div className="main-content dashboard-view">
             <div className="page-content">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="page-title-box d-flex align-items-center justify-content-between">
-                            <h5 className="page-title mb-0 font-size-18">
-                                Last notifications
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-warning">
-                                        Warning
-                                    </div>
-                                </div>
-                                <h5 className="card-title">
-                                    Мониторинг баланса Treasury
-                                </h5>
-                                <span className="notification-time">
-                                    07.10.2021 19:52
-                                </span>
-                                <hr className="notification-hr" />
-                                <p className="notification-text">
-                                    Cовершен вывод из Treasury 123 000 ETH (tx
-                                    id)
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="card notification-card not-work">
-                            <div className="card-body">
-                                <div className="float-right">
-                                    <div className="notification notification-info">
-                                        Info
-                                    </div>
-                                </div>
-                                <h5 className="card-title">Card title</h5>
-                                <span className="notification-time">
-                                    07.10.2021 19:52
-                                </span>
-                                <hr className="notification-hr" />
-                                <p className="notification-text">
-                                    С кошелька 0xE8D562606... на кошелек
-                                    0xE0B14d3E8... совершен трансфер на сумму 50
-                                    000 OHM
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <div className="row"></div>
                 <div className="row">
                     <div className="col-12">
                         <div className="page-title-box d-flex align-items-center justify-content-between">
