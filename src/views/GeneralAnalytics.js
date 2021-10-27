@@ -2,6 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 import moment from 'moment'
+import parse from 'html-react-parser'
 
 import { setMessage } from '../redux/actions/messageActions'
 import { useDispatch } from 'react-redux'
@@ -444,7 +445,13 @@ export default function GeneralAnalytics() {
                                                         />
                                                     )}
                                                     <span className="staking-volume-title">
-                                                        {`${methodPropsChartConfigs[method].title}, ${timeframesConfig[timeframe].name}`}
+                                                        {parse(
+                                                            methodPropsChartConfigs[
+                                                                method
+                                                            ].title
+                                                        )}
+                                                        ,
+                                                        {` ${timeframesConfig[timeframe].name}`}
                                                     </span>
                                                     {isPartialLoading && (
                                                         <div className="loading-spinner">
@@ -594,9 +601,9 @@ export default function GeneralAnalytics() {
                                                                                     name="group1[]"
                                                                                 />
                                                                                 <label>
-                                                                                    {
+                                                                                    {parse(
                                                                                         e.title
-                                                                                    }
+                                                                                    )}
                                                                                 </label>
                                                                             </div>
                                                                         )
@@ -645,9 +652,9 @@ export default function GeneralAnalytics() {
                                                                                     name="group2[]"
                                                                                 />
                                                                                 <label>
-                                                                                    {
+                                                                                    {parse(
                                                                                         e.title
-                                                                                    }
+                                                                                    )}
                                                                                 </label>
                                                                             </div>
                                                                         )
@@ -696,9 +703,9 @@ export default function GeneralAnalytics() {
                                                                                     name="group3[]"
                                                                                 />
                                                                                 <label>
-                                                                                    {
+                                                                                    {parse(
                                                                                         e.title
-                                                                                    }
+                                                                                    )}
                                                                                 </label>
                                                                             </div>
                                                                         )

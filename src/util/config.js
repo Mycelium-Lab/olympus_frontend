@@ -268,43 +268,35 @@ export const methodPropsChartConfigs = [
         null
     ),
     new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, ETH',
-        (...args) => setBaseHist(...args, 'amountEth'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, FRAX',
-        (...args) => setBaseHist(...args, 'amountFrax'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, LUSD',
-        (...args) => setBaseHist(...args, 'amountLusd'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, LP OHMDAI',
-        (...args) => setBaseHist(...args, 'amountOhmDai'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, LP OHMFRAX',
-        (...args) => setBaseHist(...args, 'amountOhmFrax'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
-        'Bond Purchase Volume, LP OHMLUSD',
-        (...args) => setBaseHist(...args, 'amountOhmLusd'),
-        null
-    ),
-    new MethodPropsChartConfigBonds(
         'Bond Times Purchased, DAI',
         (...args) => setBaseHist(...args, 'depositCountDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
-        'Bond Times Purchased, ETH',
+        'BCV Rate, DAI (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVDai'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, wETH',
+        (...args) => setBaseHist(...args, 'amountEth'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, wETH',
         (...args) => setBaseHist(...args, 'depositCountEth'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'BCV Rate, wETH (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVEth'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, FRAX',
+        (...args) => setBaseHist(...args, 'amountFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
@@ -313,8 +305,30 @@ export const methodPropsChartConfigs = [
         null
     ),
     new MethodPropsChartConfigBonds(
+        'BCV Rate, FRAX (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVFrax'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LUSD',
+        (...args) => setBaseHist(...args, 'amountLusd'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LUSD',
         (...args) => setBaseHist(...args, 'depositCountLusd'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'BCV Rate, LUSD (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVLusd'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMDAI',
+        (...args) => setBaseHist(...args, 'amountOhmDai'),
         null
     ),
     new MethodPropsChartConfigBonds(
@@ -323,13 +337,40 @@ export const methodPropsChartConfigs = [
         null
     ),
     new MethodPropsChartConfigBonds(
+        'BCV Rate, LP OHMDAI (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVOhmDai'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
+        'Bond Purchase Volume, LP OHMFRAX',
+        (...args) => setBaseHist(...args, 'amountOhmFrax'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
         'Bond Times Purchased, LP OHMFRAX',
         (...args) => setBaseHist(...args, 'depositCountOhmFrax'),
         null
     ),
     new MethodPropsChartConfigBonds(
+        'BCV Rate, LP OHMFRAX (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVOhmFrax'),
+        null
+    ),
+
+    new MethodPropsChartConfigBonds(
         'Bond Purchase Volume, LP OHMLUSD',
         (...args) => setBaseHist(...args, 'amountOhmLusd'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'Bond Times Purchased, LP OHMLUSD',
+        (...args) => setBaseHist(...args, 'depositCountOhmLusd'),
+        null
+    ),
+    new MethodPropsChartConfigBonds(
+        'BCV Rate, LP OHMLUSD (Scaled by 10<sup>7</sup>)',
+        (...args) => setBaseHist(...args, 'newBCVOhmLusd'),
         null
     ),
 

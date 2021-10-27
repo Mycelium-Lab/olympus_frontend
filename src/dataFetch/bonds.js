@@ -2748,6 +2748,29 @@ export function mapBonds(bonds) {
             acc.depositCountOhmLusd.push(
                 new TVTimeValueObject(Number(e.depositCountOhmLusd), time)
             )
+
+            // bcv
+            acc.newBCVDai.push(
+                new TVTimeValueObject(Number(e.newBCVDai) * 10 ** 7, time)
+            )
+            acc.newBCVEth.push(
+                new TVTimeValueObject(Number(e.newBCVEth) * 10 ** 7, time)
+            )
+            acc.newBCVFrax.push(
+                new TVTimeValueObject(Number(e.newBCVFrax) * 10 ** 7, time)
+            )
+            acc.newBCVLusd.push(
+                new TVTimeValueObject(Number(e.newBCVLusd) * 10 ** 7, time)
+            )
+            acc.newBCVOhmDai.push(
+                new TVTimeValueObject(Number(e.newBCVOhmDai) * 10 ** 7, time)
+            )
+            acc.newBCVOhmFrax.push(
+                new TVTimeValueObject(Number(e.newBCVOhmFrax) * 10 ** 7, time)
+            )
+            acc.newBCVOhmLusd.push(
+                new TVTimeValueObject(Number(e.newBCVOhmLusd) * 10 ** 7, time)
+            )
             return acc
         },
         {
@@ -2765,6 +2788,13 @@ export function mapBonds(bonds) {
             depositCountOhmDai: [],
             depositCountOhmFrax: [],
             depositCountOhmLusd: [],
+            newBCVDai: [],
+            newBCVEth: [],
+            newBCVFrax: [],
+            newBCVLusd: [],
+            newBCVOhmDai: [],
+            newBCVOhmFrax: [],
+            newBCVOhmLusd: [],
         }
     )
 }
