@@ -22,6 +22,7 @@ export default function DaoMonitoring() {
                                 <div className="row">
                                     <div className="DAO-mon">
                                         <iframe
+                                            title="Snapshot"
                                             src="https://snapshot.org/#/olympusdao.eth"
                                             frameBorder={0}
                                             className="iframe-100"
