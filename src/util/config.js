@@ -267,7 +267,7 @@ export const methodPropsChartConfigs = [
                     type: 'percent',
                 },
             }),
-        '100 x (Unstaked - Staked) / Staked'
+        '100 x (Unstaked - Staked) / Unstaked'
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Total Staked, %',
@@ -277,7 +277,7 @@ export const methodPropsChartConfigs = [
                     type: 'percent',
                 },
             }),
-        '100 x (Unstaked - Current Total Staked) / Current Total Staked'
+        '100 x (Unstaked - Current Total Staked) / Unstaked'
     ),
     // bonds
 
