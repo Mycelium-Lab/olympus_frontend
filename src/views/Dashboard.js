@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import '../styles/dashboard.scss'
+import TooltippedComponent from '../components/util/TooltippedComponent'
 
 import twitter from '../images/twitter.png'
 
@@ -111,15 +112,17 @@ export default function Dashboard() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <iframe
-                                        title="Circ/Total Supply"
-                                        src="https://dune.xyz/embeds/28599/57711/78cf4ed3-80dd-4a72-be8b-25add7fd18b7"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
+                                    <TooltippedComponent info="Supply without DAO Contract OHM holdings and OHM to be Claimed in Bond Contracts / Total Supply">
+                                        <iframe
+                                            title="Circ/Total Supply"
+                                            src="https://dune.xyz/embeds/28599/57711/78cf4ed3-80dd-4a72-be8b-25add7fd18b7"
+                                            frameBorder="0"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                        ></iframe>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
@@ -159,15 +162,17 @@ export default function Dashboard() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <iframe
-                                        title="DAO Market Value"
-                                        src="https://dune.xyz/embeds/30395/61276/a2b3294c-1f07-4532-9791-a3815210c1ad"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
+                                    <TooltippedComponent info="Valuation of OHMs Locked in DAO Contract">
+                                        <iframe
+                                            title="DAO Market Value"
+                                            src="https://dune.xyz/embeds/30395/61276/a2b3294c-1f07-4532-9791-a3815210c1ad"
+                                            frameBorder="0"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                        ></iframe>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
@@ -280,15 +285,17 @@ export default function Dashboard() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <iframe
-                                        title="Treasury Market Value"
-                                        src="https://dune.xyz/embeds/199006/371572/6303e9df-7815-40f7-98ee-12395a08afe1"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
+                                    <TooltippedComponent info="Valuation of All Tokens in Treasury Contract">
+                                        <iframe
+                                            title="Treasury Market Value"
+                                            src="https://dune.xyz/embeds/29778/60056/ab4e0454-98ea-4b48-b92b-43f6cd5dec9c"
+                                            frameBorder="0"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                        ></iframe>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
@@ -303,15 +310,17 @@ export default function Dashboard() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <iframe
-                                        title="RFV of Treasury Assets"
-                                        src="https://dune.xyz/embeds/29153/58862/b16ae296-c2a8-4ebd-aa58-68141848ca72"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
+                                    <TooltippedComponent info="Valuation of All Tokens in Treasury Contract">
+                                        <iframe
+                                            title="Market Value of Treasury Assets"
+                                            src="https://dune.xyz/embeds/29778/60051/394cdb35-a8b8-4f10-806d-63eb8c0057e9"
+                                            frameBorder="0"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                        ></iframe>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
@@ -326,15 +335,17 @@ export default function Dashboard() {
                                         overflow: 'hidden',
                                     }}
                                 >
-                                    <iframe
-                                        title="Market Value of Treasury Assets"
-                                        src="https://dune.xyz/embeds/29778/60051/394cdb35-a8b8-4f10-806d-63eb8c0057e9"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
+                                    <TooltippedComponent info="Amount of Stablecoin Treasury Assets (Reserve Tokens), Including Their Share in Corresponding -OHM LP Tokens">
+                                        <iframe
+                                            title="RFV of Treasury Assets"
+                                            src="https://dune.xyz/embeds/29153/58862/b16ae296-c2a8-4ebd-aa58-68141848ca72"
+                                            frameBorder="0"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                        ></iframe>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
