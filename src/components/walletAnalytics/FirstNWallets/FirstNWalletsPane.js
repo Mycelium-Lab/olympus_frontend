@@ -32,7 +32,7 @@ export default function FirstNWalletsPane() {
             )
     }
     return (
-        <div className="tab-pane" role="tabpanel">
+        <div className="tab-pane first-n-pane" role="tabpanel">
             <div className="row">
                 <div className="col-md-9">
                     <div className="card card-body">
@@ -53,20 +53,26 @@ export default function FirstNWalletsPane() {
                             <h4 className="card-title border-bottom pb-3">
                                 Filter
                             </h4>
-                            <form className="flex-row mt-3">
+                            <form className="form-fn-update mt-3">
                                 <div className="filter-name">
-                                    Analyze first wallets:
+                                    Analyze first wallets{' '}
+                                    <span>
+                                        (values beyond 6000 will be hard
+                                        adjusted to this number)
+                                    </span>
+                                    :
                                 </div>
                                 <div className="filter-input">
                                     <input
                                         type="number"
                                         onChange={(e) =>
-                                            e.target.value >= 0
-                                                ? setNWallets(e.target.value)
-                                                : setNWallets(0)
+                                            e.target.value < 0
+                                                ? setNWallets(0)
+                                                : e.target.value > 6000
+                                                ? setNWallets(6000)
+                                                : setNWallets(e.target.value)
                                         }
                                         value={nWallets}
-                                        style={{ width: 50, marginLeft: 20 }}
                                     />
                                 </div>
                             </form>

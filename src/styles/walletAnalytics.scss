@@ -36,6 +36,83 @@
         align-items: center;
     }
 
+    .first-n-pane {
+        .form-fn-update {
+            display: flex;
+            align-items: center;
+
+            & > .filter-input {
+                width: 76px;
+                & > input {
+                    max-width: 100%;
+                }
+            }
+        }
+
+        @media (min-width: 992px) {
+            .form-fn-update {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 992px) and (min-width: 768px), (max-width: 430px) {
+            .form-fn-update {
+                flex-direction: column;
+                align-items: flex-start;
+
+                & > .filter-input {
+                    margin-top: 1.25rem;
+                    margin-left: 0;
+                }
+            }
+        }
+
+        @media (min-width: 992px), (min-width: 429px) and (max-width: 767px) {
+            .form-fn-update {
+                & > .filter-input {
+                    margin-left: 10px;
+                }
+            }
+        }
+    }
+
+    .large-holders-pane {
+        .form-lh-update {
+            display: flex;
+
+            & > .filter-input {
+                width: 100px;
+
+                & > input {
+                    max-width: 100%;
+                }
+            }
+        }
+
+        @media (max-width: 920px) and (min-width: 768px), (max-width: 400px) {
+            .form-lh-update {
+                align-items: flex-start;
+                flex-direction: column;
+
+                & > span {
+                    margin-top: 10px;
+                }
+            }
+        }
+
+        @media (min-width: 919px), (min-width: 399px) and (max-width: 767px) {
+            .form-lh-update {
+                align-items: center;
+                flex-direction: row;
+
+                & > span {
+                    margin-left: 6px;
+                }
+            }
+        }
+    }
+
     .filter-name {
         font-size: 13px;
         line-height: 18px;

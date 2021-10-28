@@ -31,7 +31,7 @@ export default function LargeHoldersPane() {
             )
     }
     return (
-        <div className="tab-pane" role="tabpanel">
+        <div className="tab-pane large-holders-pane" role="tabpanel">
             <div className="row">
                 <div className="col-md-9">
                     <div className="card card-body">
@@ -57,7 +57,7 @@ export default function LargeHoldersPane() {
                                 with more than:
                             </div>
 
-                            <form className="flex-row align-items-center mt-3">
+                            <form className="form-lh-update mt-3">
                                 <div className="filter-input">
                                     <input
                                         type="number"
@@ -67,10 +67,9 @@ export default function LargeHoldersPane() {
                                                 : setMinAmount(0)
                                         }
                                         value={minAmount}
-                                        style={{ width: 100 }}
                                     />
                                 </div>
-                                <span className="ml-2">OHM</span>
+                                <span>OHM</span>
                             </form>
                             <button
                                 disabled={isLoading}
