@@ -74,6 +74,8 @@ export async function getStakesInfoDays(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
                     100 *
                     ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -132,6 +134,8 @@ export async function getStakesInfoDays(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
                         100 *
                         ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -262,6 +266,8 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
                     100 *
                     ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -320,6 +326,8 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
                         100 *
                         ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -464,6 +472,8 @@ export async function getStakesInfoNHours(startTimestamp, endTime, hours) {
                     }
                     obj.stakeAvg = obj.amountStaked / obj.stakeCount
                     obj.unstakeAvg = obj.amountUnstaked / obj.unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
                         100 *
                         ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -599,6 +609,8 @@ export async function getStakesInfoMinutes(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
                     100 *
                     ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -657,6 +669,8 @@ export async function getStakesInfoMinutes(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
                         100 *
                         ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
@@ -709,6 +723,9 @@ export function mapStakes(stakes) {
             acc.currentStaked.push(
                 new TVTimeValueObject(Number(e.currentStaked), time)
             )
+            acc.nettoStaked.push(
+                new TVTimeValueObject(Number(e.nettoStaked), time)
+            )
             acc.unstakedToStakedPercent.push(
                 new TVTimeValueObject(
                     Math.abs(Number(e.unstakedToStakedPercent)) === Infinity
@@ -750,6 +767,7 @@ export function mapStakes(stakes) {
             unstakedMax: [],
             stakedAvg: [],
             unstakedAvg: [],
+            nettoStaked: [],
             unstakedToStakedPercent: [],
             unstakedToTotalStakedPercent: [],
             stakeCount: [],

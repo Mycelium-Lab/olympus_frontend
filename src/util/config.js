@@ -260,6 +260,11 @@ export const methodPropsChartConfigs = [
         'Average Amount of 1 Unstaking per Candle'
     ),
     new MethodPropsChartConfigStaking(
+        'Netto Staked, OHM',
+        (...args) => setBaseHist(...args, 'nettoStaked'),
+        'Staked - Unstaked per Candle'
+    ),
+    new MethodPropsChartConfigStaking(
         'Unstaked to Staked, %',
         (...args) =>
             setBaseHist(...args, 'unstakedToStakedPercent', {
@@ -267,7 +272,7 @@ export const methodPropsChartConfigs = [
                     type: 'percent',
                 },
             }),
-        '100 x (Unstaked - Staked) / Unstaked'
+        '[100 x (Unstaked - Staked) / Unstaked] per Candle'
     ),
     new MethodPropsChartConfigStaking(
         'Unstaked to Total Staked, %',
@@ -277,7 +282,7 @@ export const methodPropsChartConfigs = [
                     type: 'percent',
                 },
             }),
-        '100 x (Unstaked - Current Total Staked) / Unstaked'
+        '[100 x (Unstaked - Current Total Staked) / Unstaked] per Candle'
     ),
     // bonds
 
