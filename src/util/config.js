@@ -81,6 +81,16 @@ const baseLineConfig = {
     color: 'rgba(165, 165, 239, 0.89)',
 }
 
+const baseCandleConfig = {
+    upColor: 'rgb(37,166,154)',
+    downColor: 'rgb(239,83,80)',
+    borderVisible: false,
+    wickVisible: true,
+    borderColor: '#000000',
+    wickUpColor: 'rgb(37,166,154)',
+    wickDownColor: 'rgb(239,83,80)',
+}
+
 export const baseGranularityUnix = 86400
 
 export const timeframesConfig = (() => {
@@ -153,6 +163,13 @@ class MethodPropsChartConfig {
     }
 }
 
+class MethodPropsChartConfigDex extends MethodPropsChartConfig {
+    constructor(title, setChart, info) {
+        super(title, setChart, info)
+        this.type = 'dex'
+    }
+}
+
 class MethodPropsChartConfigStaking extends MethodPropsChartConfig {
     constructor(title, setChart, info) {
         super(title, setChart, info)
@@ -197,6 +214,45 @@ const setBaseHist = (
 }
 
 export const methodPropsChartConfigs = {
+    dex: [
+        new MethodPropsChartConfigDex(
+            'SushiSwap OHM/DAI Price & Volume',
+            (chart, data, series) => {
+                let candleSeries, volumeUpHistSeries, volumeDownHistSeries
+                if (!series) {
+                    candleSeries = chart.addCandlestickSeries(baseCandleConfig)
+
+                    const volumeHistConfig = {
+                        ...baseHistConfig,
+                        overlay: true,
+                        scaleMargins: {
+                            top: 0.6,
+                            bottom: 0.04,
+                        },
+                    }
+
+                    volumeUpHistSeries = chart.addHistogramSeries({
+                        ...volumeHistConfig,
+                        color: 'rgb(147,210,204)',
+                    })
+
+                    volumeDownHistSeries = chart.addHistogramSeries({
+                        ...volumeHistConfig,
+                        color: 'rgb(247,169,167)',
+                    })
+                } else {
+                    ;[candleSeries, volumeUpHistSeries, volumeDownHistSeries] =
+                        series
+                }
+
+                candleSeries.setData(data.priceCandles)
+                volumeUpHistSeries.setData(data.volumeUp)
+                volumeDownHistSeries.setData(data.volumeDown)
+
+                return [candleSeries, volumeUpHistSeries, volumeDownHistSeries]
+            }
+        ),
+    ],
     staking: [
         new MethodPropsChartConfigStaking(
             'Staking & Unstaking Volume, OHM',
@@ -214,8 +270,7 @@ export const methodPropsChartConfigs = {
                         color: 'rgb(247,169,167)',
                     })
                 } else {
-                    stakedHist = series[0]
-                    unstakedHist = series[1]
+                    ;[stakedHist, unstakedHist] = series
                 }
 
                 stakedHist.setData(data.staked)
@@ -616,3 +671,10 @@ export const createCrosshairConfig = (flag) => ({
         },
     },
 })
+
+export const fillChart = (chart, method, mappedData, scSeries) =>
+    methodPropsChartConfigs[method.type][method.orderNumber].setChart(
+        chart,
+        mappedData,
+        scSeries
+    )

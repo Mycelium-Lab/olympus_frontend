@@ -2798,3 +2798,18 @@ export function mapBonds(bonds) {
         }
     )
 }
+
+export function getBondsInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return getDepositsInfoDays
+        case 1:
+            return (...rest) => getDepositsInfoNHours(...rest, 4)
+        case 2:
+            return getDepositsInfoHours
+        case 3:
+            return getDepositsInfoMinutes
+        default:
+            return
+    }
+}

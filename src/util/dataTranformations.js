@@ -1,17 +1,7 @@
-import {
-    getStakesInfoDays,
-    getStakesInfoHours,
-    getStakesInfoMinutes,
-    getStakesInfoNHours,
-    mapStakes,
-} from '../dataFetch/stakes'
-import {
-    getDepositsInfoDays,
-    getDepositsInfoHours,
-    getDepositsInfoMinutes,
-    getDepositsInfoNHours,
-    mapBonds,
-} from '../dataFetch/bonds'
+import { getStakesInfoFunction, mapStakes } from '../dataFetch/stakes'
+import { getBondsInfoFunction, mapBonds } from '../dataFetch/bonds'
+
+import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 
 import moment from 'moment'
 
@@ -26,52 +16,27 @@ export const getMappedScData = async (
     intervalDiff,
     isInitialload
 ) => {
-    let mappedData
+    let data, mappedData
 
     const typeOfData = method.type
     switch (typeOfData) {
+        case 'dex':
+            const getPairsInfo = getPairsInfoFunction(timeframe)
+            data = await getPairsInfo(startTime, endTime, 'OHM', 'DAI')
+            mappedData = mapPairs(data)
+            break
         case 'staking':
-            let stakes
-            switch (timeframe) {
-                case 0:
-                    stakes = await getStakesInfoDays(startTime, endTime)
-                    break
-                case 1:
-                    stakes = await getStakesInfoNHours(startTime, endTime, 4)
-                    break
-                case 2:
-                    stakes = await getStakesInfoHours(startTime, endTime)
-                    break
-                case 3:
-                    stakes = await getStakesInfoMinutes(startTime, endTime)
-                    break
-                default:
-                    break
-            }
-            mappedData = mapStakes(stakes)
+            const getStakesInfo = getStakesInfoFunction(timeframe)
+            data = await getStakesInfo(startTime, endTime)
+            mappedData = mapStakes(data)
             break
         case 'bonds':
-            let bonds
-            switch (timeframe) {
-                case 0:
-                    bonds = await getDepositsInfoDays(startTime, endTime)
-                    break
-                case 1:
-                    bonds = await getDepositsInfoNHours(startTime, endTime, 4)
-                    break
-                case 2:
-                    bonds = await getDepositsInfoHours(startTime, endTime)
-                    break
-                case 3:
-                    bonds = await getDepositsInfoMinutes(startTime, endTime)
-                    break
-                default:
-                    break
-            }
-            mappedData = mapBonds(bonds)
+            const getBondsInfo = getBondsInfoFunction(timeframe)
+            data = await getBondsInfo(startTime, endTime)
+            mappedData = mapBonds(data)
             break
         case 'treasury':
-            const data = await methodPropsChartConfigs[method.type][
+            data = await methodPropsChartConfigs[method.type][
                 method.orderNumber
             ].getDataFunctions[timeframe](startTime, endTime)
             const mappedRaw =

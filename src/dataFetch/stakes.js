@@ -775,3 +775,18 @@ export function mapStakes(stakes) {
         }
     )
 }
+
+export function getStakesInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return getStakesInfoDays
+        case 1:
+            return (...rest) => getStakesInfoNHours(...rest, 4)
+        case 2:
+            return getStakesInfoHours
+        case 3:
+            return getStakesInfoMinutes
+        default:
+            return
+    }
+}

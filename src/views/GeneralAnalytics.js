@@ -10,13 +10,13 @@ import { useDispatch } from 'react-redux'
 
 import { Skeleton } from '@mui/material'
 
-import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 import {
     chartConfig,
     methodPropsChartConfigs,
     timeframesConfig,
     createCrosshairConfig,
     baseGranularityUnix,
+    fillChart,
 } from '../util/config'
 import {
     getMappedScData,
@@ -30,13 +30,6 @@ import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
 import { basicMessages } from '../util/messages'
-
-const fillChart = (chart, method, mappedData, scSeries) =>
-    methodPropsChartConfigs[method.type][method.orderNumber].setChart(
-        chart,
-        mappedData,
-        scSeries
-    )
 
 const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
 
@@ -112,17 +105,24 @@ export default function GeneralAnalytics() {
             })
         })
 
-        // main data (dex price + volume)
+        // fetch data and set charts
 
-        let pairs, pairsMapped, scMapped
+        let dexMapped, scMapped
 
         let { fetchBackDelta, initialTimestamp, endTimestamp, intervalDiff } =
             timeframesConfig[timeframe]
 
-        const getPairsInfo = getPairsInfoFunction(timeframe) // get a corresponding fetch function with respect to timeframe
+        const dexMethod = { type: 'dex', orderNumber: 0 }
 
-        let promises = [
-            getPairsInfo(initialTimestamp, endTimestamp, 'OHM', 'DAI'),
+        const initFetchPromises = [
+            getMappedScData(
+                initialTimestamp,
+                endTimestamp,
+                dexMethod,
+                timeframe,
+                intervalDiff,
+                true
+            ),
             getMappedScData(
                 initialTimestamp,
                 endTimestamp,
@@ -134,52 +134,11 @@ export default function GeneralAnalytics() {
         ]
 
         setIsGlobalLoading(true)
-        const resolvedDataFetch = await Promise.all(promises)
+        const resolvedDataFetch = await Promise.all(initFetchPromises)
         setIsGlobalLoading(false)
+        ;[dexMapped, scMapped] = resolvedDataFetch
 
-        pairs = resolvedDataFetch[0]
-        pairsMapped = trimDataSetEnd(mapPairs(pairs))
-        scMapped = resolvedDataFetch[1]
-
-        const candleSeries = charts[0].addCandlestickSeries({
-            upColor: 'rgb(37,166,154)',
-            downColor: 'rgb(239,83,80)',
-            borderVisible: false,
-            wickVisible: true,
-            borderColor: '#000000',
-            wickUpColor: 'rgb(37,166,154)',
-            wickDownColor: 'rgb(239,83,80)',
-        })
-
-        candleSeries.setData(pairsMapped.priceCandles)
-
-        const volumeHistConfig = {
-            base: 0,
-            priceFormat: {
-                type: 'volume',
-            },
-            overlay: true,
-            scaleMargins: {
-                top: 0.6,
-                bottom: 0.04,
-            },
-        }
-
-        const volumeUpHist = charts[0].addHistogramSeries({
-            ...volumeHistConfig,
-            color: 'rgb(147,210,204)',
-        })
-
-        const volumeDownHist = charts[0].addHistogramSeries({
-            ...volumeHistConfig,
-            color: 'rgb(247,169,167)',
-        })
-
-        volumeUpHist.setData(pairsMapped.volumeUp)
-        volumeDownHist.setData(pairsMapped.volumeDown)
-
-        // additional data from smart contracts
-
+        let dexSeries = fillChart(charts[0], dexMethod, dexMapped)
         let scSeries = fillChart(charts[charts.length - 1], method, scMapped)
 
         // crosshair
@@ -232,61 +191,56 @@ export default function GeneralAnalytics() {
 
                     if (range.from < 0 && !chartNeedsUpdate) {
                         chartNeedsUpdate = true
+
                         endTimestamp = initialTimestamp
                         initialTimestamp =
                             initialTimestamp -
                             fetchBackDelta * baseGranularityUnix
 
                         // update price and volume chart
-                        setIsPartialLoading(true)
-
-                        const newPairsData = await getPairsInfo(
-                            initialTimestamp,
-                            endTimestamp,
-                            'OHM',
-                            'DAI'
-                        )
-
-                        const newPairsMapped = mapPairs(newPairsData)
-
-                        if (
-                            newPairsMapped.priceCandles.length > 0 &&
-                            newPairsMapped.volumeUp.length > 0 &&
-                            newPairsMapped.volumeDown.length > 0
-                        ) {
-                            pairsMapped = mergeObjectsArrays(
-                                pairsMapped,
-                                newPairsMapped
-                            )
-
-                            // fetch sc chart data
-                            const newScMapped = await getMappedScData(
+                        const backFetchPromises = [
+                            getMappedScData(
+                                initialTimestamp,
+                                endTimestamp,
+                                dexMethod,
+                                timeframe,
+                                intervalDiff,
+                                false
+                            ),
+                            getMappedScData(
                                 initialTimestamp,
                                 endTimestamp,
                                 method,
                                 timeframe,
                                 intervalDiff,
                                 false
-                            )
+                            ),
+                        ]
 
-                            scMapped = mergeObjectsArrays(scMapped, newScMapped)
+                        setIsPartialLoading(true)
+                        const resolvedDataFetch = await Promise.all(
+                            backFetchPromises
+                        )
+                        setIsPartialLoading(false)
+                        const [newDexMapped, newScMapped] = resolvedDataFetch
 
-                            // update both
+                        scMapped = mergeObjectsArrays(scMapped, newScMapped)
+                        dexMapped = mergeObjectsArrays(dexMapped, newDexMapped)
 
-                            candleSeries.setData(pairsMapped.priceCandles)
-                            volumeUpHist.setData(pairsMapped.volumeUp)
-                            volumeDownHist.setData(pairsMapped.volumeDown)
+                        dexSeries = fillChart(
+                            charts[0],
+                            dexMethod,
+                            dexMapped,
+                            dexSeries
+                        )
+                        scSeries = fillChart(
+                            charts[charts.length - 1],
+                            method,
+                            scMapped,
+                            scSeries
+                        )
 
-                            scSeries = fillChart(
-                                charts[charts.length - 1],
-                                method,
-                                scMapped,
-                                scSeries
-                            )
-
-                            chartNeedsUpdate = false
-                            setIsPartialLoading(false)
-                        }
+                        chartNeedsUpdate = false
                     }
                 })
 
@@ -318,8 +272,16 @@ export default function GeneralAnalytics() {
                 try {
                     const startDate = moment().utc().startOf('day').unix()
                     const endDate = moment().utc().endOf('day').unix()
+
                     const updatePromises = await Promise.all([
-                        getPairsInfo(startDate, endDate, 'OHM', 'DAI'),
+                        getMappedScData(
+                            startDate,
+                            endDate,
+                            dexMethod,
+                            timeframe,
+                            intervalDiff,
+                            false
+                        ),
                         getMappedScData(
                             startDate,
                             endDate,
@@ -330,22 +292,24 @@ export default function GeneralAnalytics() {
                         ),
                     ])
 
-                    const updatePairsMapped = mapPairs(updatePromises[0])
-                    const updateScMapped = updatePromises[1]
+                    const resolvedDataFetch = await Promise.all(updatePromises)
+                    const [updateDexMapped, updateScMapped] = resolvedDataFetch
 
-                    pairsMapped = mergeObjectsArraysOverrideTime(
-                        pairsMapped,
-                        trimDataSetEnd(updatePairsMapped)
+                    dexMapped = mergeObjectsArraysOverrideTime(
+                        dexMapped,
+                        trimDataSetEnd(updateDexMapped)
                     )
                     scMapped = mergeObjectsArraysOverrideTime(
                         scMapped,
                         trimDataSetEnd(updateScMapped)
                     )
 
-                    candleSeries.setData(pairsMapped.priceCandles)
-                    volumeUpHist.setData(pairsMapped.volumeUp)
-                    volumeDownHist.setData(pairsMapped.volumeDown)
-
+                    dexSeries = fillChart(
+                        charts[0],
+                        dexMethod,
+                        dexMapped,
+                        dexSeries
+                    )
                     scSeries = fillChart(
                         charts[charts.length - 1],
                         method,
