@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createRef } from 'react'
+import ChartSelectSection from '../components/generalAnalytics/ChartSelectSection'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 import moment from 'moment'
@@ -8,14 +9,11 @@ import { setMessage } from '../redux/actions/messageActions'
 import { useDispatch } from 'react-redux'
 
 import { Skeleton } from '@mui/material'
-import TooltippedComponent from '../components/util/TooltippedComponent'
 
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 import {
     chartConfig,
     methodPropsChartConfigs,
-    stakingLength,
-    bondsAndStakingLength,
     timeframesConfig,
     createCrosshairConfig,
     baseGranularityUnix,
@@ -31,16 +29,16 @@ import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
 
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
+import { basicMessages } from '../util/messages'
 
 const fillChart = (chart, method, mappedData, scSeries) =>
-    methodPropsChartConfigs[method].setChart(chart, mappedData, scSeries)
+    methodPropsChartConfigs[method.type][method.orderNumber].setChart(
+        chart,
+        mappedData,
+        scSeries
+    )
 
 const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
-
-const errorMessage = (refreshRateSeconds) => ({
-    severity: 3,
-    text: `Refresh request failed, trying again in ${refreshRateSeconds} seconds.`,
-})
 
 export default function GeneralAnalytics() {
     const dispatch = useDispatch()
@@ -53,7 +51,10 @@ export default function GeneralAnalytics() {
     )
 
     const [key, setKey] = useState(null)
-    const [method, setMethod] = useState(0)
+    const [method, setMethod] = useState({
+        type: 'staking',
+        orderNumber: 0,
+    })
     const [currentDefaultTimeframe, setCurrentDefaultTimeframe] = useState(
         defaultTimeframe ? parseInt(defaultTimeframe) : null
     )
@@ -64,11 +65,13 @@ export default function GeneralAnalytics() {
 
     const [updateInterval, setUpdateInterval] = useState(null)
 
-    const changeMethod = (e) => {
-        const newMethod = e.currentTarget.value
-        if (newMethod !== method) {
+    const changeMethod = (type, orderNumber) => {
+        if (type !== method.type || orderNumber !== method.orderNumber) {
             updateRefs()
-            setMethod(parseInt(newMethod))
+            setMethod({
+                type,
+                orderNumber,
+            })
         }
     }
 
@@ -350,7 +353,13 @@ export default function GeneralAnalytics() {
                         scSeries
                     )
                 } catch (e) {
-                    dispatch(setMessage(errorMessage(refreshRateSeconds)))
+                    dispatch(
+                        setMessage(
+                            basicMessages.refreshRequestError(
+                                refreshRateSeconds
+                            )
+                        )
+                    )
                 }
             }, refreshRateSeconds * 1000)
         )
@@ -448,7 +457,10 @@ export default function GeneralAnalytics() {
                                                     <span className="staking-volume-title">
                                                         {parse(
                                                             methodPropsChartConfigs[
+                                                                method.type
+                                                            ][
                                                                 method
+                                                                    .orderNumber
                                                             ].title
                                                         )}
                                                         ,
@@ -562,192 +574,32 @@ export default function GeneralAnalytics() {
                                                 <form className="flex-row mt-3">
                                                     <div className="form-group row">
                                                         <div className="col-md-12">
-                                                            <div data-name="staking">
-                                                                <span className="filter-name-span">
-                                                                    Staking:
-                                                                </span>
-                                                                {methodPropsChartConfigs
-                                                                    .filter(
-                                                                        (e) =>
-                                                                            e.type ===
-                                                                            'staking'
-                                                                    )
-                                                                    .map(
-                                                                        (
-                                                                            e,
-                                                                            idx
-                                                                        ) => (
-                                                                            <div
-                                                                                key={
-                                                                                    idx
-                                                                                }
-                                                                                className="custom-control custom-radio select-chart-data-holder select-chart-data-holder mb-2"
-                                                                            >
-                                                                                <input
-                                                                                    disabled={
-                                                                                        isGlobalLoading
-                                                                                    }
-                                                                                    type="radio"
-                                                                                    value={
-                                                                                        idx
-                                                                                    }
-                                                                                    checked={
-                                                                                        method ===
-                                                                                        idx
-                                                                                    }
-                                                                                    onChange={
-                                                                                        changeMethod
-                                                                                    }
-                                                                                    className="input-select-chart-data"
-                                                                                    name="group1[]"
-                                                                                />
-                                                                                <TooltippedComponent
-                                                                                    info={
-                                                                                        e.info
-                                                                                    }
-                                                                                >
-                                                                                    <label
-                                                                                        className={
-                                                                                            e.info
-                                                                                                ? 'label-with-info'
-                                                                                                : ''
-                                                                                        }
-                                                                                    >
-                                                                                        {parse(
-                                                                                            e.title
-                                                                                        )}
-                                                                                    </label>
-                                                                                </TooltippedComponent>
-                                                                            </div>
-                                                                        )
-                                                                    )}
-                                                            </div>
+                                                            <ChartSelectSection
+                                                                sectionName="staking"
+                                                                {...{
+                                                                    isGlobalLoading,
+                                                                    method,
+                                                                    changeMethod,
+                                                                }}
+                                                            />
                                                             <br />
-                                                            <div data-name="bonds">
-                                                                <span className="filter-name-span">
-                                                                    Bonds:
-                                                                </span>
-                                                                {methodPropsChartConfigs
-                                                                    .filter(
-                                                                        (e) =>
-                                                                            e.type ===
-                                                                            'bonds'
-                                                                    )
-                                                                    .map(
-                                                                        (
-                                                                            e,
-                                                                            idx
-                                                                        ) => (
-                                                                            <div
-                                                                                key={
-                                                                                    idx
-                                                                                }
-                                                                                className="custom-control custom-radio select-chart-data-holder mb-2"
-                                                                            >
-                                                                                <input
-                                                                                    disabled={
-                                                                                        isGlobalLoading
-                                                                                    }
-                                                                                    type="radio"
-                                                                                    value={
-                                                                                        idx +
-                                                                                        stakingLength
-                                                                                    }
-                                                                                    checked={
-                                                                                        method ===
-                                                                                        idx +
-                                                                                            stakingLength
-                                                                                    }
-                                                                                    onChange={
-                                                                                        changeMethod
-                                                                                    }
-                                                                                    className="input-select-chart-data"
-                                                                                    name="group2[]"
-                                                                                />
-                                                                                <TooltippedComponent
-                                                                                    info={
-                                                                                        e.info
-                                                                                    }
-                                                                                >
-                                                                                    <label
-                                                                                        className={
-                                                                                            e.info
-                                                                                                ? 'label-with-info'
-                                                                                                : ''
-                                                                                        }
-                                                                                    >
-                                                                                        {parse(
-                                                                                            e.title
-                                                                                        )}
-                                                                                    </label>
-                                                                                </TooltippedComponent>
-                                                                            </div>
-                                                                        )
-                                                                    )}
-                                                            </div>
+                                                            <ChartSelectSection
+                                                                sectionName="bonds"
+                                                                {...{
+                                                                    isGlobalLoading,
+                                                                    method,
+                                                                    changeMethod,
+                                                                }}
+                                                            />
                                                             <br />
-                                                            <div data-name="treasury">
-                                                                <span className="filter-name-span">
-                                                                    Treasury:
-                                                                </span>
-                                                                {methodPropsChartConfigs
-                                                                    .filter(
-                                                                        (e) =>
-                                                                            e.type ===
-                                                                            'treasury'
-                                                                    )
-                                                                    .map(
-                                                                        (
-                                                                            e,
-                                                                            idx
-                                                                        ) => (
-                                                                            <div
-                                                                                key={
-                                                                                    idx
-                                                                                }
-                                                                                className="custom-control custom-radio select-chart-data-holder mb-2"
-                                                                            >
-                                                                                <input
-                                                                                    disabled={
-                                                                                        isGlobalLoading
-                                                                                    }
-                                                                                    type="radio"
-                                                                                    value={
-                                                                                        idx +
-                                                                                        bondsAndStakingLength
-                                                                                    }
-                                                                                    checked={
-                                                                                        method ===
-                                                                                        idx +
-                                                                                            bondsAndStakingLength
-                                                                                    }
-                                                                                    onChange={
-                                                                                        changeMethod
-                                                                                    }
-                                                                                    className="input-select-chart-data"
-                                                                                    name="group3[]"
-                                                                                />
-                                                                                <TooltippedComponent
-                                                                                    info={
-                                                                                        e.info
-                                                                                    }
-                                                                                >
-                                                                                    <label
-                                                                                        className={
-                                                                                            e.info
-                                                                                                ? 'label-with-info'
-                                                                                                : ''
-                                                                                        }
-                                                                                    >
-                                                                                        {parse(
-                                                                                            e.title
-                                                                                        )}
-                                                                                    </label>
-                                                                                </TooltippedComponent>
-                                                                            </div>
-                                                                        )
-                                                                    )}
-                                                            </div>
+                                                            <ChartSelectSection
+                                                                sectionName="treasury"
+                                                                {...{
+                                                                    isGlobalLoading,
+                                                                    method,
+                                                                    changeMethod,
+                                                                }}
+                                                            />
                                                         </div>
                                                     </div>
                                                 </form>

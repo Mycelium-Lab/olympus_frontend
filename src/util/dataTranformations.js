@@ -28,7 +28,7 @@ export const getMappedScData = async (
 ) => {
     let mappedData
 
-    const typeOfData = methodPropsChartConfigs[method].type
+    const typeOfData = method.type
     switch (typeOfData) {
         case 'staking':
             let stakes
@@ -71,11 +71,13 @@ export const getMappedScData = async (
             mappedData = mapBonds(bonds)
             break
         case 'treasury':
-            const data = await methodPropsChartConfigs[method].getDataFunctions[
-                timeframe
-            ](startTime, endTime)
+            const data = await methodPropsChartConfigs[method.type][
+                method.orderNumber
+            ].getDataFunctions[timeframe](startTime, endTime)
             const mappedRaw =
-                methodPropsChartConfigs[method].mapDataFunction(data)
+                methodPropsChartConfigs[method.type][
+                    method.orderNumber
+                ].mapDataFunction(data)
             mappedData = completeDataSetStart(
                 mappedRaw,
                 startTime,
