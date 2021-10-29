@@ -30,7 +30,9 @@ export default function ChartParamsSelection({
                                     className="form-control"
                                 >
                                     {timeframesConfig.map((t, idx) => (
-                                        <option value={idx}>{t.name}</option>
+                                        <option key={idx} value={idx}>
+                                            {t.name}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
@@ -46,7 +48,7 @@ export default function ChartParamsSelection({
                                     }}
                                 >
                                     {timezones.map((t, idx) => (
-                                        <option value={idx}>
+                                        <option key={idx} value={idx}>
                                             {idx !== timezone
                                                 ? t.text
                                                 : t.text.split(' ')[0]}
