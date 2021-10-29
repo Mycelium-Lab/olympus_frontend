@@ -321,24 +321,24 @@ export const methodPropsChartConfigs = {
             'Staked - Unstaked per Candle'
         ),
         new MethodPropsChartConfigStaking(
-            'Unstaked to Staked, %',
+            'Staked to Unstaked, %',
             (...args) =>
                 setBaseHist(...args, 'unstakedToStakedPercent', {
                     priceFormat: {
                         type: 'percent',
                     },
                 }),
-            '[100 x (Unstaked - Staked) / Unstaked] per Candle'
+            '[-1 x 100 x (Unstaked - Staked) / Unstaked] per Candle'
         ),
         new MethodPropsChartConfigStaking(
-            'Unstaked to Total Staked, %',
+            'Unstaked of Total Staked, %',
             (...args) =>
-                setBaseHist(...args, 'unstakedToTotalStakedPercent', {
+                setBaseHist(...args, 'unstakedOfTotalStakedPercent', {
                     priceFormat: {
                         type: 'percent',
                     },
                 }),
-            '[100 x (Unstaked - Current Total Staked) / Unstaked] per Candle'
+            '[100 x (Unstaked / Current Total Staked)] per Candle'
         ),
     ],
     bonds: [
