@@ -87,4 +87,8 @@
     .label-with-info {
         text-decoration: underline dotted;
     }
+
+    select:disabled {
+        color: rgba($color: #b4b4b4, $alpha: 1);
+    }
 }
