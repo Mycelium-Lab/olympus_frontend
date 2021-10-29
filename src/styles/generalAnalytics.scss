@@ -58,15 +58,22 @@
         }
     }
 
-    @media (min-width: 1300px) {
+    @media (min-width: 1250px) {
         .tv-selector-container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            & > div:first-child {
+                width: 36%;
+            }
+
+            & > div:nth-child(2) {
+                width: 60%;
+            }
         }
     }
 
-    @media (max-width: 1300px) {
+    @media (max-width: 1250px) {
         .tv-selector-container {
             display: flex;
             flex-direction: column;

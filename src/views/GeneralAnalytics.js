@@ -1,5 +1,4 @@
 import React, { useEffect, useState, createRef } from 'react'
-import ChartSelectSection from '../components/generalAnalytics/ChartSelectSection'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 import moment from 'moment'
@@ -8,6 +7,7 @@ import parse from 'html-react-parser'
 import { setMessage } from '../redux/actions/messageActions'
 import { useDispatch } from 'react-redux'
 
+import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
 import { Skeleton } from '@mui/material'
 
 import {
@@ -20,18 +20,19 @@ import {
 } from '../util/config'
 import {
     getMappedScData,
-    trimDataSetEnd,
     mergeObjectsArrays,
     mergeObjectsArraysOverrideTime,
 } from '../util/dataTranformations'
 
-import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
+import { basicMessages } from '../util/messages'
 
 import '../styles/main.scss'
 import '../styles/generalAnalytics.scss'
-import { basicMessages } from '../util/messages'
+import ChartParamsSelection from '../components/generalAnalytics/ChartParamsSelection'
+import ChartLegend from '../components/generalAnalytics/ChartLegend'
 
 const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
+const defaultTimezone = localStorage.getItem('ga_default_timezone')
 
 export default function GeneralAnalytics() {
     const dispatch = useDispatch()
@@ -51,7 +52,12 @@ export default function GeneralAnalytics() {
     const [currentDefaultTimeframe, setCurrentDefaultTimeframe] = useState(
         defaultTimeframe ? parseInt(defaultTimeframe) : null
     )
+    const [currentDefaultTimezone, setCurrentDefaultTimezone] = useState(
+        defaultTimezone ? parseInt(defaultTimezone) : null
+    )
+
     const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 0)
+    const [timezone, setTimezone] = useState(currentDefaultTimezone ?? 11)
 
     const [isGlobalLoading, setIsGlobalLoading] = useState(false)
     const [isPartialLoading, setIsPartialLoading] = useState(false)
@@ -72,6 +78,17 @@ export default function GeneralAnalytics() {
         if (timeframe !== newTimeframe) {
             updateRefs()
             setTimeframe(newTimeframe)
+            setCurrentDefaultTimeframe(newTimeframe)
+            localStorage.setItem('ga_default_timeframe', newTimeframe)
+        }
+    }
+
+    const changeTimezone = (newTimezone) => {
+        if (timezone !== newTimezone) {
+            updateRefs()
+            setTimezone(newTimezone)
+            setCurrentDefaultTimezone(newTimezone)
+            localStorage.setItem('ga_default_timezone', newTimezone)
         }
     }
 
@@ -121,6 +138,7 @@ export default function GeneralAnalytics() {
                 dexMethod,
                 timeframe,
                 intervalDiff,
+                timezone,
                 true
             ),
             getMappedScData(
@@ -129,6 +147,7 @@ export default function GeneralAnalytics() {
                 method,
                 timeframe,
                 intervalDiff,
+                timezone,
                 true
             ),
         ]
@@ -205,6 +224,7 @@ export default function GeneralAnalytics() {
                                 dexMethod,
                                 timeframe,
                                 intervalDiff,
+                                timezone,
                                 false
                             ),
                             getMappedScData(
@@ -213,6 +233,7 @@ export default function GeneralAnalytics() {
                                 method,
                                 timeframe,
                                 intervalDiff,
+                                timezone,
                                 false
                             ),
                         ]
@@ -280,7 +301,8 @@ export default function GeneralAnalytics() {
                             dexMethod,
                             timeframe,
                             intervalDiff,
-                            false
+                            timezone,
+                            true
                         ),
                         getMappedScData(
                             startDate,
@@ -288,7 +310,8 @@ export default function GeneralAnalytics() {
                             method,
                             timeframe,
                             intervalDiff,
-                            false
+                            timezone,
+                            true
                         ),
                     ])
 
@@ -297,11 +320,11 @@ export default function GeneralAnalytics() {
 
                     dexMapped = mergeObjectsArraysOverrideTime(
                         dexMapped,
-                        trimDataSetEnd(updateDexMapped)
+                        updateDexMapped
                     )
                     scMapped = mergeObjectsArraysOverrideTime(
                         scMapped,
-                        trimDataSetEnd(updateScMapped)
+                        updateScMapped
                     )
 
                     dexSeries = fillChart(
@@ -337,7 +360,7 @@ export default function GeneralAnalytics() {
                 if (el) document.removeEventListener('resize', el)
             })
         }
-    }, [method, timeframe])
+    }, [method, timeframe, timezone])
 
     return (
         <div className="main-content general-analytics-view">
@@ -449,126 +472,23 @@ export default function GeneralAnalytics() {
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <div className="card card-filter">
-                                            <div className="card-body">
-                                                <h4 className="card-title pb-3">
-                                                    Timeframe
-                                                </h4>
-                                                <form className="flex-row mt-3">
-                                                    <div className="tv-selector-container">
-                                                        <div>
-                                                            <select
-                                                                defaultValue={
-                                                                    timeframe
-                                                                }
-                                                                disabled={
-                                                                    isGlobalLoading
-                                                                }
-                                                                onChange={(
-                                                                    e
-                                                                ) => {
-                                                                    changeTimeframe(
-                                                                        parseInt(
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    )
-                                                                }}
-                                                                className="form-control"
-                                                            >
-                                                                <option
-                                                                    value={0}
-                                                                >
-                                                                    1 Day
-                                                                </option>
-                                                                <option
-                                                                    value={1}
-                                                                >
-                                                                    4 Hours
-                                                                </option>
-                                                                <option
-                                                                    value={2}
-                                                                >
-                                                                    1 Hour
-                                                                </option>
-                                                                <option
-                                                                    value={3}
-                                                                >
-                                                                    1 Minute
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                disabled={
-                                                                    currentDefaultTimeframe ===
-                                                                    timeframe
-                                                                }
-                                                                onClick={(
-                                                                    e
-                                                                ) => {
-                                                                    e.preventDefault()
-                                                                    localStorage.setItem(
-                                                                        'ga_default_timeframe',
-                                                                        timeframe
-                                                                    )
-                                                                    setCurrentDefaultTimeframe(
-                                                                        timeframe
-                                                                    )
-                                                                }}
-                                                                className="btn btn-info"
-                                                            >
-                                                                {currentDefaultTimeframe ===
-                                                                timeframe
-                                                                    ? 'Default'
-                                                                    : 'Set as Default'}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        <ChartParamsSelection
+                                            {...{
+                                                timeframe,
+                                                changeTimeframe,
+                                                timezone,
+                                                changeTimezone,
+                                                isGlobalLoading,
+                                            }}
+                                        />
                                         <p></p>
-                                        <div className="card card-filter card-filter-scrollable">
-                                            <div className="card-body">
-                                                <h4 className="card-title pb-3">
-                                                    Legend
-                                                </h4>
-                                                <form className="flex-row mt-3">
-                                                    <div className="form-group row">
-                                                        <div className="col-md-12">
-                                                            <ChartSelectSection
-                                                                sectionName="staking"
-                                                                {...{
-                                                                    isGlobalLoading,
-                                                                    method,
-                                                                    changeMethod,
-                                                                }}
-                                                            />
-                                                            <br />
-                                                            <ChartSelectSection
-                                                                sectionName="bonds"
-                                                                {...{
-                                                                    isGlobalLoading,
-                                                                    method,
-                                                                    changeMethod,
-                                                                }}
-                                                            />
-                                                            <br />
-                                                            <ChartSelectSection
-                                                                sectionName="treasury"
-                                                                {...{
-                                                                    isGlobalLoading,
-                                                                    method,
-                                                                    changeMethod,
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        <ChartLegend
+                                            {...{
+                                                isGlobalLoading,
+                                                method,
+                                                changeMethod,
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>

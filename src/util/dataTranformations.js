@@ -8,13 +8,16 @@ import moment from 'moment'
 import { methodPropsChartConfigs } from './config'
 import { TVTimeValueObject } from './tvSeries'
 
+import timezones from './timezones'
+
 export const getMappedScData = async (
     startTime,
     endTime,
     method,
     timeframe,
     intervalDiff,
-    isInitialload
+    timezoneIndex,
+    shouldTrimEnd
 ) => {
     let data, mappedData
 
@@ -53,8 +56,9 @@ export const getMappedScData = async (
         default:
             break
     }
-    if (isInitialload) return trimDataSetEnd(mappedData)
-    else return mappedData
+    return shouldTrimEnd
+        ? transformTimezone(trimDataSetEnd(mappedData), timezoneIndex)
+        : transformTimezone(mappedData, timezoneIndex)
 }
 
 export const completeDataSetStart = (
@@ -129,6 +133,17 @@ export const mergeObjectsArraysOverrideTime = (oldDataSet, newDataSet) => {
             ...oldDataSet[key].slice(0, oldDataSet[key].length - 1),
             ...newDataSet[key].slice(breakIndex, newDataSet[key].length),
         ]
+        return acc
+    }, {})
+}
+
+export const transformTimezone = (dataSet, timezoneIndex = 0) => {
+    const { offset } = timezones[timezoneIndex]
+    return Object.keys(dataSet).reduce((acc, key) => {
+        acc[key] = dataSet[key].map((e) => ({
+            ...e,
+            time: e.time + offset * 3600,
+        }))
         return acc
     }, {})
 }
