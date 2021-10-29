@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+<!-- markdownlint-disable no-inline-html first-line-h1 -->
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
+  <a href="https://app.olympusdao.finance/#/dashboard" target="_blank">
+    <img width="150" src="./public/assets/favicons/android-chrome-192x192.png">
+  </a>
+  <h1>Olympus Monitoring Front End</h1>
+</div>
 
-## Available Scripts
+This repository contains the front end part of the monitoring system implemented by Mycelium Lab. Below we go through the structure of the code and explain how to run it.
 
-In the project directory, you can run:
+## Installing Dependencies
 
-### `yarn start`
+```bash
+npm ci
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Running the Code
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+npm start
+```
 
-### `yarn test`
+## Building the Source
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm run build
+```
 
-### `yarn build`
+## Folder Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+A bulk of the codebase is located in <i>src</i> folder. The most essential folders are outlined below.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<ul>
+    <li>
+        <i>сomponents</a></i> — React components (partials) integrated in major components from <i>views</i> folder;
+    </li>
+    <li>
+        <i>dataFetch</i> — communication with subgraphs and data mapping for further utilization. Topics with sources:
+        <ul>
+            <li>
+                <a target="_blank" href="https://github.com/ilau020203/parser-subgrag-olympus">Treasury</a>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/deposits.js">Bonds</a>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/limenal/sushi-swap-query/blob/master/pairs.js">DEX</a>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/stakes.js">Staking</a>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/rebases.js">Rebases</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <i>redux</i> — state management. So far employed only for alerts which are seen throughout the application; 
+    </li>
+    <li>
+        <i>tv-lightweight</i> — a modified version of <a targer="_blank" href="https://github.com/tradingview/lightweight-charts/">Lightweight Charts</a> by TradingView to support parallel crosshair;
+    </li>
+        <i>util</i> — functions for configuration of charts (please see more below), data transformation, common code and more; 
+    </li>
+    <li>
+        <i>views</i> — all views of the app — each has a designated url.
+    </li>
+</ul>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Adding New Parameters and Topics to the General Analytics Legend
 
-### `yarn eject`
+1. Add a new topic (.js file) to <i>src/dataFetch</i> or use the existing ones if you just want to create new parameters. The topic must contain a map{TopicName} function to gather all the parameters retrieved from a subgraph and a get{TopicName}InfoFunction to retrieve a "get data" function for the desired timeframe (currently there are 4 of them, but more can be added. Please refer to the mini-guide at the bottom of the page <a target="_blank" href="https://github.com/limenal/olympus-query">here</a>).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. Add a new item to <i>methodPropsChartConfigs</i> object in <i>src/util/config.js</i>. If you are using an existing topic, please add your new param to the corresponding topic as follows:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+staking: [
+    // old params
+    // ...,
+    new MethodPropsChartConfig(
+        'New Param',
+        (...args) => setBaseHist(...args, 'new_param_name'),
+        'Some Calculation Description'
+    ),
+]
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+If you have added a new topic, please add the topic along with the params in it:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```js
+topic_name: [
+    // old params
+    // ...,
+    new MethodPropsChartConfig(
+        'New Param',
+        (...args) => setBaseHist(...args, 'new_param_name'),
+        'Some New Param Calculation Description'
+    ),
+]
+```
 
-## Learn More
+3. <b>Only if you have added a new topic (!)</b> Put your new topic inside the switch statement of <i>getMappedScData</i> function in <i>src/util/dataTransformations.js</i> as follows (make sure you have imported all the necessary functions from <i>src/dataFetch/topic_name.js</i> prior to that):
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```js
+case 'topic_name':
+    const getTopicNameInfo = getTopicNameFunction(timeframe)
+    data = await getTopicName(startTime, endTime)
+    mappedData = mapTopicName(data)
+    break
+```
