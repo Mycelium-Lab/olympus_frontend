@@ -1,5 +1,6 @@
 import { getStakesInfoFunction, mapStakes } from '../dataFetch/stakes'
 import { getBondsInfoFunction, mapBonds } from '../dataFetch/bonds'
+import { getRebasesInfoFunction, mapRebases } from '../dataFetch/rebases'
 
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 
@@ -32,6 +33,11 @@ export const getMappedScData = async (
             const getStakesInfo = getStakesInfoFunction(timeframe)
             data = await getStakesInfo(startTime, endTime)
             mappedData = mapStakes(data)
+            break
+        case 'rebases':
+            const getRebasesInfo = getRebasesInfoFunction(timeframe)
+            data = await getRebasesInfo(startTime, endTime)
+            mappedData = mapRebases(data)
             break
         case 'bonds':
             const getBondsInfo = getBondsInfoFunction(timeframe)

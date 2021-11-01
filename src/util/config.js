@@ -163,33 +163,11 @@ class MethodPropsChartConfig {
     }
 }
 
-class MethodPropsChartConfigDex extends MethodPropsChartConfig {
-    constructor(title, setChart, info) {
-        super(title, setChart, info)
-        this.type = 'dex'
-    }
-}
-
-class MethodPropsChartConfigStaking extends MethodPropsChartConfig {
-    constructor(title, setChart, info) {
-        super(title, setChart, info)
-        this.type = 'staking'
-    }
-}
-
-class MethodPropsChartConfigBonds extends MethodPropsChartConfig {
-    constructor(title, setChart, info) {
-        super(title, setChart, info)
-        this.type = 'bonds'
-    }
-}
-
 class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
     constructor(title, setChart, info, getDataFunctions, mapDataFunction) {
         super(title, setChart, info, getDataFunctions, mapDataFunction)
         this.getDataFunctions = getDataFunctions
         this.mapDataFunction = mapDataFunction
-        this.type = 'treasury'
     }
 }
 
@@ -215,7 +193,7 @@ const setBaseHist = (
 
 export const methodPropsChartConfigs = {
     dex: [
-        new MethodPropsChartConfigDex(
+        new MethodPropsChartConfig(
             'SushiSwap OHM/DAI Price & Volume',
             (chart, data, series) => {
                 let candleSeries, volumeUpHistSeries, volumeDownHistSeries
@@ -254,7 +232,7 @@ export const methodPropsChartConfigs = {
         ),
     ],
     staking: [
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Staking & Unstaking Volume, OHM',
             (chart, data, series) => {
                 let stakedHist, unstakedHist
@@ -280,47 +258,47 @@ export const methodPropsChartConfigs = {
             },
             null
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Current Staked (Cumulative), OHM',
             (...args) => setBaseHist(...args, 'currentStaked'),
             null
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Stake Count',
             (...args) => setBaseHist(...args, 'stakeCount'),
             'Times Staked per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Unstake Count',
             (...args) => setBaseHist(...args, 'unstakeCount'),
             'Times Unstaked per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Max Stake, OHM',
             (...args) => setBaseHist(...args, 'stakedMax'),
             'Max Amount of 1 Staking per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Max Unstake, OHM',
             (...args) => setBaseHist(...args, 'unstakedMax'),
             'Max Amount of 1 Unstaking per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Average Stake, OHM',
             (...args) => setBaseHist(...args, 'stakedAvg'),
             'Average Amount of 1 Staking per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Average Unstake, OHM',
             (...args) => setBaseHist(...args, 'unstakedAvg'),
             'Average Amount of 1 Unstaking per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Netto Staked, OHM',
             (...args) => setBaseHist(...args, 'nettoStaked'),
             'Staked - Unstaked per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Staked to Unstaked, %',
             (...args) =>
                 setBaseHist(...args, 'unstakedToStakedPercent', {
@@ -330,7 +308,7 @@ export const methodPropsChartConfigs = {
                 }),
             '[-1 x 100 x (Unstaked - Staked) / Unstaked] per Candle'
         ),
-        new MethodPropsChartConfigStaking(
+        new MethodPropsChartConfig(
             'Unstaked of Total Staked, %',
             (...args) =>
                 setBaseHist(...args, 'unstakedOfTotalStakedPercent', {
@@ -341,114 +319,131 @@ export const methodPropsChartConfigs = {
             '[100 x (Unstaked / Current Total Staked)] per Candle'
         ),
     ],
+    rebases: [
+        new MethodPropsChartConfig(
+            'Rebase Rate, %',
+            (...args) => setBaseHist(...args, 'rebasePercentage'),
+            null
+        ),
+        new MethodPropsChartConfig(
+            'APY, %',
+            (...args) =>
+                setBaseHist(...args, 'apy', {
+                    priceFormat: {
+                        type: 'percent',
+                    },
+                }),
+            null
+        ),
+    ],
     bonds: [
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, DAI',
             (...args) => setBaseHist(...args, 'amountDai'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, DAI',
             (...args) => setBaseHist(...args, 'depositCountDai'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, DAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVDai'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, wETH',
             (...args) => setBaseHist(...args, 'amountEth'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, wETH',
             (...args) => setBaseHist(...args, 'depositCountEth'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, wETH (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVEth'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, FRAX',
             (...args) => setBaseHist(...args, 'amountFrax'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, FRAX',
             (...args) => setBaseHist(...args, 'depositCountFrax'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, FRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVFrax'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, LUSD',
             (...args) => setBaseHist(...args, 'amountLusd'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, LUSD',
             (...args) => setBaseHist(...args, 'depositCountLusd'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, LUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVLusd'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMDAI',
             (...args) => setBaseHist(...args, 'amountOhmDai'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMDAI',
             (...args) => setBaseHist(...args, 'depositCountOhmDai'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, LP OHMDAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmDai'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amountOhmFrax'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'depositCountOhmFrax'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, LP OHMFRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmFrax'),
             null
         ),
 
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amountOhmLusd'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'depositCountOhmLusd'),
             null
         ),
-        new MethodPropsChartConfigBonds(
+        new MethodPropsChartConfig(
             'BCV Rate, LP OHMLUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmLusd'),
             null
