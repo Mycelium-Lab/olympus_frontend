@@ -1,71 +1,11 @@
 import axios from 'axios'
 
-export async function getSwaps(startTimestamp, period, numberOfPeriods) {
-    let timestamps = []
-    for (let i = 0; i < numberOfPeriods; ++i) {
-        timestamps.push(startTimestamp + i * period)
-    }
-    let query = '{'
-
-    let data = []
-    for (let i = 0; i < timestamps.length - 1; ++i) {
-        query += `
-      t${timestamps[i]}:pairs(first: 1, where:{timestamp_gte: ${
-            timestamps[i]
-        }, timestamp_lt: ${timestamps[i + 1]}})
-      {
-        amountStaked
-        timestamp
-      }
-    
-      `
-        if (i % 220 == 0) {
-            // send query then null
-            query += '}'
-            const stakeData = await axios({
-                url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
-                method: 'post',
-                data: {
-                    query: query,
-                },
-            })
-            let pairs = stakeData.data.data
-            // console.log(pairs)
-            // console.log(Date())
-            data.concat(pairs)
-            query = '{'
-        }
-        // else
-        // {
-        //   query += `
-        //   t${timestamps[i]}:pairs(first: 1, where:{timestamp_gte: ${timestamps[i]}, timestamp_lt: ${timestamps[i+1]}})
-        //   {
-        //     amountStaked
-        //     timestamp
-        //   }
-
-        //   `
-        // }
-    }
-    return data
-    // for(let i = 0; i < timestamps.length - 1; ++i)
-    // {
-    //   query += `
-    //     t${timestamps[i]}:swaps(first: 1, where:{token0:"SUSHI", token1:"WETH", timestamp_gte: ${timestamps[i]}, timestamp_lt: ${timestamps[i+1]}}, orderBy:price, orderDirection:desc)
-    //     {
-    //       price
-    //       amount0In
-    //       amount0Out
-    //     }
-
-    //   `
-    // }
-    // query += '}'
-    // console.log(pairs)
-}
-
 /**
  * @dev : Get pairs (days)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
  */
 export async function getPairsInfoDays(
     startTimestamp,
@@ -127,6 +67,8 @@ export async function getPairsInfoDays(
         const pair = pairData.data.data.pairYears
         let data = []
         let pairs = []
+        let [prevToken1PriceOpen, prevToken1PriceClose] = [0, 0]
+
         for (let c = 0; c < pair.length; ++c) {
             for (let i = 0; i < pair[c].dayPair.length; ++i) {
                 let obj = {}
@@ -143,7 +85,6 @@ export async function getPairsInfoDays(
         let beginTimestamp = startTimestamp
         let endTimestamp = startTimestamp + 86400
         let startIndexingTimestamp = 0
-        let prevToken1PriceClose = 0
 
         for (let j = 0; j < pairs.length; ++j) {
             if (
@@ -161,6 +102,7 @@ export async function getPairsInfoDays(
                     volumeToken1Out: pairs[j].volumeToken1Out,
                     timestamp: pairs[j].timestamp,
                 }
+                prevToken1PriceOpen = pairs[j].token1PriceOpen
                 prevToken1PriceClose = pairs[j].token1PriceClose
 
                 beginTimestamp += 86400
@@ -203,6 +145,7 @@ export async function getPairsInfoDays(
                         volumeToken1Out: pairs[j].volumeToken1Out,
                         timestamp: pairs[j].timestamp,
                     }
+                    prevToken1PriceOpen = pairs[j].token1PriceOpen
                     prevToken1PriceClose = pairs[j].token1PriceClose
 
                     beginTimestamp += 86400
@@ -233,6 +176,156 @@ export async function getPairsInfoDays(
     }
 }
 
+/**
+ * @dev : Get pairs (N days)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
+ * @param days - Number of days
+ */
+export async function getPairsInfoNDays(
+    startTimestamp,
+    endTime,
+    token0,
+    token1,
+    days
+) {
+    let findPairQuery =
+        `{
+    pairs(where:{name_in:["${token0}-` +
+        `${token1}"]})
+    {
+      id
+    }
+  }
+  `
+
+    try {
+        const findPair = await axios({
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
+            method: 'post',
+            data: {
+                query: findPairQuery,
+            },
+        })
+        let id = findPair.data.data.pairs[0].id
+        let pairName
+        if (id !== undefined) {
+            pairName = token0 + '-' + token1
+        } else {
+            pairName = token1 + '-' + token0
+        }
+        let query = `
+    {	
+      pairYears(first: 5 where:{name:"${pairName}"}){
+        dayPair(first:365, orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} })
+        {
+          
+            token1Price
+            token1PriceLow
+            token1PriceOpen
+            token1PriceHigh
+            timestamp
+            volumeToken0In
+            volumeToken0Out
+            volumeToken1In
+            volumeToken1Out
+          
+        }
+      }
+    }
+    `
+        const pairData = await axios({
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
+            method: 'post',
+            data: {
+                query: query,
+            },
+        })
+        const pair = pairData.data.data.pairYears
+        let data = []
+        let pairs = []
+        for (let c = 0; c < pair.length; ++c) {
+            for (let i = 0; i < pair[c].dayPair.length; ++i) {
+                let obj = {}
+                obj.token1PriceClose = pair[c].dayPair[i].token1Price
+                obj.token1PriceLow = pair[c].dayPair[i].token1PriceLow
+                obj.token1PriceOpen = pair[c].dayPair[i].token1PriceOpen
+                obj.token1PriceHigh = pair[c].dayPair[i].token1PriceHigh
+                obj.timestamp = pair[c].dayPair[i].timestamp
+                obj.volumeToken1In = pair[c].dayPair[i].volumeToken1In
+                obj.volumeToken1Out = pair[c].dayPair[i].volumeToken1Out
+                pairs.push(obj)
+            }
+        }
+        let [
+            prevToken1PriceOpen,
+            prevToken1PriceClose,
+            prevToken1PriceHigh,
+            prevToken1PriceLow,
+            prevVolumeToken1In,
+            prevVolumeToken1Out,
+        ] = [0, 0, 0, 0, 0, 0]
+
+        for (
+            let beginTimestamp = startTimestamp,
+                endTimestamp = startTimestamp + days * 86400;
+            beginTimestamp < endTime;
+            beginTimestamp += days * 86400, endTimestamp += days * 86400
+        ) {
+            let obj = {
+                beginTimestamp: beginTimestamp,
+                endTimestamp: endTimestamp,
+                token1PriceOpen: prevToken1PriceClose,
+                token1PriceClose: prevToken1PriceClose,
+                token1PriceHigh: prevToken1PriceClose,
+                token1PriceLow: prevToken1PriceClose,
+                volumeToken1In: 0,
+                volumeToken1Out: 0,
+            }
+            let isOpen = false
+            for (let j = 0; j < pairs.length; ++j) {
+                if (
+                    beginTimestamp <= pairs[j].timestamp &&
+                    pairs[j].timestamp < endTimestamp
+                ) {
+                    obj.token1PriceClose = Number(pairs[j].token1PriceClose)
+                    prevToken1PriceClose = Number(pairs[j].token1PriceClose)
+                    if (!isOpen) {
+                        obj.token1PriceOpen = Number(pairs[j].token1PriceOpen)
+                        obj.token1PriceLow = Number(pairs[j].token1PriceLow)
+                        isOpen = true
+                        prevToken1PriceOpen = Number(pairs[j].token1PriceOpen)
+                    }
+
+                    if (
+                        Number(pairs[j].token1PriceHigh) > obj.token1PriceHigh
+                    ) {
+                        obj.token1PriceHigh = Number(pairs[j].token1PriceHigh)
+                    }
+                    if (Number(pairs[j].token1PriceLow) < obj.token1PriceLow) {
+                        obj.token1PriceLow = Number(pairs[j].token1PriceLow)
+                    }
+                    obj.volumeToken1In += Number(pairs[j].volumeToken1In)
+                    obj.volumeToken1Out += Number(pairs[j].volumeToken1Out)
+                }
+            }
+            data.push(obj)
+        }
+        return data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+/**
+ * @dev : Get pairs (hours)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
+ */
 export async function getPairsInfoHours(
     startTimestamp,
     endTime,
@@ -319,7 +412,15 @@ export async function getPairsInfoHours(
         let beginTimestamp = startTimestamp
         let endTimestamp = startTimestamp + 3600
         let startIndexingTimestamp = 0
-        let prevToken1PriceClose = 0
+        let [
+            prevToken1PriceOpen,
+            prevToken1PriceClose,
+            prevToken1PriceHigh,
+            prevToken1PriceLow,
+            prevVolumeToken1In,
+            prevVolumeToken1Out,
+        ] = [0, 0, 0, 0, 0, 0]
+
         for (let j = 0; j < pairs.length; ++j) {
             if (
                 beginTimestamp <= Number(pairs[j].timestamp) &&
@@ -336,6 +437,7 @@ export async function getPairsInfoHours(
                     volumeToken1Out: pairs[j].volumeToken1Out,
                     timestamp: pairs[j].timestamp,
                 }
+                prevToken1PriceOpen = pairs[j].token1PriceOpen
                 prevToken1PriceClose = pairs[j].token1PriceClose
 
                 beginTimestamp += 3600
@@ -367,8 +469,6 @@ export async function getPairsInfoHours(
                     beginTimestamp <= Number(pairs[j].timestamp) &&
                     Number(pairs[j].timestamp) < endTimestamp
                 ) {
-                    prevToken1PriceClose = pairs[j].token1PriceClose
-
                     let objTmp = {
                         beginTimestamp: beginTimestamp,
                         endTimestamp: endTimestamp,
@@ -380,6 +480,9 @@ export async function getPairsInfoHours(
                         volumeToken1Out: pairs[j].volumeToken1Out,
                         timestamp: pairs[j].timestamp,
                     }
+                    prevToken1PriceOpen = pairs[j].token1PriceOpen
+                    prevToken1PriceClose = pairs[j].token1PriceClose
+
                     beginTimestamp += 3600
                     endTimestamp += 3600
 
@@ -402,10 +505,16 @@ export async function getPairsInfoHours(
             endTimestamp += 3600
         }
         return data
-    } catch (err) {
-        console.log(err)
-    }
+    } catch (err) {}
 }
+/**
+ * @dev : Get pairs (N hours)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
+ * @param hours - Number of hours
+ */
 export async function getPairsInfoNHours(
     startTimestamp,
     endTime,
@@ -490,12 +599,14 @@ export async function getPairsInfoNHours(
                 }
             }
         }
-        let prevToken1PriceOpen,
+        let [
+            prevToken1PriceOpen,
             prevToken1PriceClose,
             prevToken1PriceHigh,
             prevToken1PriceLow,
             prevVolumeToken1In,
-            prevVolumeToken1Out = [0, 0, 0, 0, 0, 0]
+            prevVolumeToken1Out,
+        ] = [0, 0, 0, 0, 0, 0]
 
         for (
             let beginTimestamp = startTimestamp,
@@ -506,10 +617,10 @@ export async function getPairsInfoNHours(
             let obj = {
                 beginTimestamp: beginTimestamp,
                 endTimestamp: endTimestamp,
-                token1PriceOpen: 0,
-                token1PriceClose: 0,
-                token1PriceHigh: 0,
-                token1PriceLow: 0,
+                token1PriceOpen: prevToken1PriceClose,
+                token1PriceClose: prevToken1PriceClose,
+                token1PriceHigh: prevToken1PriceClose,
+                token1PriceLow: prevToken1PriceClose,
                 volumeToken1In: 0,
                 volumeToken1Out: 0,
             }
@@ -520,11 +631,13 @@ export async function getPairsInfoNHours(
                     pairs[j].timestamp < endTimestamp
                 ) {
                     obj.token1PriceClose = Number(pairs[j].token1PriceClose)
+                    prevToken1PriceClose = Number(pairs[j].token1PriceClose)
 
                     if (!isOpen) {
                         obj.token1PriceOpen = Number(pairs[j].token1PriceOpen)
                         obj.token1PriceLow = Number(pairs[j].token1PriceLow)
                         isOpen = true
+                        prevToken1PriceOpen = Number(pairs[j].token1PriceOpen)
                     }
 
                     if (
@@ -540,13 +653,6 @@ export async function getPairsInfoNHours(
                 }
             }
 
-            prevToken1PriceClose = obj.token1PriceClose
-            if (obj.token1PriceOpen == 0) {
-                obj.token1PriceOpen = Number(prevToken1PriceClose)
-                obj.token1PriceClose = Number(prevToken1PriceClose)
-                obj.token1PriceHigh = Number(prevToken1PriceClose)
-                obj.token1PriceLow = Number(prevToken1PriceClose)
-            }
             data.push(obj)
         }
 
@@ -555,7 +661,13 @@ export async function getPairsInfoNHours(
         console.log(err)
     }
 }
-
+/**
+ * @dev : Get pairs (minutes)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
+ */
 export async function getPairsInfoMinutes(
     startTimestamp,
     endTime,
@@ -669,7 +781,14 @@ export async function getPairsInfoMinutes(
         let beginTimestamp = startTimestamp
         let endTimestamp = startTimestamp + 60
         let startIndexingTimestamp = 0
-        let prevToken1PriceClose = 0
+        let [
+            prevToken1PriceOpen,
+            prevToken1PriceClose,
+            prevToken1PriceHigh,
+            prevToken1PriceLow,
+            prevVolumeToken1In,
+            prevVolumeToken1Out,
+        ] = [0, 0, 0, 0, 0, 0]
         for (let j = 0; j < pairs.length; ++j) {
             if (
                 beginTimestamp <= Number(pairs[j].timestamp) &&
@@ -686,6 +805,7 @@ export async function getPairsInfoMinutes(
                     volumeToken1Out: pairs[j].volumeToken1Out,
                     timestamp: pairs[j].timestamp,
                 }
+                prevToken1PriceOpen = pairs[j].token1PriceOpen
                 prevToken1PriceClose = pairs[j].token1PriceClose
                 beginTimestamp += 60
                 endTimestamp += 60
@@ -727,6 +847,7 @@ export async function getPairsInfoMinutes(
                         volumeToken1Out: pairs[j].volumeToken1Out,
                         timestamp: pairs[j].timestamp,
                     }
+                    prevToken1PriceOpen = pairs[j].token1PriceOpen
                     prevToken1PriceClose = pairs[j].token1PriceClose
 
                     beginTimestamp += 60
@@ -749,6 +870,176 @@ export async function getPairsInfoMinutes(
             })
             beginTimestamp += 60
             endTimestamp += 60
+        }
+        return data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+/**
+ * @dev : Get pairs (N minutes)
+ * @param startTimestamp - Start timestamp for query
+ * @param endTime - End timestamp for query
+ * @param token0 - Token0 symbol e.g. OHM
+ * @param token1 - Token1 symbol e.g. DAI
+ * @param minutes - Number of minutes
+ */
+export async function getPairsInfoNMinutes(
+    startTimestamp,
+    endTime,
+    token0,
+    token1,
+    minutes
+) {
+    let findPairQuery =
+        `{
+    pairs(where:{name_in:["${token0}-` +
+        `${token1}"]})
+    {
+      id
+    }
+  }
+  `
+
+    try {
+        const findPair = await axios({
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
+            method: 'post',
+            data: {
+                query: findPairQuery,
+            },
+        })
+        let id = findPair.data.data.pairs[0].id
+        let pairName
+        if (id !== undefined) {
+            pairName = token0 + '-' + token1
+        } else {
+            pairName = token1 + '-' + token0
+        }
+        let query = `
+    {	
+      pairYears(first: 5 where:{name:"${pairName}"}){
+        dayPair(first:365, orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} })
+        {
+          hourPair(first:24 orderBy:timestamp)
+        {
+          minutePair(first:60 orderBy:timestamp)
+          {
+            token1Price
+            token1PriceLow
+            token1PriceOpen
+            token1PriceHigh
+            timestamp
+            volumeToken0In
+            volumeToken0Out
+            volumeToken1In
+            volumeToken1Out
+          }
+        }
+          
+        }
+      }
+    }
+    `
+        const pairData = await axios({
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/sushi-swap-ohm',
+            method: 'post',
+            data: {
+                query: query,
+            },
+        })
+        const pair = pairData.data.data.pairYears
+        let data = []
+        let pairs = []
+        for (let c = 0; c < pair.length; ++c) {
+            for (let i = 0; i < pair[c].dayPair.length; ++i) {
+                for (let j = 0; j < pair[c].dayPair[i].hourPair.length; ++j) {
+                    for (
+                        let k = 0;
+                        k < pair[c].dayPair[i].hourPair[j].minutePair.length;
+                        ++k
+                    ) {
+                        let obj = {}
+                        obj.token1PriceClose =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].token1Price
+                        obj.token1PriceLow =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].token1PriceLow
+                        obj.token1PriceOpen =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].token1PriceOpen
+                        obj.token1PriceHigh =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].token1PriceHigh
+                        obj.timestamp =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].timestamp
+                        obj.volumeToken1In =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].volumeToken1In
+                        obj.volumeToken1Out =
+                            pair[c].dayPair[i].hourPair[j].minutePair[
+                                k
+                            ].volumeToken1Out
+                        pairs.push(obj)
+                    }
+                }
+            }
+        }
+        // let prevToken1PriceOpen = 0, prevToken1PriceClose = 0
+        let [prevToken1PriceOpen, prevToken1PriceClose] = [0, 0]
+        for (
+            let beginTimestamp = startTimestamp,
+                endTimestamp = startTimestamp + minutes * 60;
+            beginTimestamp < endTime;
+            beginTimestamp += minutes * 60, endTimestamp += minutes * 60
+        ) {
+            let obj = {
+                beginTimestamp: beginTimestamp,
+                endTimestamp: endTimestamp,
+                token1PriceOpen: prevToken1PriceClose,
+                token1PriceClose: prevToken1PriceClose,
+                token1PriceHigh: prevToken1PriceClose,
+                token1PriceLow: prevToken1PriceClose,
+                volumeToken1In: 0,
+                volumeToken1Out: 0,
+            }
+            let isOpen = false
+            for (let j = 0; j < pairs.length; ++j) {
+                if (
+                    beginTimestamp <= pairs[j].timestamp &&
+                    pairs[j].timestamp < endTimestamp
+                ) {
+                    obj.token1PriceClose = Number(pairs[j].token1PriceClose)
+                    prevToken1PriceClose = Number(pairs[j].token1PriceClose)
+                    if (!isOpen) {
+                        prevToken1PriceOpen = Number(pairs[j].token1PriceOpen)
+                        obj.token1PriceOpen = Number(pairs[j].token1PriceOpen)
+                        obj.token1PriceLow = Number(pairs[j].token1PriceLow)
+                        isOpen = true
+                    }
+
+                    if (
+                        Number(pairs[j].token1PriceHigh) > obj.token1PriceHigh
+                    ) {
+                        obj.token1PriceHigh = Number(pairs[j].token1PriceHigh)
+                    }
+                    if (Number(pairs[j].token1PriceLow) < obj.token1PriceLow) {
+                        obj.token1PriceLow = Number(pairs[j].token1PriceLow)
+                    }
+                    obj.volumeToken1In += Number(pairs[j].volumeToken1In)
+                    obj.volumeToken1Out += Number(pairs[j].volumeToken1Out)
+                }
+            }
+            data.push(obj)
         }
         return data
     } catch (err) {
@@ -786,13 +1077,13 @@ export function mapPairs(pairs) {
 export function getPairsInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return getPairsInfoDays
+            return (...rest) => getPairsInfoDays(...rest, 1)
         case 1:
             return (...rest) => getPairsInfoNHours(...rest, 4)
         case 2:
-            return getPairsInfoHours
+            return (...rest) => getPairsInfoNHours(...rest, 1)
         case 3:
-            return getPairsInfoMinutes
+            return (...rest) => getPairsInfoNMinutes(...rest, 1)
         default:
             return
     }
