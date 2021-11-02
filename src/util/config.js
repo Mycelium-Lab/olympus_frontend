@@ -9,10 +9,9 @@ import {
 } from '../dataFetch/treasury/totalReserves'
 
 import {
-    getDepositByDay,
-    getDepositBy4Hours,
-    getDepositByHour,
-    getDepositByMinute,
+    getDepositByNDays,
+    getDepositByNHours,
+    getDepositByNMinutes,
     mapDeposit,
 } from '../dataFetch/treasury/deposit'
 import {
@@ -468,10 +467,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Deposited to Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
@@ -498,10 +497,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Deposited to Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
@@ -528,10 +527,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Deposited to Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
@@ -558,10 +557,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Deposited to Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
@@ -588,10 +587,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Deposited to Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
@@ -631,10 +630,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Withdrawn from Treasury Contract',
             [
-                getDepositByDay,
-                getDepositBy4Hours,
-                getDepositByHour,
-                getDepositByMinute,
+                (...args) => getDepositByNDays(...args, 1),
+                (...args) => getDepositByNHours(...args, 4),
+                (...args) => getDepositByNHours(...args, 1),
+                (...args) => getDepositByNMinutes(...args, 1),
             ],
             (deposit) =>
                 mapDeposit(
