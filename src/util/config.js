@@ -190,6 +190,30 @@ const setBaseHist = (
     return [hist]
 }
 
+// polar, e.g., staking & unstaking, the former is positive, the latter is negative
+const setBasePolarHist = (chart, data, series, dataProperties) => {
+    let posHist, negHist
+
+    if (!series) {
+        posHist = chart.addHistogramSeries({
+            ...baseHistConfig,
+            color: 'rgb(147,210,204)',
+        })
+
+        negHist = chart.addHistogramSeries({
+            ...baseHistConfig,
+            color: 'rgb(247,169,167)',
+        })
+    } else {
+        ;[posHist, negHist] = series
+    }
+
+    posHist.setData(data[dataProperties[0]])
+    negHist.setData(data[dataProperties[1]])
+
+    return [posHist, negHist]
+}
+
 export const methodPropsChartConfigs = {
     dex: [
         new MethodPropsChartConfig(
@@ -233,69 +257,65 @@ export const methodPropsChartConfigs = {
     staking: [
         new MethodPropsChartConfig(
             'Staking & Unstaking Volume, OHM',
-            (chart, data, series) => {
-                let stakedHist, unstakedHist
-
-                if (!series) {
-                    stakedHist = chart.addHistogramSeries({
-                        ...baseHistConfig,
-                        color: 'rgb(147,210,204)',
-                    })
-
-                    unstakedHist = chart.addHistogramSeries({
-                        ...baseHistConfig,
-                        color: 'rgb(247,169,167)',
-                    })
-                } else {
-                    ;[stakedHist, unstakedHist] = series
-                }
-
-                stakedHist.setData(data.staked)
-                unstakedHist.setData(data.unstaked)
-
-                return [stakedHist, unstakedHist]
-            },
-            null
-        ),
-        new MethodPropsChartConfig(
-            'Current Staked (Cumulative), OHM',
-            (...args) => setBaseHist(...args, 'currentStaked'),
-            null
-        ),
-        new MethodPropsChartConfig(
-            'Stake Count',
-            (...args) => setBaseHist(...args, 'stakeCount'),
-            'Times Staked per Candle'
-        ),
-        new MethodPropsChartConfig(
-            'Unstake Count',
-            (...args) => setBaseHist(...args, 'unstakeCount'),
-            'Times Unstaked per Candle'
-        ),
-        new MethodPropsChartConfig(
-            'Max Stake, OHM',
-            (...args) => setBaseHist(...args, 'stakedMax'),
-            'Max Amount of 1 Staking per Candle'
-        ),
-        new MethodPropsChartConfig(
-            'Max Unstake, OHM',
-            (...args) => setBaseHist(...args, 'unstakedMax'),
-            'Max Amount of 1 Unstaking per Candle'
-        ),
-        new MethodPropsChartConfig(
-            'Average Stake, OHM',
-            (...args) => setBaseHist(...args, 'stakedAvg'),
-            'Average Amount of 1 Staking per Candle'
-        ),
-        new MethodPropsChartConfig(
-            'Average Unstake, OHM',
-            (...args) => setBaseHist(...args, 'unstakedAvg'),
-            'Average Amount of 1 Unstaking per Candle'
+            (...args) => setBasePolarHist(...args, ['staked', 'unstaked']),
+            'Staking (+) and Unstaking (-) Volume per Bar'
         ),
         new MethodPropsChartConfig(
             'Netto Staked, OHM',
             (...args) => setBaseHist(...args, 'nettoStaked'),
-            'Staked - Unstaked per Candle'
+            'Staked - Unstaked per Bar'
+        ),
+        new MethodPropsChartConfig(
+            'Staking & Unstaking Volume with Netto, OHM',
+            (chart, data, series) => {
+                let posHist, negHist, nettoHist
+
+                if (!series) {
+                    posHist = chart.addHistogramSeries({
+                        ...baseHistConfig,
+                        color: 'rgb(147,210,204)',
+                    })
+
+                    negHist = chart.addHistogramSeries({
+                        ...baseHistConfig,
+                        color: 'rgb(247,169,167)',
+                    })
+
+                    nettoHist = chart.addHistogramSeries(baseLineConfig)
+                } else {
+                    ;[posHist, negHist, nettoHist] = series
+                }
+
+                posHist.setData(data.stakedWithNetto)
+                negHist.setData(data.unstakedWithNetto)
+                nettoHist.setData(data.nettoStaked)
+
+                return [posHist, negHist, nettoHist]
+            },
+            'Staking (+) and Unstaking (-) Volume Summed with Netto per Bar'
+        ),
+        new MethodPropsChartConfig(
+            'Current Staked (Cumulative), OHM',
+            (...args) => setBaseHist(...args, 'currentStaked'),
+            'OHM Staked at the Moment'
+        ),
+        new MethodPropsChartConfig(
+            'Stake & Unstake Count',
+            (...args) =>
+                setBasePolarHist(...args, ['stakeCount', 'unstakeCount']),
+            'Times Staked (+) and Unstated (-) per Bar'
+        ),
+        new MethodPropsChartConfig(
+            'Max Stake & Unstake, OHM',
+            (...args) =>
+                setBasePolarHist(...args, ['stakedMax', 'unstakedMax']),
+            'Max Amount of 1 Staking (+) and Unstaking (-) per Bar'
+        ),
+        new MethodPropsChartConfig(
+            'Average Stake & Unstake, OHM',
+            (...args) =>
+                setBasePolarHist(...args, ['stakedAvg', 'unstakedAvg']),
+            'Average Amount of 1 Staking (+) and Unstaking (-) per Bar'
         ),
         new MethodPropsChartConfig(
             'Staked to Unstaked, %',
@@ -305,7 +325,7 @@ export const methodPropsChartConfigs = {
                         type: 'percent',
                     },
                 }),
-            '[-1 x 100 x (Unstaked - Staked) / Unstaked] per Candle'
+            '[-1 x 100 x (Unstaked - Staked) / Unstaked] per Bar'
         ),
         new MethodPropsChartConfig(
             'Unstaked of Total Staked, %',
@@ -315,7 +335,7 @@ export const methodPropsChartConfigs = {
                         type: 'percent',
                     },
                 }),
-            '[100 x (Unstaked / Current Total Staked)] per Candle'
+            '[-1 x 100 x (Unstaked / Current Total Staked)] per Bar'
         ),
     ],
     rebases: [

@@ -71,10 +71,16 @@ export async function getStakesInfoDays(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                obj.unstakedToTotalStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                    -1 *
+                    100 *
+                    ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                        stakes[j].amountUnstaked)
+                obj.unstakedOfTotalStakedPercent =
+                    (-1 * 100 * stakes[j].amountUnstaked) /
+                    stakes[j].currentStaked
 
                 beginTimestamp += 86400
                 endTimestamp += 86400
@@ -125,12 +131,16 @@ export async function getStakesInfoDays(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
+                        -1 *
                         100 *
-                        (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 *
-                        (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
 
                     beginTimestamp += 86400
                     endTimestamp += 86400
@@ -254,10 +264,16 @@ export async function getStakesInfoNDays(startTimestamp, endTime, days) {
                     }
                     obj.stakeAvg = obj.amountStaked / obj.stakeCount
                     obj.unstakeAvg = obj.amountUnstaked / obj.unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
-                        100 * (obj.amountUnstaked / obj.amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 * (obj.amountUnstaked / obj.currentStaked)
+                        -1 *
+                        100 *
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
                 }
             }
             data.push(obj)
@@ -360,10 +376,16 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                obj.unstakedToTotalStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                    -1 *
+                    100 *
+                    ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                        stakes[j].amountUnstaked)
+                obj.unstakedOfTotalStakedPercent =
+                    (-1 * 100 * stakes[j].amountUnstaked) /
+                    stakes[j].currentStaked
 
                 beginTimestamp += 3600
                 endTimestamp += 3600
@@ -414,12 +436,16 @@ export async function getStakesInfoHours(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
+                        -1 *
                         100 *
-                        (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 *
-                        (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
 
                     beginTimestamp += 3600
                     endTimestamp += 3600
@@ -561,10 +587,16 @@ export async function getStakesInfoNHours(startTimestamp, endTime, hours) {
                     }
                     obj.stakeAvg = obj.amountStaked / obj.stakeCount
                     obj.unstakeAvg = obj.amountUnstaked / obj.unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
-                        100 * (obj.amountUnstaked / obj.amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 * (obj.amountUnstaked / obj.currentStaked)
+                        -1 *
+                        100 *
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
                 }
             }
             data.push(obj)
@@ -694,10 +726,16 @@ export async function getStakesInfoMinutes(startTimestamp, endTime) {
                 obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                 obj.unstakeAvg =
                     stakes[j].amountUnstaked / stakes[j].unstakeCount
+                obj.nettoStaked =
+                    stakes[j].amountStaked - stakes[j].amountUnstaked
                 obj.unstakedToStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                obj.unstakedToTotalStakedPercent =
-                    100 * (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                    -1 *
+                    100 *
+                    ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                        stakes[j].amountUnstaked)
+                obj.unstakedOfTotalStakedPercent =
+                    (-1 * 100 * stakes[j].amountUnstaked) /
+                    stakes[j].currentStaked
 
                 beginTimestamp += 60
                 endTimestamp += 60
@@ -748,12 +786,16 @@ export async function getStakesInfoMinutes(startTimestamp, endTime) {
                     obj.stakeAvg = stakes[j].amountStaked / stakes[j].stakeCount
                     obj.unstakeAvg =
                         stakes[j].amountUnstaked / stakes[j].unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
+                        -1 *
                         100 *
-                        (stakes[j].amountUnstaked / stakes[j].amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 *
-                        (stakes[j].amountUnstaked / stakes[j].currentStaked)
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
 
                     beginTimestamp += 60
                     endTimestamp += 60
@@ -923,10 +965,18 @@ export async function getStakesInfoNMinutes(startTimestamp, endTime, minutes) {
                     }
                     obj.stakeAvg = obj.amountStaked / obj.stakeCount
                     obj.unstakeAvg = obj.amountUnstaked / obj.unstakeCount
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
+                    obj.nettoStaked =
+                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
-                        100 * (obj.amountUnstaked / obj.amountStaked)
-                    obj.unstakedToTotalStakedPercent =
-                        100 * (obj.amountUnstaked / obj.currentStaked)
+                        -1 *
+                        100 *
+                        ((stakes[j].amountUnstaked - stakes[j].amountStaked) /
+                            stakes[j].amountUnstaked)
+                    obj.unstakedOfTotalStakedPercent =
+                        (-1 * 100 * stakes[j].amountUnstaked) /
+                        stakes[j].currentStaked
                 }
             }
             data.push(obj)
@@ -970,17 +1020,33 @@ export function mapStakes(stakes) {
             )
             acc.stakedMax.push(new TVTimeValueObject(Number(e.stakeMax), time))
             acc.unstakedMax.push(
-                new TVTimeValueObject(Number(e.unstakeMax), time)
+                new TVTimeValueObject(-Number(e.unstakeMax), time)
             )
             acc.stakedAvg.push(new TVTimeValueObject(Number(e.stakeAvg), time))
             acc.unstakedAvg.push(
-                new TVTimeValueObject(Number(e.unstakeAvg), time)
+                new TVTimeValueObject(-Number(e.unstakeAvg), time)
             )
             acc.stakeCount.push(
                 new TVTimeValueObject(Number(e.stakeCount), time)
             )
             acc.unstakeCount.push(
-                new TVTimeValueObject(Number(e.unstakeCount), time)
+                new TVTimeValueObject(-Number(e.unstakeCount), time)
+            )
+            acc.stakedWithNetto.push(
+                new TVTimeValueObject(
+                    Number(e.nettoStaked) >= 0
+                        ? Number(e.nettoStaked) + Number(e.amountStaked)
+                        : Number(e.amountStaked),
+                    time
+                )
+            )
+            acc.unstakedWithNetto.push(
+                new TVTimeValueObject(
+                    Number(e.nettoStaked) < 0
+                        ? Number(e.nettoStaked) - Number(e.amountUnstaked)
+                        : -Number(e.amountUnstaked),
+                    time
+                )
             )
             return acc
         },
@@ -997,6 +1063,8 @@ export function mapStakes(stakes) {
             unstakedOfTotalStakedPercent: [],
             stakeCount: [],
             unstakeCount: [],
+            stakedWithNetto: [],
+            unstakedWithNetto: [],
         }
     )
 }
