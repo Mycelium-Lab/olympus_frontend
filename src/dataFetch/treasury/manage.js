@@ -22,9 +22,10 @@ const dayQuery = `
 }
   `
 
-export async function getManageByDay(
+export async function getManageByNDays(
     startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
+    endTimestamp = Date.now() / 1000,
+    n
 ) {
     try {
         let bigArray = await reformToBigArrayForDays(
@@ -32,10 +33,11 @@ export async function getManageByDay(
         )
 
         for (let i = 0; i < bigArray.length; i++) {
-            bigArray[i].array = fillBigArrayForDays(
+            bigArray[i].array = fillBigArrayForNDays(
                 bigArray[i].array,
                 startTimestamp,
-                endTimestamp
+                endTimestamp,
+                n
             )
         }
 
@@ -185,6 +187,36 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
     return out
 }
 
+function fillBigArrayForNDays(stakes, startTimestamp, endTime, days) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + days * day;
+        beginTimestamp < endTime;
+        beginTimestamp += days * day, endTimestamp += days * day
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            sumAmount: data.length == 0 ? 0 : data[data.length - 1].sumAmount,
+            sender: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.sumAmount = Number(stakes[j].sumAmount)
+                obj.sender.concat(stakes[j].sender)
+            }
+        }
+        data.push(obj)
+    }
+    return data
+}
+
 const hour = 60 * 60
 
 const hourQuery = `
@@ -203,11 +235,12 @@ const hourQuery = `
      }
    }
 }
-  `
+`
 
-export async function getManageByHour(
+export async function getManageByNHours(
     startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
+    endTimestamp = Date.now() / 1000,
+    n
 ) {
     try {
         let bigArray = await reformToBigArrayForHour(
@@ -215,33 +248,11 @@ export async function getManageByHour(
         )
 
         for (let i = 0; i < bigArray.length; i++) {
-            bigArray[i].array = fillBigArrayForHours(
+            bigArray[i].array = fillBigArrayForNHours(
                 bigArray[i].array,
                 startTimestamp,
-                endTimestamp
-            )
-        }
-
-        return bigArray
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-export async function getManageBy4Hours(
-    startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
-) {
-    try {
-        let bigArray = await reformToBigArrayForHour(
-            await getManageByHoursFromGraph()
-        )
-
-        for (let i = 0; i < bigArray.length; i++) {
-            bigArray[i].array = fillBigArrayFor4Hours(
-                bigArray[i].array,
-                startTimestamp,
-                endTimestamp
+                endTimestamp,
+                n
             )
         }
 
@@ -561,6 +572,36 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
     return out
 }
 
+function fillBigArrayForNHours(stakes, startTimestamp, endTime, hours) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + hours * 3600;
+        beginTimestamp < endTime;
+        beginTimestamp += hours * 3600, endTimestamp += hours * 3600
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            sumAmount: data.length == 0 ? 0 : data[data.length - 1].sumAmount,
+            sender: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.sumAmount = Number(stakes[j].sumAmount)
+                obj.sender.concat(stakes[j].sender)
+            }
+        }
+        data.push(obj)
+    }
+    return data
+}
+
 const minute = 60
 
 const minuteQuery = `
@@ -578,13 +619,13 @@ const minuteQuery = `
        }
      }
    }
-   }
-   
-  `
+}
+`
 
-export async function getManageByMinute(
+export async function getManageByNMinutes(
     startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
+    endTimestamp = Date.now() / 1000,
+    n
 ) {
     try {
         let bigArray = await reformToBigArrayForMinutes(
@@ -592,10 +633,11 @@ export async function getManageByMinute(
         )
 
         for (let i = 0; i < bigArray.length; i++) {
-            bigArray[i].array = fillBigArrayForMinutes(
+            bigArray[i].array = fillBigArrayForNMinutes(
                 bigArray[i].array,
                 startTimestamp,
-                endTimestamp
+                endTimestamp,
+                n
             )
         }
 
@@ -689,12 +731,16 @@ function fillBigArrayForMinutes(bigArray, startTimestamp, endTimestamp) {
         let timestamp = getWholePeriodOfTime(startTimestamp, minute)
         timestamp += minute
         while (timestamp <= endTimestamp) {
-            out.push({
-                timestamp: timestamp,
-                amount: 0,
-                sender: [],
-                sumAmount: bigArray[bigArray.length - 1].sumAmount,
-            })
+            if (timestamp > endTimestamp) return out
+
+            if (timestamp >= startTimestamp) {
+                out.push({
+                    timestamp: timestamp,
+                    amount: 0,
+                    sender: [],
+                    sumAmount: bigArray[bigArray.length - 1].sumAmount,
+                })
+            }
             timestamp += minute
         }
         return out
@@ -756,6 +802,36 @@ function fillBigArrayForMinutes(bigArray, startTimestamp, endTimestamp) {
         timestamp += minute
     }
     return out
+}
+
+function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + minutes * minute;
+        beginTimestamp < endTime;
+        beginTimestamp += minutes * minute, endTimestamp += minutes * minute
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            sumAmount: data.length == 0 ? 0 : data[data.length - 1].sumAmount,
+            sender: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.sumAmount = Number(stakes[j].sumAmount)
+                obj.sender.concat(stakes[j].sender)
+            }
+        }
+        data.push(obj)
+    }
+    return data
 }
 
 export function mapManage(manage, token) {

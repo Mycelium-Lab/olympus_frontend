@@ -18,7 +18,7 @@ const dayQuery = `
   }
   `
 
-export async function getMintRewardsByDay(
+export async function getMintRewardsByDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000
 ) {
@@ -27,6 +27,23 @@ export async function getMintRewardsByDay(
             reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()),
             startTimestamp,
             endTimestamp
+        )
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export async function getMintRewardsByNDays(
+    startTimestamp = 0,
+    endTimestamp = Date.now() / 1000,
+    n
+) {
+    try {
+        return fillBigArrayForNDays(
+            reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()),
+            startTimestamp,
+            endTimestamp,
+            n
         )
     } catch (err) {
         console.log(err)
@@ -131,6 +148,36 @@ function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
     return out
 }
 
+function fillBigArrayForNDays(stakes, startTimestamp, endTime, days) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + days * day;
+        beginTimestamp < endTime;
+        beginTimestamp += days * day, endTimestamp += days * day
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            recipient: [],
+            caller: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.recipient.concat(stakes[j].recipient)
+                obj.caller.concat(stakes[j].caller)
+            }
+        }
+        data.push(obj)
+    }
+    return data
+}
+
 const hour = 60 * 60
 
 const hourQuery = `
@@ -148,10 +195,9 @@ const hourQuery = `
       }
     }
   }
-
   `
 
-export async function getMintRewardsByHour(
+export async function getMintRewardsByHours(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000
 ) {
@@ -166,15 +212,17 @@ export async function getMintRewardsByHour(
     }
 }
 
-export async function getMintRewardsBy4Hours(
+export async function getMintRewardsByNHours(
     startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
+    endTimestamp = Date.now() / 1000,
+    n
 ) {
     try {
-        return fillBigArrayFor4Hours(
+        return fillBigArrayForNHours(
             reformToBigArrayForHours(await getTotalReserveByHoursFromGraph()),
             startTimestamp,
-            endTimestamp
+            endTimestamp,
+            n
         )
     } catch (err) {
         console.log(err)
@@ -417,6 +465,36 @@ function fillBigArrayFor4Hours(bigArray, startTimestamp, endTimestamp) {
     return out
 }
 
+function fillBigArrayForNHours(stakes, startTimestamp, endTime, hours) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + hours * hour;
+        beginTimestamp < endTime;
+        beginTimestamp += hours * hour, endTimestamp += hours * hour
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            recipient: [],
+            caller: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.recipient.concat(stakes[j].recipient)
+                obj.caller.concat(stakes[j].caller)
+            }
+        }
+        data.push(obj)
+    }
+    return data
+}
+
 const minute = 60
 
 const minuteQuery = `
@@ -436,7 +514,7 @@ const minuteQuery = `
   }
   `
 
-export async function getMintRewardsByMinute(
+export async function getMintRewardsByMinutes(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000
 ) {
@@ -447,6 +525,25 @@ export async function getMintRewardsByMinute(
             ),
             startTimestamp,
             endTimestamp
+        )
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export async function getMintRewardsByNMinutes(
+    startTimestamp = 0,
+    endTimestamp = Date.now() / 1000,
+    n
+) {
+    try {
+        return fillBigArrayForNMinutes(
+            reformToBigArrayForMinutes(
+                await getTotalReserveByMinutesFromGraph()
+            ),
+            startTimestamp,
+            endTimestamp,
+            n
         )
     } catch (err) {
         console.log(err)
@@ -485,6 +582,7 @@ function reformToBigArrayForMinutes(days) {
     }
     return out
 }
+
 /**
  * fills the array and divides it into equal time intervals
  * @param {*} bigArray
@@ -515,7 +613,6 @@ function fillBigArrayForMinutes(bigArray, startTimestamp, endTimestamp) {
         timestamp += minute
         while (timestamp < nextTimestamp) {
             if (timestamp > endTimestamp) return out
-
             if (timestamp >= startTimestamp) {
                 out.push({
                     amount: 0,
@@ -553,6 +650,36 @@ function fillBigArrayForMinutes(bigArray, startTimestamp, endTimestamp) {
     }
 
     return out
+}
+
+function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
+    let data = []
+    for (
+        let beginTimestamp = startTimestamp,
+            endTimestamp = startTimestamp + minutes * minute;
+        beginTimestamp < endTime;
+        beginTimestamp += minutes * minute, endTimestamp += minutes * minute
+    ) {
+        let obj = {
+            timestamp: beginTimestamp,
+            endTimestamp: endTimestamp,
+            amount: 0,
+            recipient: [],
+            caller: [],
+        }
+        for (let j = 0; j < stakes.length; ++j) {
+            if (
+                beginTimestamp <= stakes[j].timestamp &&
+                stakes[j].timestamp < endTimestamp
+            ) {
+                obj.amount += Number(stakes[j].amount)
+                obj.recipient.concat(stakes[j].recipient)
+                obj.caller.concat(stakes[j].caller)
+            }
+        }
+        data.push(obj)
+    }
+    return data
 }
 
 export function mapMintRewards(minted_rewards) {

@@ -1,10 +1,9 @@
 import moment from 'moment'
 
 import {
-    getTotalReservesByDay,
-    getTotalReservesBy4Hours,
-    getTotalReservesByHour,
-    getTotalReservesByMinute,
+    getTotalReservesByNDays,
+    getTotalReservesByNHours,
+    getTotalReservesByNMinutes,
     mapTotalReserves,
 } from '../dataFetch/treasury/totalReserves'
 
@@ -15,17 +14,15 @@ import {
     mapDeposit,
 } from '../dataFetch/treasury/deposit'
 import {
-    getMintRewardsByDay,
-    getMintRewardsBy4Hours,
-    getMintRewardsByHour,
-    getMintRewardsByMinute,
+    getMintRewardsByNDays,
+    getMintRewardsByNHours,
+    getMintRewardsByNMinutes,
     mapMintRewards,
 } from '../dataFetch/treasury/mintRewards'
 import {
-    getManageByDay,
-    getManageBy4Hours,
-    getManageByHour,
-    getManageByMinute,
+    getManageByNDays,
+    getManageByNHours,
+    getManageByNMinutes,
     mapManage,
 } from '../dataFetch/treasury/manage'
 
@@ -474,10 +471,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'total_reserves'),
             'How Treasury Contract Estimates its Reserves (Holdings of 4 Reserve Tokens: DAI, OHM, LUSD, wETH ) in a 1 Token = 1 OHM Proportion via the valueOf function',
             [
-                getTotalReservesByDay,
-                getTotalReservesBy4Hours,
-                getTotalReservesByHour,
-                getTotalReservesByMinute,
+                (...args) => getTotalReservesByNDays(...args, 1),
+                (...args) => getTotalReservesByNHours(...args, 4),
+                (...args) => getTotalReservesByNHours(...args, 1),
+                (...args) => getTotalReservesByNMinutes(...args, 1),
             ],
             mapTotalReserves
         ),
@@ -503,10 +500,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Withdrawn from Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
@@ -533,10 +530,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Withdrawn from Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
@@ -563,10 +560,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Withdrawn from Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
@@ -593,10 +590,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Withdrawn from Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
@@ -623,10 +620,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Withdrawn from Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
@@ -637,10 +634,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Deposited to Treasury Contract',
             [
-                getManageByDay,
-                getManageBy4Hours,
-                getManageByHour,
-                getManageByMinute,
+                (...args) => getManageByNDays(...args, 1),
+                (...args) => getManageByNHours(...args, 4),
+                (...args) => getManageByNHours(...args, 1),
+                (...args) => getManageByNMinutes(...args, 1),
             ],
             (manage) =>
                 mapManage(manage, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
@@ -667,10 +664,10 @@ export const methodPropsChartConfigs = {
             (...args) => setBaseHist(...args, 'minted_rewards'),
             "Rewards Minted by Treasury For Distributing Stakers' Rewards to V1 and V2 Staking Contracts",
             [
-                getMintRewardsByDay,
-                getMintRewardsBy4Hours,
-                getMintRewardsByHour,
-                getMintRewardsByMinute,
+                (...args) => getMintRewardsByNDays(...args, 1),
+                (...args) => getMintRewardsByNHours(...args, 4),
+                (...args) => getMintRewardsByNHours(...args, 1),
+                (...args) => getMintRewardsByNMinutes(...args, 1),
             ],
             mapMintRewards
         ),
