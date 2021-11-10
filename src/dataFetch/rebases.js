@@ -7,18 +7,18 @@ import axios from 'axios'
  */
 export async function getRebasesInfoDays(startTimestamp, endTime) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            percentage
-            id
-            timestamp
-          }
-        }
-        
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             percentage
+             id
+             timestamp
+           }
+         }
+         
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -82,17 +82,17 @@ export async function getRebasesInfoDays(startTimestamp, endTime) {
 
 export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            percentage
-            id
-            timestamp
-          }
-        }
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             percentage
+             id
+             timestamp
+           }
+         }
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -135,7 +135,7 @@ export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
                     data[j].timestamp < endTimestamp
                 ) {
                     rebasesCount++
-                    percentageSum += data[j].percentage
+                    percentageSum += Number(data[j].percentage)
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
@@ -156,22 +156,22 @@ export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
 
 export async function getRebasesInfoHours(startTimestamp, endTime) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            hourRebase(first: 24 orderBy:timestamp)
-            {
-              
-                percentage
-                id
-                timestamp
-              
-            }
-          }
-        }
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             hourRebase(first: 24 orderBy:timestamp)
+             {
+               
+                 percentage
+                 id
+                 timestamp
+               
+             }
+           }
+         }
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -247,22 +247,22 @@ export async function getRebasesInfoHours(startTimestamp, endTime) {
 
 export async function getRebasesInfoNHours(startTimestamp, endTime, hours) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            hourRebase(first: 24 orderBy:timestamp)
-            {
-              
-                percentage
-                id
-                timestamp
-              
-            }
-          }
-        }
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             hourRebase(first: 24 orderBy:timestamp)
+             {
+               
+                 percentage
+                 id
+                 timestamp
+               
+             }
+           }
+         }
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -314,7 +314,7 @@ export async function getRebasesInfoNHours(startTimestamp, endTime, hours) {
                     data[j].timestamp < endTimestamp
                 ) {
                     rebasesCount++
-                    percentageSum += data[j].percentage
+                    percentageSum += Number(data[j].percentage)
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
@@ -335,24 +335,24 @@ export async function getRebasesInfoNHours(startTimestamp, endTime, hours) {
 
 export async function getRebasesInfoMinutes(startTimestamp, endTime) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            hourRebase(first: 24 orderBy:timestamp)
-            {
-              minuteRebase(first:60 orderBy:timestamp)
-              {
-                percentage
-                id
-                timestamp
-  
-              }
-            }
-          }
-        }
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             hourRebase(first: 24 orderBy:timestamp)
+             {
+               minuteRebase(first:60 orderBy:timestamp)
+               {
+                 percentage
+                 id
+                 timestamp
+   
+               }
+             }
+           }
+         }
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -440,24 +440,24 @@ export async function getRebasesInfoMinutes(startTimestamp, endTime) {
 
 export async function getRebasesInfoNMinutes(startTimestamp, endTime, minutes) {
     let rebaseQuery = `
-    {
-        rebaseYears(first: 3){
-          dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
-            hourRebase(first: 24 orderBy:timestamp)
-            {
-              minuteRebase(first:60 orderBy:timestamp)
-              {
-                percentage
-                id
-                timestamp
-  
-              }
-            }
-          }
-        }
-      }
-      
-    `
+     {
+         rebaseYears(first: 3){
+           dayRebase(first:365 orderBy:timestamp where:{timestamp_gte: ${startTimestamp}, timestamp_lt:${endTime} }){
+             hourRebase(first: 24 orderBy:timestamp)
+             {
+               minuteRebase(first:60 orderBy:timestamp)
+               {
+                 percentage
+                 id
+                 timestamp
+   
+               }
+             }
+           }
+         }
+       }
+       
+     `
     try {
         const rebaseData = await axios({
             url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
@@ -531,7 +531,7 @@ export async function getRebasesInfoNMinutes(startTimestamp, endTime, minutes) {
                     data[j].timestamp < endTimestamp
                 ) {
                     rebasesCount++
-                    percentageSum += data[j].percentage
+                    percentageSum += Number(data[j].percentage)
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
