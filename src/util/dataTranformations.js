@@ -153,3 +153,7 @@ export const transformTimezone = (dataSet, timezoneIndex = 0) => {
         return acc
     }, {})
 }
+
+export const dateFormatter = (date) => {
+    return '(' + moment.utc(date).local().format('YY-MM-DD hh:mm:ss') + ')'
+}
