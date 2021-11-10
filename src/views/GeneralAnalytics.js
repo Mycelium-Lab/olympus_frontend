@@ -56,8 +56,8 @@ export default function GeneralAnalytics() {
         defaultTimezone ? parseInt(defaultTimezone) : null
     )
 
-    const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 0)
-    const [timezone, setTimezone] = useState(currentDefaultTimezone ?? 11)
+    const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 1) // 1D
+    const [timezone, setTimezone] = useState(currentDefaultTimezone ?? 11) // UTC+00:00
 
     const [isGlobalLoading, setIsGlobalLoading] = useState(false)
     const [isPartialLoading, setIsPartialLoading] = useState(false)
@@ -291,8 +291,16 @@ export default function GeneralAnalytics() {
         setUpdateInterval(
             setInterval(async () => {
                 try {
-                    const startDate = moment().utc().startOf('day').unix()
-                    const endDate = moment().utc().endOf('day').unix()
+                    // for intervals > 1D (e.g., 1W), set larger boundaries for incoming queries
+                    const boundaryTimeframeType = timeframe > 0 ? 'day' : 'week'
+                    const startDate = moment()
+                        .utc()
+                        .startOf(boundaryTimeframeType)
+                        .unix()
+                    const endDate = moment()
+                        .utc()
+                        .endOf(boundaryTimeframeType)
+                        .unix()
 
                     const updatePromises = await Promise.all([
                         getMappedScData(

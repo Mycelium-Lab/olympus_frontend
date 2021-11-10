@@ -1,30 +1,15 @@
 import moment from 'moment'
 
 import {
-    getTotalReservesByNDays,
-    getTotalReservesByNHours,
-    getTotalReservesByNMinutes,
+    totalReservesFuncs,
     mapTotalReserves,
 } from '../dataFetch/treasury/totalReserves'
-
+import { depositFuncs, mapDeposit } from '../dataFetch/treasury/deposit'
 import {
-    getDepositByNDays,
-    getDepositByNHours,
-    getDepositByNMinutes,
-    mapDeposit,
-} from '../dataFetch/treasury/deposit'
-import {
-    getMintRewardsByNDays,
-    getMintRewardsByNHours,
-    getMintRewardsByNMinutes,
+    mintRewardsFuncs,
     mapMintRewards,
 } from '../dataFetch/treasury/mintRewards'
-import {
-    getManageByNDays,
-    getManageByNHours,
-    getManageByNMinutes,
-    mapManage,
-} from '../dataFetch/treasury/manage'
+import { manageFuncs, mapManage } from '../dataFetch/treasury/manage'
 
 export const chartConfig = {
     width: 800,
@@ -92,14 +77,28 @@ export const baseGranularityUnix = 86400
 export const timeframesConfig = (() => {
     const nextDayMidnight = moment().utc().add(1, 'days').startOf('day')
 
+    const weeklyFetchBackDelta = 200
     const dailyFetchBackDelta = 200
+    const eightHourlyFetchBackDelta = 56
     const fourHourlyFetchBackDelta = 25
     const hourlyFetchBackDelta = 10
+    const fifteenMinutelyFetchBackDelta = 6
+    const fiveMinutelyFetchBackDelta = 4
     const minutelyFetchBackDelta = 2
+
+    const initialWeeklyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(weeklyFetchBackDelta, 'days')
+        .unix()
 
     const initialDailyTimestamp = nextDayMidnight
         .clone()
         .subtract(dailyFetchBackDelta, 'days')
+        .unix()
+
+    const inititalEightHourlyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(eightHourlyFetchBackDelta, 'days')
         .unix()
 
     const initialFourHourlyTimestamp = nextDayMidnight
@@ -112,6 +111,16 @@ export const timeframesConfig = (() => {
         .subtract(hourlyFetchBackDelta, 'days')
         .unix()
 
+    const initialFifteenMinutelyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(fifteenMinutelyFetchBackDelta, 'days')
+        .unix()
+
+    const initialFiveMinutelyTimestamp = nextDayMidnight
+        .clone()
+        .subtract(fiveMinutelyFetchBackDelta, 'days')
+        .unix()
+
     const initialMinutelyTimestamp = nextDayMidnight
         .clone()
         .subtract(minutelyFetchBackDelta, 'days')
@@ -121,11 +130,25 @@ export const timeframesConfig = (() => {
 
     return [
         {
+            name: '1W',
+            initialTimestamp: initialWeeklyTimestamp,
+            endTimestamp,
+            fetchBackDelta: weeklyFetchBackDelta,
+            intervalDiff: 86400 * 7,
+        },
+        {
             name: '1D',
             initialTimestamp: initialDailyTimestamp,
             endTimestamp,
             fetchBackDelta: dailyFetchBackDelta,
             intervalDiff: 86400,
+        },
+        {
+            name: '8H',
+            initialTimestamp: inititalEightHourlyTimestamp,
+            endTimestamp,
+            fetchBackDelta: eightHourlyFetchBackDelta,
+            intervalDiff: 86400 / 3,
         },
         {
             name: '4H',
@@ -140,6 +163,20 @@ export const timeframesConfig = (() => {
             endTimestamp,
             fetchBackDelta: hourlyFetchBackDelta,
             intervalDiff: 86400 / 24,
+        },
+        {
+            name: '15M',
+            initialTimestamp: initialFifteenMinutelyTimestamp,
+            endTimestamp,
+            fetchBackDelta: fifteenMinutelyFetchBackDelta,
+            intervalDiff: 86400 / 24 / 4,
+        },
+        {
+            name: '5M',
+            initialTimestamp: initialFiveMinutelyTimestamp,
+            endTimestamp,
+            fetchBackDelta: fiveMinutelyFetchBackDelta,
+            intervalDiff: 86400 / 24 / 12,
         },
         {
             name: '1M',
@@ -470,12 +507,7 @@ export const methodPropsChartConfigs = {
             'Total Reserves (Rough Contract Estimate), OHM',
             (...args) => setBaseHist(...args, 'total_reserves'),
             'How Treasury Contract Estimates its Reserves (Holdings of 4 Reserve Tokens: DAI, OHM, LUSD, wETH ) in a 1 Token = 1 OHM Proportion via the valueOf function',
-            [
-                (...args) => getTotalReservesByNDays(...args, 1),
-                (...args) => getTotalReservesByNHours(...args, 4),
-                (...args) => getTotalReservesByNHours(...args, 1),
-                (...args) => getTotalReservesByNMinutes(...args, 1),
-            ],
+            totalReservesFuncs,
             mapTotalReserves
         ),
 
@@ -483,12 +515,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, DAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Deposited to Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -499,12 +526,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), DAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Withdrawn from Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
         ),
@@ -513,12 +535,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, FRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Deposited to Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -529,12 +546,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), FRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Withdrawn from Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
         ),
@@ -543,12 +555,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, LUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Deposited to Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -559,12 +566,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), LUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Withdrawn from Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
         ),
@@ -573,12 +575,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, LP OHMDAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Deposited to Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -589,12 +586,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), LP OHMDAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Withdrawn from Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
         ),
@@ -603,12 +595,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Deposited to Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -619,12 +606,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Withdrawn from Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
         ),
@@ -633,12 +615,7 @@ export const methodPropsChartConfigs = {
             'Amount Managed (Withdrawn), LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Deposited to Treasury Contract',
-            [
-                (...args) => getManageByNDays(...args, 1),
-                (...args) => getManageByNHours(...args, 4),
-                (...args) => getManageByNHours(...args, 1),
-                (...args) => getManageByNMinutes(...args, 1),
-            ],
+            manageFuncs,
             (manage) =>
                 mapManage(manage, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
         ),
@@ -646,12 +623,7 @@ export const methodPropsChartConfigs = {
             'Amount Deposited, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Withdrawn from Treasury Contract',
-            [
-                (...args) => getDepositByNDays(...args, 1),
-                (...args) => getDepositByNHours(...args, 4),
-                (...args) => getDepositByNHours(...args, 1),
-                (...args) => getDepositByNMinutes(...args, 1),
-            ],
+            depositFuncs,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -663,12 +635,7 @@ export const methodPropsChartConfigs = {
             'Minted Rewards for Staking, OHM',
             (...args) => setBaseHist(...args, 'minted_rewards'),
             "Rewards Minted by Treasury For Distributing Stakers' Rewards to V1 and V2 Staking Contracts",
-            [
-                (...args) => getMintRewardsByNDays(...args, 1),
-                (...args) => getMintRewardsByNHours(...args, 4),
-                (...args) => getMintRewardsByNHours(...args, 1),
-                (...args) => getMintRewardsByNMinutes(...args, 1),
-            ],
+            mintRewardsFuncs,
             mapMintRewards
         ),
     ],

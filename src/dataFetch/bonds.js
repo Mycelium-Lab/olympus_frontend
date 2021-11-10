@@ -3524,12 +3524,20 @@ export function mapBonds(bonds) {
 export function getBondsInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getDepositsInfoNDays(...rest, 1)
+            return (...rest) => getDepositsInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getDepositsInfoNHours(...rest, 4)
+            return (...rest) => getDepositsInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getDepositsInfoNHours(...rest, 1)
+            return (...rest) => getDepositsInfoNHours(...rest, 8)
         case 3:
+            return (...rest) => getDepositsInfoNHours(...rest, 4)
+        case 4:
+            return (...rest) => getDepositsInfoNHours(...rest, 1)
+        case 5:
+            return (...rest) => getDepositsInfoNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getDepositsInfoNMinutes(...rest, 5)
+        case 7:
             return (...rest) => getDepositsInfoNMinutes(...rest, 1)
         default:
             return

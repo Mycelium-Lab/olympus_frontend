@@ -1072,12 +1072,20 @@ export function mapStakes(stakes) {
 export function getStakesInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getStakesInfoNDays(...rest, 1)
+            return (...rest) => getStakesInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getStakesInfoNHours(...rest, 4)
+            return (...rest) => getStakesInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getStakesInfoNHours(...rest, 1)
+            return (...rest) => getStakesInfoNHours(...rest, 8)
         case 3:
+            return (...rest) => getStakesInfoNHours(...rest, 4)
+        case 4:
+            return (...rest) => getStakesInfoNHours(...rest, 1)
+        case 5:
+            return (...rest) => getStakesInfoNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getStakesInfoNMinutes(...rest, 5)
+        case 7:
             return (...rest) => getStakesInfoNMinutes(...rest, 1)
         default:
             return

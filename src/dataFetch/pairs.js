@@ -1077,12 +1077,20 @@ export function mapPairs(pairs) {
 export function getPairsInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getPairsInfoDays(...rest, 1)
+            return (...rest) => getPairsInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getPairsInfoNHours(...rest, 4)
+            return (...rest) => getPairsInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getPairsInfoNHours(...rest, 1)
+            return (...rest) => getPairsInfoNHours(...rest, 8)
         case 3:
+            return (...rest) => getPairsInfoNHours(...rest, 4)
+        case 4:
+            return (...rest) => getPairsInfoNHours(...rest, 1)
+        case 5:
+            return (...rest) => getPairsInfoNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getPairsInfoNMinutes(...rest, 5)
+        case 7:
             return (...rest) => getPairsInfoNMinutes(...rest, 1)
         default:
             return

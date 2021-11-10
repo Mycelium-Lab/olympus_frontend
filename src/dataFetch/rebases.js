@@ -571,12 +571,20 @@ export function mapRebases(rebases) {
 export function getRebasesInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getRebasesInfoNDays(...rest, 1)
+            return (...rest) => getRebasesInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getRebasesInfoNHours(...rest, 4)
+            return (...rest) => getRebasesInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getRebasesInfoNHours(...rest, 1)
+            return (...rest) => getRebasesInfoNHours(...rest, 8)
         case 3:
+            return (...rest) => getRebasesInfoNHours(...rest, 4)
+        case 4:
+            return (...rest) => getRebasesInfoNHours(...rest, 1)
+        case 5:
+            return (...rest) => getRebasesInfoNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getRebasesInfoNMinutes(...rest, 5)
+        case 7:
             return (...rest) => getRebasesInfoNMinutes(...rest, 1)
         default:
             return

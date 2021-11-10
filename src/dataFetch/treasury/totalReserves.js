@@ -16,21 +16,6 @@ const dayQuery = `
 }
 `
 
-export async function getTotalReservesByDay(
-    startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
-) {
-    try {
-        return fillBigArrayForDays(
-            reformToBigArrayForDays(await getTotalReserveByDaysFromGraph()),
-            startTimestamp,
-            endTimestamp
-        )
-    } catch (err) {
-        console.log(err)
-    }
-}
-
 export async function getTotalReservesByNDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
@@ -201,24 +186,26 @@ function fillBigArrayForNDays(bigArray, startTimestamp, endTimestamp, n) {
             if (timestamp > endTimestamp) return out
         }
     }
-    if (
-        out[out.length - 1].timestamp !=
-        getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            n * day
-        )
-    ) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: getWholePeriodOfTime(
+    if (out.length > 0) {
+        if (
+            out[out.length - 1].timestamp !=
+            getWholePeriodOfTime(
                 parseInt(bigArray[bigArray.length - 1].timestamp),
                 n * day
-            ),
-            audited: bigArray[bigArray.length - 1].audited,
-        })
-    } else {
-        out[out.length - 1].totalReserves =
-            bigArray[bigArray.length - 1].finalTotalReserves
+            )
+        ) {
+            out.push({
+                totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+                timestamp: getWholePeriodOfTime(
+                    parseInt(bigArray[bigArray.length - 1].timestamp),
+                    n * day
+                ),
+                audited: bigArray[bigArray.length - 1].audited,
+            })
+        } else {
+            out[out.length - 1].totalReserves =
+                bigArray[bigArray.length - 1].finalTotalReserves
+        }
     }
     let timestamp = getWholePeriodOfTime(
         parseInt(bigArray[bigArray.length - 1].timestamp),
@@ -232,6 +219,13 @@ function fillBigArrayForNDays(bigArray, startTimestamp, endTimestamp, n) {
             audited: false,
         })
         timestamp += n * day
+    }
+    if (out.length == 0) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp - n * day,
+            audited: false,
+        })
     }
     return out
 }
@@ -250,21 +244,6 @@ const hourQuery = `
   }
 }
 `
-
-export async function getTotalReservesByHour(
-    startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
-) {
-    try {
-        return fillBigArrayForHours(
-            reformToBigArrayForHours(await getTotalReserveByHoursFromGraph()),
-            startTimestamp,
-            endTimestamp
-        )
-    } catch (err) {
-        console.log(err)
-    }
-}
 
 export async function getTotalReservesByNHours(
     startTimestamp = 0,
@@ -441,24 +420,26 @@ function fillBigArrayForNHours(bigArray, startTimestamp, endTimestamp, n) {
             if (timestamp > endTimestamp) return out
         }
     }
-    if (
-        out[out.length - 1].timestamp !=
-        getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            n * hour
-        )
-    ) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: getWholePeriodOfTime(
+    if (out.length > 0) {
+        if (
+            out[out.length - 1].timestamp !=
+            getWholePeriodOfTime(
                 parseInt(bigArray[bigArray.length - 1].timestamp),
                 n * hour
-            ),
-            audited: bigArray[bigArray.length - 1].audited,
-        })
-    } else {
-        out[out.length - 1].totalReserves =
-            bigArray[bigArray.length - 1].finalTotalReserves
+            )
+        ) {
+            out.push({
+                totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+                timestamp: getWholePeriodOfTime(
+                    parseInt(bigArray[bigArray.length - 1].timestamp),
+                    n * hour
+                ),
+                audited: bigArray[bigArray.length - 1].audited,
+            })
+        } else {
+            out[out.length - 1].totalReserves =
+                bigArray[bigArray.length - 1].finalTotalReserves
+        }
     }
     let timestamp = getWholePeriodOfTime(
         parseInt(bigArray[bigArray.length - 1].timestamp),
@@ -472,6 +453,13 @@ function fillBigArrayForNHours(bigArray, startTimestamp, endTimestamp, n) {
             audited: false,
         })
         timestamp += n * hour
+    }
+    if (out.length == 0) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp - n * hour,
+            audited: false,
+        })
     }
     return out
 }
@@ -493,23 +481,6 @@ const minuteQuery = `
   }
 }
   `
-
-export async function getTotalReservesByMinute(
-    startTimestamp = 0,
-    endTimestamp = Date.now() / 1000
-) {
-    try {
-        return fillBigArrayForMinues(
-            reformToBigArrayForMinutes(
-                await getTotalReserveByMinutesFromGraph()
-            ),
-            startTimestamp,
-            endTimestamp
-        )
-    } catch (err) {
-        console.log(err)
-    }
-}
 
 export async function getTotalReservesByNMinutes(
     startTimestamp = 0,
@@ -702,24 +673,26 @@ function fillBigArrayForNMinutes(bigArray, startTimestamp, endTimestamp, n) {
             if (timestamp > endTimestamp) return out
         }
     }
-    if (
-        out[out.length - 1].timestamp !=
-        getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            n * minute
-        )
-    ) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: getWholePeriodOfTime(
+    if (out.length > 0) {
+        if (
+            out[out.length - 1].timestamp !=
+            getWholePeriodOfTime(
                 parseInt(bigArray[bigArray.length - 1].timestamp),
                 n * minute
-            ),
-            audited: bigArray[bigArray.length - 1].audited,
-        })
-    } else {
-        out[out.length - 1].totalReserves =
-            bigArray[bigArray.length - 1].finalTotalReserves
+            )
+        ) {
+            out.push({
+                totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+                timestamp: getWholePeriodOfTime(
+                    parseInt(bigArray[bigArray.length - 1].timestamp),
+                    n * minute
+                ),
+                audited: bigArray[bigArray.length - 1].audited,
+            })
+        } else {
+            out[out.length - 1].totalReserves =
+                bigArray[bigArray.length - 1].finalTotalReserves
+        }
     }
     let timestamp = getWholePeriodOfTime(
         parseInt(bigArray[bigArray.length - 1].timestamp),
@@ -734,8 +707,26 @@ function fillBigArrayForNMinutes(bigArray, startTimestamp, endTimestamp, n) {
         })
         timestamp += n * minute
     }
+    if (out.length == 0) {
+        out.push({
+            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
+            timestamp: timestamp - n * minute,
+            audited: false,
+        })
+    }
     return out
 }
+
+export const totalReservesFuncs = [
+    (...args) => getTotalReservesByNDays(...args, 7),
+    (...args) => getTotalReservesByNDays(...args, 1),
+    (...args) => getTotalReservesByNHours(...args, 8),
+    (...args) => getTotalReservesByNHours(...args, 4),
+    (...args) => getTotalReservesByNHours(...args, 1),
+    (...args) => getTotalReservesByNMinutes(...args, 15),
+    (...args) => getTotalReservesByNMinutes(...args, 5),
+    (...args) => getTotalReservesByNMinutes(...args, 1),
+]
 
 export function mapTotalReserves(total_reserves) {
     return total_reserves.reduce(
