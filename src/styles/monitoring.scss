@@ -1,23 +1,141 @@
 .monitoring-twitter,
 .monitoring-dao {
-    .twitter-mon {
-        width: 100%;
-        max-height: 650px;
-        height: 100%;
-        overflow: auto;
-    }
+    width: 100%;
+    height: 100%;
+    overflow: auto;
     a.nav-link,
     a.dropdown-item {
         cursor: pointer;
     }
-
-    .DAO-mon {
+    .dao-iframe {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
         width: 100%;
-        height: 650px;
+        margin: 0;
+        padding: 0;
         overflow: hidden;
     }
-    .iframe-100 {
-        width: 100%;
-        height: 100%;
+}
+
+.twitter {
+    position: relative;
+    top: 70px;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+
+    width: 100%;
+    &-nav {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
     }
+    &-main {
+        display: flex;
+        flex-direction: column;
+    }
+    &-tweet {
+        height: 90% !important;
+        width: 500px !important;
+        margin: 0 auto;
+        overflow: auto !important;
+    }
+    &-users {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 16px;
+        width: 300px;
+    }
+    &-list {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 24px;
+        padding-left: 0;
+        &-text {
+            color: black;
+            font-weight: 600;
+        }
+        &-item {
+            box-shadow: 0px 0px 4px rgba(71, 73, 79, 0.1),
+                0px 1px 2px rgba(71, 73, 79, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            background-color: #fff;
+            &:hover {
+                background-color: #e9f3ff;
+                cursor: pointer;
+            }
+        }
+        &-icon {
+            border-radius: 100%;
+            margin-right: 12px;
+        }
+        &-title {
+            font-size: 16px;
+            margin-top: 12px;
+            font-weight: 600;
+            width: 100%;
+        }
+    }
+}
+
+@media (min-width: 992px) {
+    .twitter {
+        position: relative;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        justify-content: flex-start;
+        overflow: auto;
+        &-list {
+            &-item {
+                width: 50%;
+            }
+        }
+        &-users {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        &-nav {
+            width: 50%;
+        }
+        &-main {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        &-tweet {
+            position: fixed;
+            top: 70px;
+            right: 5%;
+        }
+    }
+
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        margin-top: 15%;
+    }
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -117,42 +117,33 @@ export default function Navbar() {
                                             </a>
                                         </div>
                                     </li>
-
-                                    <li className="nav-item dropdown">
+                                    <li className="nav-item">
                                         <a
-                                            className={`nav-link dropdown-toggle arrow-none ${
+                                            className={`nav-link ${
                                                 window.location.pathname.includes(
-                                                    '/monitoring'
+                                                    '/monitoring/twitter'
                                                 )
                                                     ? 'active-collapse'
                                                     : ''
                                             }`}
-                                            href="/monitoring"
-                                            role="button"
-                                            data-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
+                                            href="/monitoring/twitter"
                                         >
-                                            Monitoring{' '}
-                                            <div className="arrow-down"></div>
+                                            Twitter Monitoring
                                         </a>
-                                        <div
-                                            className="dropdown-menu"
-                                            aria-labelledby="topnav-monitoring"
+                                    </li>
+                                    <li className="nav-item">
+                                        <a
+                                            className={`nav-link ${
+                                                window.location.pathname.includes(
+                                                    '/monitoring/dao'
+                                                )
+                                                    ? 'active-collapse'
+                                                    : ''
+                                            }`}
+                                            href="/monitoring/dao"
                                         >
-                                            <a
-                                                href="/monitoring/twitter"
-                                                className="dropdown-item"
-                                            >
-                                                Twitter Monitoring
-                                            </a>
-                                            <a
-                                                href="/monitoring/dao"
-                                                className="dropdown-item"
-                                            >
                                                 DAO Monitoring
-                                            </a>
-                                        </div>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
