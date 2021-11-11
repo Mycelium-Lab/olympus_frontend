@@ -14,7 +14,6 @@ import {
     chartConfig,
     methodPropsChartConfigs,
     timeframesConfig,
-    createCrosshairConfig,
     baseGranularityUnix,
     fillChart,
 } from '../util/config'
@@ -109,7 +108,8 @@ export default function GeneralAnalytics() {
         }
 
         const charts = refs.map((_, i) => {
-            if (i === 1) {
+            if (i > 0) {
+                // keep the price chart bigger
                 return createChart(refs[i].current, {
                     ...chartConfig,
                     ...timeVisibleConfig,
@@ -163,7 +163,6 @@ export default function GeneralAnalytics() {
         // crosshair
 
         let isCrosshairMoving = false
-        let isCrosshairActiveArr = Array(refs.length).fill(false)
 
         charts.forEach((chart, idx) => {
             chart.subscribeCrosshairMove((param) => {
@@ -177,18 +176,6 @@ export default function GeneralAnalytics() {
                     .concat(charts.slice(idx + 1))
                     .forEach((c) => c.moveCrosshair(param.point))
                 isCrosshairMoving = false
-            })
-        })
-
-        refs.forEach((r, i) => {
-            r.current.addEventListener('mousemove', () => {
-                if (isCrosshairActiveArr[i]) return
-                isCrosshairActiveArr.forEach((e, idx) => {
-                    if (i == idx) e = true
-                    else e = false
-
-                    charts[idx].applyOptions(createCrosshairConfig(e))
-                })
             })
         })
 

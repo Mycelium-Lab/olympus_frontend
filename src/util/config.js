@@ -25,6 +25,10 @@ export const chartConfig = {
     },
     crosshair: {
         mode: 1,
+        horzLine: {
+            visible: true,
+            labelVisible: true,
+        },
     },
     drawTicks: true,
     layout: {
@@ -640,15 +644,6 @@ export const methodPropsChartConfigs = {
         ),
     ],
 }
-
-export const createCrosshairConfig = (flag) => ({
-    crosshair: {
-        horzLine: {
-            visible: flag,
-            labelVisible: flag,
-        },
-    },
-})
 
 export const fillChart = (chart, method, mappedData, scSeries) =>
     methodPropsChartConfigs[method.type][method.orderNumber].setChart(
