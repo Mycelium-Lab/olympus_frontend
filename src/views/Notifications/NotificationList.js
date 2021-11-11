@@ -6,16 +6,7 @@ export default function NotificationList() {
     return (
         <div className="notification-list">
             <div className="page-content">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 className="page-title mb-0 font-size-18">
-                                &nbsp;
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
+                <div className="row pt-4">
                     <div className="col-md-9 ml-auto mr-auto">
                         <div className="notification-setting-container">
                             <div className="notification-settings">

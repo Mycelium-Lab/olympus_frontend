@@ -20,16 +20,7 @@ export default function WalletAnalytics() {
     return (
         <div className="main-content wallet-analytics-view">
             <div className="page-content">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="page-title-box d-flex align-items-center justify-content-between">
-                            <h5 className="page-title mb-0 font-size-18">
-                                Wallet Analytics
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
+                <div className="row pt-4">
                     <div className="col-lg-12">
                         <div className="card">
                             <div className="card-body">

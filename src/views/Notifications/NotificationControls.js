@@ -30,16 +30,7 @@ export default function NotificationControls() {
     return (
         <div className="notification-controls">
             <div className="page-content">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="page-title-box d-flex align-items-center justify-content-between">
-                            <h5 className="page-title mb-0 font-size-18">
-                                Notification Controls
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
+                <div className="row pt-4">
                     <BasicNotification
                         isInitialValueLoading={isLoading}
                         currentValues={values}
