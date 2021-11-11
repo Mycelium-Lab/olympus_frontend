@@ -279,7 +279,8 @@ export default function GeneralAnalytics() {
             setInterval(async () => {
                 try {
                     // for intervals > 1D (e.g., 1W), set larger boundaries for incoming queries
-                    const boundaryTimeframeType = timeframe > 0 ? 'day' : 'week'
+                    const boundaryTimeframeType =
+                        timeframe > 0 ? 'day' : 'isoWeek'
                     const startDate = moment()
                         .utc()
                         .startOf(boundaryTimeframeType)
