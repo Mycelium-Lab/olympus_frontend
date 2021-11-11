@@ -109,3 +109,77 @@ case 'topic_name':
     mappedData = mapTopicName(data)
     break
 ```
+
+## Adding a New Timeframe to the General Analytics Charts
+
+So far the application has 8 timeframes to view your charts on. However, functions managing timeframes can be customized further to create new intervals of a desired length. Two steps need to be taken to achieve this:
+
+1. Let's say that we would like to add a 2H interval. In <i>src/util/config.js</i> find the <i>timeframesConfig</i> function and add the following contents (the code below can be easily refactored to be more concise and enable automation, but so far is left as-is to increase flexibility):
+
+```js
+// select how much data (in days) will be fetched on first load.
+// we might want to make it proportional to the rest of the intervals.
+const fourHourlyFetchBackDelta = 25
+const twoHourlyFetchBackDelta = 16 // new timeframe
+const hourlyFetchBackDelta = 10
+```
+
+```js
+// get start timestamp for the initial fetch
+const initialFourHourlyTimestamp = nextDayMidnight
+    .clone()
+    .subtract(fourHourlyFetchBackDelta, 'days')
+    .unix()
+
+const initialTwoHourlyTimestamp = nextDayMidnight // new timeframe
+    .clone()
+    .subtract(twoHourlyFetchBackDelta, 'days')
+    .unix()
+
+const initialHourlyTimestamp = nextDayMidnight
+    .clone()
+    .subtract(hourlyFetchBackDelta, 'days')
+    .unix()
+```
+
+```js
+// in the return statement
+return [
+    // rest
+    {
+        name: '4H',
+        initialTimestamp: initialFourHourlyTimestamp,
+        endTimestamp,
+        fetchBackDelta: fourHourlyFetchBackDelta,
+        intervalDiff: 86400 / 6,
+    },
+    {
+        // new timeframe
+        name: '2H',
+        initialTimestamp: initialTwoHourlyTimestamp,
+        endTimestamp,
+        fetchBackDelta: twoHourlyFetchBackDelta,
+        intervalDiff: 86400 / 12, // what is two hours relative to a unix day
+    },
+    {
+        name: '1H',
+        initialTimestamp: initialHourlyTimestamp,
+        endTimestamp,
+        fetchBackDelta: hourlyFetchBackDelta,
+        intervalDiff: 86400 / 24,
+    },
+]
+```
+
+2. Go to <i>src/dataFetch/topic_name.js</i>. The following must be done for all of the topics we have to enable the new timeframe, but let's take <i>src/dataFetch/stakes.js</i> as an example. Go to <i>getStakesInfoFunction</i> below and change some of its contents to:
+
+```js
+case 3:
+    return (...rest) => getStakesInfoNHours(...rest, 4)
+case 4: // new timeframe
+    return (...rest) => getStakesInfoNHours(...rest, 2)
+case 5:
+    return (...rest) => getStakesInfoNHours(...rest, 1)
+```
+
+The number in "case" corresponds to the index of the new timeframe in the return array from the section above. This is done as such to enable a possible reformation to strings (e.g., '2H', '4H') instead of numbers in the switch-case statement. As it can be seen, we have created our timeframe from a corresponding "NHours" function, passing "2" as our N. However, it can be applied to days and minutes as well, following the very same approach.
