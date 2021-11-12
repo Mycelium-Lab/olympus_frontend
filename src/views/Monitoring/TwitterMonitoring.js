@@ -7,6 +7,11 @@ import ClearSharpIcon from '@mui/icons-material/ClearSharp'
 
 import { getTwitList } from '../../dataFetch/twitter/twitter.api'
 import { dateFormatter } from '../../util/dataTranformations'
+import {
+    setStorageItem,
+    getStorageItem,
+    removeStorageItem,
+} from '../../util/localStorage'
 export default function TwitterMonitoring() {
     const ref = useRef()
 
@@ -22,11 +27,7 @@ export default function TwitterMonitoring() {
         setTwitNameValidator(false)
     }
 
-    const [usernames, setUsernames] = React.useState([
-        'OlympusDAO',
-        'ohmzeus',
-        'OlympusAgora',
-    ])
+    const [usernames, setUsernames] = React.useState([])
 
     function twitNameAlreadyAdded(name) {
         return usernames.find((el) => el.toLowerCase() === name.toLowerCase())
@@ -76,13 +77,19 @@ export default function TwitterMonitoring() {
         } else {
             document.getElementById('tweet').innerHTML = ''
         }
+        setStorageItem('twitterUsernames', usernames)
     }, [usernames])
 
-    useEffect(() => {
+    useEffect(async () => {
         const script = document.createElement('script')
         script.src = 'https://platform.twitter.com/widgets.js'
         script.async = ref.current.appendChild(script)
-
+        const lsUsernames = await getStorageItem('twitterUsernames')
+        if (lsUsernames.length) {
+            setUsernames(lsUsernames)
+        } else {
+            setUsernames(['OlympusDAO', 'ohmzeus', 'OlympusAgora'])
+        }
         return () => {
             ref.current.removeChild(script)
         }
@@ -218,61 +225,59 @@ export default function TwitterMonitoring() {
                     </div>
                     <div className={!tweetLoading ? 'none' : 'loader-wrapper'}>
                         <div className="loader ">
-                            <div className="loader-tweet">
-                                <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex' }}>
+                                <Skeleton
+                                    variant="circular"
+                                    width={50}
+                                    height={50}
+                                    animation="wave"
+                                />
+                                <div style={{ marginLeft: '12px' }}>
                                     <Skeleton
-                                        variant="circular"
-                                        width={50}
-                                        height={50}
+                                        variant="text"
                                         animation="wave"
+                                        height={30}
+                                        width={350}
                                     />
-                                    <div style={{ marginLeft: '12px' }}>
-                                        <Skeleton
-                                            variant="text"
-                                            animation="wave"
-                                            height={30}
-                                            width={350}
-                                        />
-                                        <Skeleton
-                                            variant="text"
-                                            animation="wave"
-                                            height={30}
-                                            width={150}
-                                        />
-                                    </div>
+                                    <Skeleton
+                                        variant="text"
+                                        animation="wave"
+                                        height={30}
+                                        width={150}
+                                    />
                                 </div>
-                                <Skeleton variant="text" animation="wave" />
-                                <Skeleton
-                                    variant="text"
-                                    animation="wave"
-                                    width={350}
-                                />
-                                <Skeleton
-                                    variant="rectangle"
-                                    animation="wave"
-                                    width={420}
-                                    height={400}
-                                    style={{
-                                        marginTop: '12px',
-                                        marginBottom: '12px',
-                                        borderRadius: '8px',
-                                    }}
-                                />
-                                <Skeleton
-                                    variant="text"
-                                    animation="wave"
-                                    width={150}
-                                />
-                                <Skeleton
-                                    variant="rectangle"
-                                    animation="wave"
-                                    width={420}
-                                    height={30}
-                                    style={{
-                                        borderRadius: '32px',
-                                    }}
-                                />
                             </div>
+                            <Skeleton variant="text" animation="wave" />
+                            <Skeleton
+                                variant="text"
+                                animation="wave"
+                                width={350}
+                            />
+                            <Skeleton
+                                variant="rectangle"
+                                animation="wave"
+                                width={420}
+                                height={400}
+                                style={{
+                                    marginTop: '12px',
+                                    marginBottom: '12px',
+                                    borderRadius: '8px',
+                                }}
+                            />
+                            <Skeleton
+                                variant="text"
+                                animation="wave"
+                                width={150}
+                            />
+                            <Skeleton
+                                variant="rectangle"
+                                animation="wave"
+                                width={420}
+                                height={30}
+                                style={{
+                                    borderRadius: '32px',
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
