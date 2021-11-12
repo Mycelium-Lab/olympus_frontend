@@ -7,11 +7,7 @@ import ClearSharpIcon from '@mui/icons-material/ClearSharp'
 
 import { getTwitList } from '../../dataFetch/twitter/twitter.api'
 import { dateFormatter } from '../../util/dataTranformations'
-import {
-    setStorageItem,
-    getStorageItem,
-    removeStorageItem,
-} from '../../util/localStorage'
+import { setStorageItem, getStorageItem } from '../../util/localStorage'
 export default function TwitterMonitoring() {
     const ref = useRef()
 
@@ -74,17 +70,18 @@ export default function TwitterMonitoring() {
             const primaryTweets = await getTwitList(usernames.join())
             setTwitterList(primaryTweets)
             setTweet(primaryTweets[0].id)
+            setStorageItem('twitterUsernames', usernames)
         } else {
             document.getElementById('tweet').innerHTML = ''
+            setUsernames(['OlympusDAO', 'ohmzeus', 'OlympusAgora'])
         }
-        setStorageItem('twitterUsernames', usernames)
     }, [usernames])
 
-    useEffect(async () => {
+    useEffect(() => {
         const script = document.createElement('script')
         script.src = 'https://platform.twitter.com/widgets.js'
         script.async = ref.current.appendChild(script)
-        const lsUsernames = await getStorageItem('twitterUsernames')
+        const lsUsernames = getStorageItem('twitterUsernames')
         if (lsUsernames.length) {
             setUsernames(lsUsernames)
         } else {

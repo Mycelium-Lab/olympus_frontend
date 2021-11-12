@@ -1,6 +1,6 @@
-async function getStorageItem(key) {
+function getStorageItem(key) {
     try {
-        const serializedData = await localStorage.getItem(key)
+        const serializedData = localStorage.getItem(key)
         if (serializedData === null) {
             return undefined
         }
@@ -11,18 +11,18 @@ async function getStorageItem(key) {
     }
 }
 
-async function setStorageItem(key, value) {
+function setStorageItem(key, value) {
     try {
         const serializedData = JSON.stringify(value)
-        await localStorage.setItem(key, serializedData)
+        localStorage.setItem(key, serializedData)
     } catch (err) {
         console.warn(err)
     }
 }
 
-async function removeStorageItem(key) {
+function removeStorageItem(key) {
     try {
-        await localStorage.removeItem(key)
+        localStorage.removeItem(key)
     } catch (err) {
         console.warn(err)
     }
