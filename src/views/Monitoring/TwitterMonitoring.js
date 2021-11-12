@@ -186,34 +186,32 @@ export default function TwitterMonitoring() {
                         </ul>
                     ) : (
                         Array.apply(null, { length: 4 }).map((e, i) => (
-                            <div key={i} className="loader">
-                                <div className="loader-timeline">
-                                    <div className="loader-header">
-                                        <Skeleton
-                                            variant="circular"
-                                            width={50}
-                                            height={50}
-                                            animation="wave"
-                                            className="loader-icon"
-                                        />
-                                        <Skeleton
-                                            variant="text"
-                                            animation="wave"
-                                            height={30}
-                                            className="loader-title"
-                                        />
-                                    </div>
+                            <div key={i} className="loader-timeline">
+                                <div className="loader-header">
                                     <Skeleton
-                                        variant="text"
+                                        variant="circular"
+                                        width={50}
+                                        height={50}
                                         animation="wave"
-                                        className="loader-text"
+                                        className="loader-icon"
                                     />
                                     <Skeleton
                                         variant="text"
                                         animation="wave"
-                                        className="loader-text"
+                                        height={30}
+                                        className="loader-title"
                                     />
                                 </div>
+                                <Skeleton
+                                    variant="text"
+                                    animation="wave"
+                                    className="loader-text"
+                                />
+                                <Skeleton
+                                    variant="text"
+                                    animation="wave"
+                                    className="loader-text"
+                                />
                             </div>
                         ))
                     )}
@@ -234,12 +232,12 @@ export default function TwitterMonitoring() {
                                         variant="text"
                                         animation="wave"
                                         height={30}
-                                        width={350}
+                                        width={300}
                                     />
                                     <Skeleton
                                         variant="text"
                                         animation="wave"
-                                        height={30}
+                                        height={20}
                                         width={150}
                                     />
                                 </div>
@@ -248,12 +246,12 @@ export default function TwitterMonitoring() {
                             <Skeleton
                                 variant="text"
                                 animation="wave"
-                                width={350}
+                                width={300}
                             />
                             <Skeleton
                                 variant="rectangle"
                                 animation="wave"
-                                width={420}
+                                width={390}
                                 height={400}
                                 style={{
                                     marginTop: '12px',
@@ -269,7 +267,7 @@ export default function TwitterMonitoring() {
                             <Skeleton
                                 variant="rectangle"
                                 animation="wave"
-                                width={420}
+                                width={390}
                                 height={30}
                                 style={{
                                     borderRadius: '32px',
