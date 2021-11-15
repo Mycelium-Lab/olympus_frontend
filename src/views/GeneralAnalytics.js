@@ -289,6 +289,12 @@ export default function GeneralAnalytics() {
                                                 key={key}
                                                 className="dex-container"
                                             >
+                                                {methods.length === 0 && (
+                                                    <div>
+                                                        Please select a chart
+                                                        from the Legend
+                                                    </div>
+                                                )}
                                                 {methods.map((method, idx) => (
                                                     <Chart
                                                         key={idx}
