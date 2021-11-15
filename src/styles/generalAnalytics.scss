@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
 .general-analytics-view {
     .card-filter {
         box-shadow: 2px 1px 22px -1px rgba(18, 38, 63, 0.09);
@@ -58,6 +60,10 @@
         }
     }
 
+    .tv-lightweight-charts > table > tr:first-child > td:nth-child(3) {
+        width: 75px !important;
+    }
+
     @media (min-width: 1250px) {
         .tv-selector-container {
             display: flex;
@@ -81,6 +87,99 @@
             & div:not(:first-child) {
                 margin-top: 1rem;
             }
+        }
+    }
+
+    .charts-container {
+        width: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .chart-title {
+        max-width: 60%;
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        color: rgb(18, 23, 34);
+        z-index: 1000;
+        font-family: 'Lato', sans-serif;
+    }
+
+    @media (min-width: 600px) {
+        .chart-title {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .chart-title {
+            font-size: 10px;
+        }
+    }
+
+    .chart-outer {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .chart-inner {
+        position: relative;
+    }
+
+    .inputs {
+        display: flex;
+        position: absolute;
+        left: 700px;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 14px;
+
+        &-staking,
+        &-bonds,
+        &-treasury,
+        &-switch-interval {
+            text-align: left;
+            & > div {
+                display: flex;
+                justify-content: flex-start;
+
+                &:not(:first-child) {
+                    margin-top: 10px;
+                }
+            }
+        }
+
+        &-staking,
+        &-bonds,
+        &-treasury {
+            margin-top: 40px;
+        }
+
+        &-switch-interval {
+            width: 120px;
+
+            & > div {
+                display: flex;
+                justify-content: space-between;
+                & > div {
+                    cursor: pointer;
+                    background-color: rgb(180, 175, 175);
+                    text-align: center;
+                    width: 36px;
+                    &:hover,
+                    &:active {
+                        background-color: rosybrown;
+                    }
+                }
+            }
+        }
+
+        .input__info-label {
+            margin-left: 10px;
+            color: rgb(168, 166, 42);
         }
     }
 

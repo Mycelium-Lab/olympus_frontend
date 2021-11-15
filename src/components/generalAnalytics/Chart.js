@@ -17,7 +17,7 @@ export default function Chart({ chartRef, method, index, timeframe }) {
         (state) => state.ga
     )
     return (
-        <div className="dex-price-outer">
+        <div className="chart-outer">
             {isGlobalLoading && (
                 <Skeleton
                     style={{
@@ -35,7 +35,7 @@ export default function Chart({ chartRef, method, index, timeframe }) {
                     }
                 />
             )}
-            <span className="dex-price-title">
+            <span className="chart-title">
                 {parse(
                     methodPropsChartConfigs[method.type][method.orderNumber]
                         .title
@@ -49,7 +49,7 @@ export default function Chart({ chartRef, method, index, timeframe }) {
             )}
             <div
                 style={isGlobalLoading ? { zIndex: -1 } : {}}
-                className="ga-chart dex-price"
+                className="chart-inner"
                 ref={chartRef}
             ></div>
         </div>
