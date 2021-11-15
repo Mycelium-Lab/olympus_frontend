@@ -13,7 +13,7 @@ import { manageFuncs, mapManage } from '../dataFetch/treasury/manage'
 
 export const chartConfig = {
     width: 800,
-    height: 380,
+    height: 360,
     autoScale: true,
     rightPriceScale: {
         entireTextOnly: true,
@@ -262,40 +262,40 @@ const setBasePolarHist = (chart, data, series, dataProperties) => {
 export const methodPropsChartConfigs = {
     dex: [
         new MethodPropsChartConfig(
-            'SushiSwap OHM/DAI Price & Volume',
+            'SushiSwap OHM/DAI Price',
             (chart, data, series) => {
-                let candleSeries, volumeUpHistSeries, volumeDownHistSeries
+                let candleSeries
                 if (!series) {
                     candleSeries = chart.addCandlestickSeries(baseCandleConfig)
-
-                    const volumeHistConfig = {
-                        ...baseHistConfig,
-                        overlay: true,
-                        scaleMargins: {
-                            top: 0.6,
-                            bottom: 0.04,
-                        },
-                    }
-
+                } else {
+                    ;[candleSeries] = series
+                }
+                candleSeries.setData(data.priceCandles)
+                return [candleSeries]
+            }
+        ),
+        new MethodPropsChartConfig(
+            'SushiSwap OHM/DAI Volume',
+            (chart, data, series) => {
+                let volumeUpHistSeries, volumeDownHistSeries
+                if (!series) {
                     volumeUpHistSeries = chart.addHistogramSeries({
-                        ...volumeHistConfig,
+                        ...baseHistConfig,
                         color: 'rgb(147,210,204)',
                     })
 
                     volumeDownHistSeries = chart.addHistogramSeries({
-                        ...volumeHistConfig,
+                        ...baseHistConfig,
                         color: 'rgb(247,169,167)',
                     })
                 } else {
-                    ;[candleSeries, volumeUpHistSeries, volumeDownHistSeries] =
-                        series
+                    ;[volumeUpHistSeries, volumeDownHistSeries] = series
                 }
 
-                candleSeries.setData(data.priceCandles)
                 volumeUpHistSeries.setData(data.volumeUp)
                 volumeDownHistSeries.setData(data.volumeDown)
 
-                return [candleSeries, volumeUpHistSeries, volumeDownHistSeries]
+                return [volumeUpHistSeries, volumeDownHistSeries]
             }
         ),
     ],

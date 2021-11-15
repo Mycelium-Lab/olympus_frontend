@@ -17,15 +17,17 @@ const initialState = {
     isGlobalLoading: false,
     isPartialLoading: false,
     methods: [
-        { type: 'dex', orderNumber: 0, id: v4() },
-        { type: 'staking', orderNumber: 0, id: v4() },
+        // default charts
+        { type: 'dex', orderNumber: 0, id: v4() }, // dex price
+        { type: 'dex', orderNumber: 1, id: v4() }, // dex volume
+        { type: 'staking', orderNumber: 0, id: v4() }, // staking & unstaking volume
     ],
     maxMethodsLength: 6,
     maxMethodsPerSection: 2,
     timeframe: isNaN(parsedDefaultTimeframe) ? 1 : parsedDefaultTimeframe,
     timezone: isNaN(parsedDefaultTimezone) ? 11 : parsedDefaultTimezone,
     refreshRateSeconds: 30,
-    sideChartHeight: 200,
+    sideChartHeight: 220,
 }
 
 const setMethodsState = (currentMethods, newMethod, maxMethodsLength) => {
