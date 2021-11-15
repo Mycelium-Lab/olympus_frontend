@@ -1,7 +1,6 @@
 import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../../tv-lightweight'
-import moment from 'moment'
 
 import { setMessage } from '../../redux/actions/messageActions'
 import {
@@ -14,14 +13,13 @@ import {
     chartConfig,
     timeframesConfig,
     timeVisibleConfig,
-    baseGranularityUnix,
-    fillChart,
 } from '../../util/config'
+
 import {
-    getMappedScData,
-    mergeObjectsArrays,
-    mergeObjectsArraysOverrideTime,
-} from '../../util/dataTranformations'
+    initialDataFetch,
+    previousDataFetch,
+    updateDataFetch,
+} from '../../util/chartActions'
 
 import { basicMessages } from '../../util/messages'
 
@@ -43,6 +41,7 @@ export default function GeneralAnalytics() {
     )
     const [key, setKey] = useState(null) // a key to compare refs' changes
     const [updateSetInterval, setUpdateSetInterval] = useState(null) // setInterval function for rt updates
+    // const [timesFetchedPrevious, setTimesFetchedPrevious] = useState(0)
 
     const updateRefs = () => {
         setKey(v4()) // set the new key to toggle rerendering
@@ -66,36 +65,19 @@ export default function GeneralAnalytics() {
         // fetch data and set charts
 
         dispatch(setIsGlobalLoading(true))
-
-        let { fetchBackDelta, initialTimestamp, endTimestamp, intervalDiff } =
+        let { fetchBackDelta, startTimestamp, endTimestamp, intervalDiff } =
             timeframesConfig[timeframe]
 
-        if (timeframe === 0) {
-            initialTimestamp = moment
-                .unix(initialTimestamp)
-                .utc()
-                .startOf('isoWeek')
-                .unix()
-            endTimestamp = moment().utc().endOf('isoWeek').unix()
-        }
-
-        const initFetchPromises = methods.map((method) =>
-            getMappedScData(
-                initialTimestamp,
-                endTimestamp,
-                method,
-                timeframe,
-                intervalDiff,
-                timezone,
-                true
-            )
-        )
-
-        let mappedDataSets = await Promise.all(initFetchPromises)
-        let series = mappedDataSets.map((mappedData, idx) =>
-            fillChart(charts[idx], methods[idx], mappedData)
-        )
-
+        let [mappedDataSets, series] = await initialDataFetch({
+            startTimestamp,
+            endTimestamp,
+            intervalDiff,
+            timeframe,
+            timezone,
+            shouldTrimEnd: true,
+            methods,
+            charts,
+        })
         dispatch(setIsGlobalLoading(false))
 
         // crosshair
@@ -120,6 +102,7 @@ export default function GeneralAnalytics() {
         // fetching past data
 
         let chartNeedsUpdate = false
+        let timesFetchedPrevious = 0
         let els = [...Array(nCharts).keys()].map((_) => null)
 
         charts.forEach((chart, idx) => {
@@ -135,47 +118,23 @@ export default function GeneralAnalytics() {
 
                     if (range.from < 0 && !chartNeedsUpdate) {
                         chartNeedsUpdate = true
-
-                        endTimestamp = initialTimestamp
-                        initialTimestamp =
-                            initialTimestamp -
-                            fetchBackDelta * baseGranularityUnix
-
                         // update price and volume chart
                         dispatch(setIsPartialLoading(true))
-
-                        const backFetchPromises = methods.map((method) =>
-                            getMappedScData(
-                                initialTimestamp,
-                                endTimestamp,
-                                method,
-                                timeframe,
-                                intervalDiff,
-                                timezone,
-                                false
-                            )
-                        )
-
-                        const newMappedDataSets = await Promise.all(
-                            backFetchPromises
-                        )
-                        mappedDataSets = newMappedDataSets.map(
-                            (newMappedData, idx) =>
-                                mergeObjectsArrays(
-                                    mappedDataSets[idx],
-                                    newMappedData
-                                )
-                        )
-                        series = mappedDataSets.map((mappedData, idx) =>
-                            fillChart(
-                                charts[idx],
-                                methods[idx],
-                                mappedData,
-                                series[idx]
-                            )
-                        )
-
+                        ;[mappedDataSets, series] = await previousDataFetch({
+                            lastTimestamp: startTimestamp,
+                            timesFetchedPrevious,
+                            fetchBackDelta,
+                            intervalDiff,
+                            timeframe,
+                            timezone,
+                            shouldTrimEnd: false,
+                            methods,
+                            charts,
+                            oldMappedDataSets: mappedDataSets,
+                            oldSeries: series,
+                        })
                         dispatch(setIsPartialLoading(false))
+                        timesFetchedPrevious++
                         chartNeedsUpdate = false
                     }
                 })
@@ -205,49 +164,16 @@ export default function GeneralAnalytics() {
         setUpdateSetInterval(
             setInterval(async () => {
                 try {
-                    // for intervals > 1D (e.g., 1W), set larger boundaries for incoming queries
-                    const boundaryTimeframeType =
-                        timeframe > 0 ? 'day' : 'isoWeek'
-                    const startDate = moment()
-                        .utc()
-                        .startOf(boundaryTimeframeType)
-                        .unix()
-                    const endDate = moment()
-                        .utc()
-                        .endOf(boundaryTimeframeType)
-                        .unix()
-
-                    const updatePromises = await Promise.all(
-                        methods.map((method) =>
-                            getMappedScData(
-                                startDate,
-                                endDate,
-                                method,
-                                timeframe,
-                                intervalDiff,
-                                timezone,
-                                true
-                            )
-                        )
-                    )
-
-                    const newMappedDataSets = await Promise.all(updatePromises)
-
-                    mappedDataSets = newMappedDataSets.map(
-                        (newMappedData, idx) =>
-                            mergeObjectsArraysOverrideTime(
-                                mappedDataSets[idx],
-                                newMappedData
-                            )
-                    )
-                    series = mappedDataSets.map((mappedData, idx) =>
-                        fillChart(
-                            charts[idx],
-                            methods[idx],
-                            mappedData,
-                            series[idx]
-                        )
-                    )
+                    ;[mappedDataSets, series] = await updateDataFetch({
+                        intervalDiff,
+                        timeframe,
+                        timezone,
+                        shouldTrimEnd: false,
+                        methods,
+                        charts,
+                        oldMappedDataSets: mappedDataSets,
+                        oldSeries: series,
+                    })
                 } catch (e) {
                     dispatch(
                         setMessage(

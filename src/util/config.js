@@ -142,56 +142,60 @@ export const timeframesConfig = (() => {
     return [
         {
             name: '1W',
-            initialTimestamp: initialWeeklyTimestamp,
-            endTimestamp,
+            startTimestamp: moment
+                .unix(initialWeeklyTimestamp)
+                .utc()
+                .startOf('isoWeek')
+                .unix(),
+            endTimestamp: moment().utc().endOf('isoWeek').unix(),
             fetchBackDelta: weeklyFetchBackDelta,
             intervalDiff: 86400 * 7,
         },
         {
             name: '1D',
-            initialTimestamp: initialDailyTimestamp,
+            startTimestamp: initialDailyTimestamp,
             endTimestamp,
             fetchBackDelta: dailyFetchBackDelta,
             intervalDiff: 86400,
         },
         {
             name: '8H',
-            initialTimestamp: inititalEightHourlyTimestamp,
+            startTimestamp: inititalEightHourlyTimestamp,
             endTimestamp,
             fetchBackDelta: eightHourlyFetchBackDelta,
             intervalDiff: 86400 / 3,
         },
         {
             name: '4H',
-            initialTimestamp: initialFourHourlyTimestamp,
+            startTimestamp: initialFourHourlyTimestamp,
             endTimestamp,
             fetchBackDelta: fourHourlyFetchBackDelta,
             intervalDiff: 86400 / 6,
         },
         {
             name: '1H',
-            initialTimestamp: initialHourlyTimestamp,
+            startTimestamp: initialHourlyTimestamp,
             endTimestamp,
             fetchBackDelta: hourlyFetchBackDelta,
             intervalDiff: 86400 / 24,
         },
         {
             name: '15M',
-            initialTimestamp: initialFifteenMinutelyTimestamp,
+            startTimestamp: initialFifteenMinutelyTimestamp,
             endTimestamp,
             fetchBackDelta: fifteenMinutelyFetchBackDelta,
             intervalDiff: 86400 / 24 / 4,
         },
         {
             name: '5M',
-            initialTimestamp: initialFiveMinutelyTimestamp,
+            startTimestamp: initialFiveMinutelyTimestamp,
             endTimestamp,
             fetchBackDelta: fiveMinutelyFetchBackDelta,
             intervalDiff: 86400 / 24 / 12,
         },
         {
             name: '1M',
-            initialTimestamp: initialMinutelyTimestamp,
+            startTimestamp: initialMinutelyTimestamp,
             endTimestamp,
             fetchBackDelta: minutelyFetchBackDelta,
             intervalDiff: 86400 / 24 / 60,
