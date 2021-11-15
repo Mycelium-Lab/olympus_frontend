@@ -51,6 +51,13 @@ export const chartConfig = {
     },
 }
 
+export const timeVisibleConfig = (timeframe) => ({
+    timeScale: {
+        ...chartConfig.timeScale,
+        timeVisible: timeframe > 0,
+    },
+})
+
 const baseHistConfig = {
     base: 0,
     priceFormat: {

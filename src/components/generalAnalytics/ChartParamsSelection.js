@@ -4,13 +4,14 @@ import TooltippedComponent from '../util/TooltippedComponent'
 import timezones from '../../util/timezones'
 import { timeframesConfig } from '../../util/config'
 
-export default function ChartParamsSelection({
-    timeframe,
-    changeTimeframe,
-    timezone,
-    changeTimezone,
-    isGlobalLoading,
-}) {
+import { useSelector, useDispatch } from 'react-redux'
+import { setTimeframe, setTimezone } from '../../redux/actions/gaActions'
+
+export default function ChartParamsSelection() {
+    const { isGlobalLoading, timeframe, timezone } = useSelector(
+        (state) => state.ga
+    )
+    const dispatch = useDispatch()
     return (
         <div className="card card-filter">
             <div className="card-body">
@@ -23,8 +24,10 @@ export default function ChartParamsSelection({
                                     defaultValue={timeframe}
                                     disabled={isGlobalLoading}
                                     onChange={(e) => {
-                                        changeTimeframe(
-                                            parseInt(e.target.value)
+                                        dispatch(
+                                            setTimeframe(
+                                                parseInt(e.target.value)
+                                            )
                                         )
                                     }}
                                     className="form-control"
@@ -44,7 +47,11 @@ export default function ChartParamsSelection({
                                     defaultValue={timezone}
                                     disabled={isGlobalLoading}
                                     onChange={(e) => {
-                                        changeTimezone(parseInt(e.target.value))
+                                        dispatch(
+                                            setTimezone(
+                                                parseInt(e.target.value)
+                                            )
+                                        )
                                     }}
                                 >
                                     {timezones.map((t, idx) => (

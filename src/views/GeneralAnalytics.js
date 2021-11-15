@@ -2,18 +2,18 @@ import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
 import { createChart } from '../tv-lightweight'
 import moment from 'moment'
-import parse from 'html-react-parser'
 
 import { setMessage } from '../redux/actions/messageActions'
-import { useDispatch } from 'react-redux'
-
-import { ReactComponent as LoadingSpinner } from '../images/vectors/spinner.svg'
-import { Skeleton } from '@mui/material'
+import {
+    setIsGlobalLoading,
+    setIsPartialLoading,
+} from '../redux/actions/gaActions'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
     chartConfig,
-    methodPropsChartConfigs,
     timeframesConfig,
+    timeVisibleConfig,
     baseGranularityUnix,
     fillChart,
 } from '../util/config'
@@ -25,122 +25,67 @@ import {
 
 import { basicMessages } from '../util/messages'
 
-import '../styles/main.scss'
-import '../styles/generalAnalytics.scss'
 import ChartParamsSelection from '../components/generalAnalytics/ChartParamsSelection'
 import ChartLegend from '../components/generalAnalytics/ChartLegend'
+import Chart from '../components/generalAnalytics/Chart'
 
-const defaultTimeframe = localStorage.getItem('ga_default_timeframe')
-const defaultTimezone = localStorage.getItem('ga_default_timezone')
+import '../styles/main.scss'
+import '../styles/generalAnalytics.scss'
 
 export default function GeneralAnalytics() {
     const dispatch = useDispatch()
 
-    const refreshRateSeconds = 30
-    const nCharts = 2
+    const {
+        methods,
+        timeframe,
+        timezone,
+        refreshRateSeconds,
+        sideChartHeight,
+    } = useSelector((state) => state.ga)
+    const nCharts = methods.length
 
     const [refs, setRefs] = useState(
-        Array.from(Array(nCharts).keys()).map((_) => createRef())
+        [...Array(nCharts).keys()].map(() => createRef()) // create refs for charts
     )
-
-    const [key, setKey] = useState(null)
-    const [method, setMethod] = useState({
-        type: 'staking',
-        orderNumber: 0,
-    })
-    const [currentDefaultTimeframe, setCurrentDefaultTimeframe] = useState(
-        defaultTimeframe ? parseInt(defaultTimeframe) : null
-    )
-    const [currentDefaultTimezone, setCurrentDefaultTimezone] = useState(
-        defaultTimezone ? parseInt(defaultTimezone) : null
-    )
-
-    const [timeframe, setTimeframe] = useState(currentDefaultTimeframe ?? 1) // 1D
-    const [timezone, setTimezone] = useState(currentDefaultTimezone ?? 11) // UTC+00:00
-
-    const [isGlobalLoading, setIsGlobalLoading] = useState(false)
-    const [isPartialLoading, setIsPartialLoading] = useState(false)
-
-    const [updateInterval, setUpdateInterval] = useState(null)
-
-    const changeMethod = (type, orderNumber) => {
-        if (type !== method.type || orderNumber !== method.orderNumber) {
-            updateRefs()
-            setMethod({
-                type,
-                orderNumber,
-            })
-        }
-    }
-
-    const changeTimeframe = (newTimeframe) => {
-        if (timeframe !== newTimeframe) {
-            updateRefs()
-            setTimeframe(newTimeframe)
-            setCurrentDefaultTimeframe(newTimeframe)
-            localStorage.setItem('ga_default_timeframe', newTimeframe)
-        }
-    }
-
-    const changeTimezone = (newTimezone) => {
-        if (timezone !== newTimezone) {
-            updateRefs()
-            setTimezone(newTimezone)
-            setCurrentDefaultTimezone(newTimezone)
-            localStorage.setItem('ga_default_timezone', newTimezone)
-        }
-    }
+    const [key, setKey] = useState(null) // a key to compare refs' changes
+    const [updateSetInterval, setUpdateSetInterval] = useState(null) // setInterval function for rt updates
 
     const updateRefs = () => {
-        setKey(v4())
-        const newRefs = Array.from(Array(nCharts).keys()).map((_) =>
-            createRef()
-        )
+        setKey(v4()) // set the new key to toggle rerendering
+        const newRefs = [...Array(nCharts).keys()].map(() => createRef())
         setRefs(newRefs)
     }
 
-    useEffect(async () => {
-        const timeVisibleConfig = {
-            timeScale: {
-                ...chartConfig.timeScale,
-                timeVisible: timeframe > 0,
-            },
-        }
+    useEffect(() => {
+        updateRefs()
+    }, [methods, timeframe, timezone])
 
-        const charts = refs.map((_, i) => {
-            if (i > 0) {
-                // keep the price chart bigger
-                return createChart(refs[i].current, {
-                    ...chartConfig,
-                    ...timeVisibleConfig,
-                    height: 230,
-                })
-            }
-            return createChart(refs[i].current, {
+    useEffect(async () => {
+        const charts = refs.map((_, i) =>
+            createChart(refs[i].current, {
                 ...chartConfig,
-                ...timeVisibleConfig,
+                ...timeVisibleConfig(timeframe),
+                height: i > 0 ? sideChartHeight : chartConfig.height, // keep the price chart bigger
             })
-        })
+        )
 
         // fetch data and set charts
 
-        let dexMapped, scMapped
+        dispatch(setIsGlobalLoading(true))
 
         let { fetchBackDelta, initialTimestamp, endTimestamp, intervalDiff } =
             timeframesConfig[timeframe]
 
-        const dexMethod = { type: 'dex', orderNumber: 0 }
+        if (timeframe === 0) {
+            initialTimestamp = moment
+                .unix(initialTimestamp)
+                .utc()
+                .startOf('isoWeek')
+                .unix()
+            endTimestamp = moment().utc().endOf('isoWeek').unix()
+        }
 
-        const initFetchPromises = [
-            getMappedScData(
-                initialTimestamp,
-                endTimestamp,
-                dexMethod,
-                timeframe,
-                intervalDiff,
-                timezone,
-                true
-            ),
+        const initFetchPromises = methods.map((method) =>
             getMappedScData(
                 initialTimestamp,
                 endTimestamp,
@@ -149,16 +94,15 @@ export default function GeneralAnalytics() {
                 intervalDiff,
                 timezone,
                 true
-            ),
-        ]
+            )
+        )
 
-        setIsGlobalLoading(true)
-        const resolvedDataFetch = await Promise.all(initFetchPromises)
-        setIsGlobalLoading(false)
-        ;[dexMapped, scMapped] = resolvedDataFetch
+        let mappedDataSets = await Promise.all(initFetchPromises)
+        let series = mappedDataSets.map((mappedData, idx) =>
+            fillChart(charts[idx], methods[idx], mappedData)
+        )
 
-        let dexSeries = fillChart(charts[0], dexMethod, dexMapped)
-        let scSeries = fillChart(charts[charts.length - 1], method, scMapped)
+        dispatch(setIsGlobalLoading(false))
 
         // crosshair
 
@@ -182,7 +126,7 @@ export default function GeneralAnalytics() {
         // fetching past data
 
         let chartNeedsUpdate = false
-        let els = Array.from(Array(nCharts).keys()).map((_) => null)
+        let els = [...Array(nCharts).keys()].map((_) => null)
 
         charts.forEach((chart, idx) => {
             chart
@@ -204,16 +148,9 @@ export default function GeneralAnalytics() {
                             fetchBackDelta * baseGranularityUnix
 
                         // update price and volume chart
-                        const backFetchPromises = [
-                            getMappedScData(
-                                initialTimestamp,
-                                endTimestamp,
-                                dexMethod,
-                                timeframe,
-                                intervalDiff,
-                                timezone,
-                                false
-                            ),
+                        dispatch(setIsPartialLoading(true))
+
+                        const backFetchPromises = methods.map((method) =>
                             getMappedScData(
                                 initialTimestamp,
                                 endTimestamp,
@@ -222,42 +159,38 @@ export default function GeneralAnalytics() {
                                 intervalDiff,
                                 timezone,
                                 false
-                            ),
-                        ]
+                            )
+                        )
 
-                        setIsPartialLoading(true)
-                        const resolvedDataFetch = await Promise.all(
+                        const newMappedDataSets = await Promise.all(
                             backFetchPromises
                         )
-                        setIsPartialLoading(false)
-                        const [newDexMapped, newScMapped] = resolvedDataFetch
-
-                        scMapped = mergeObjectsArrays(scMapped, newScMapped)
-                        dexMapped = mergeObjectsArrays(dexMapped, newDexMapped)
-
-                        dexSeries = fillChart(
-                            charts[0],
-                            dexMethod,
-                            dexMapped,
-                            dexSeries
+                        mappedDataSets = newMappedDataSets.map(
+                            (newMappedData, idx) =>
+                                mergeObjectsArrays(
+                                    mappedDataSets[idx],
+                                    newMappedData
+                                )
                         )
-                        scSeries = fillChart(
-                            charts[charts.length - 1],
-                            method,
-                            scMapped,
-                            scSeries
+                        series = mappedDataSets.map((mappedData, idx) =>
+                            fillChart(
+                                charts[idx],
+                                methods[idx],
+                                mappedData,
+                                series[idx]
+                            )
                         )
 
+                        dispatch(setIsPartialLoading(false))
                         chartNeedsUpdate = false
                     }
                 })
 
-            if (refs.length === nCharts) {
+            if (refs.length === nCharts && refs[idx].current != null) {
                 const ro = new ResizeObserver((entries) => {
                     const cr = entries[0].contentRect
                     chart.resize(cr.width, cr.height)
                 })
-
                 ro.observe(refs[idx].current)
             }
 
@@ -271,11 +204,11 @@ export default function GeneralAnalytics() {
 
         // updating charts
 
-        if (updateInterval) {
-            clearInterval(updateInterval)
+        if (updateSetInterval) {
+            clearInterval(updateSetInterval)
         }
 
-        setUpdateInterval(
+        setUpdateSetInterval(
             setInterval(async () => {
                 try {
                     // for intervals > 1D (e.g., 1W), set larger boundaries for incoming queries
@@ -290,50 +223,36 @@ export default function GeneralAnalytics() {
                         .endOf(boundaryTimeframeType)
                         .unix()
 
-                    const updatePromises = await Promise.all([
-                        getMappedScData(
-                            startDate,
-                            endDate,
-                            dexMethod,
-                            timeframe,
-                            intervalDiff,
-                            timezone,
-                            true
-                        ),
-                        getMappedScData(
-                            startDate,
-                            endDate,
-                            method,
-                            timeframe,
-                            intervalDiff,
-                            timezone,
-                            true
-                        ),
-                    ])
-
-                    const resolvedDataFetch = await Promise.all(updatePromises)
-                    const [updateDexMapped, updateScMapped] = resolvedDataFetch
-
-                    dexMapped = mergeObjectsArraysOverrideTime(
-                        dexMapped,
-                        updateDexMapped
-                    )
-                    scMapped = mergeObjectsArraysOverrideTime(
-                        scMapped,
-                        updateScMapped
+                    const updatePromises = await Promise.all(
+                        methods.map((method) =>
+                            getMappedScData(
+                                startDate,
+                                endDate,
+                                method,
+                                timeframe,
+                                intervalDiff,
+                                timezone,
+                                true
+                            )
+                        )
                     )
 
-                    dexSeries = fillChart(
-                        charts[0],
-                        dexMethod,
-                        dexMapped,
-                        dexSeries
+                    const newMappedDataSets = await Promise.all(updatePromises)
+
+                    mappedDataSets = newMappedDataSets.map(
+                        (newMappedData, idx) =>
+                            mergeObjectsArraysOverrideTime(
+                                mappedDataSets[idx],
+                                newMappedData
+                            )
                     )
-                    scSeries = fillChart(
-                        charts[charts.length - 1],
-                        method,
-                        scMapped,
-                        scSeries
+                    series = mappedDataSets.map((mappedData, idx) =>
+                        fillChart(
+                            charts[idx],
+                            methods[idx],
+                            mappedData,
+                            series[idx]
+                        )
                     )
                 } catch (e) {
                     dispatch(
@@ -348,15 +267,13 @@ export default function GeneralAnalytics() {
         )
 
         return () => {
-            if (updateInterval) {
-                clearInterval(updateInterval)
-            }
+            if (updateSetInterval) clearInterval(updateSetInterval)
             charts.forEach((c) => c.remove)
             els.forEach((el) => {
                 if (el) document.removeEventListener('resize', el)
             })
         }
-    }, [method, timeframe, timezone])
+    }, [refs])
 
     return (
         <div className="main-content general-analytics-view">
@@ -372,110 +289,24 @@ export default function GeneralAnalytics() {
                                                 key={key}
                                                 className="dex-container"
                                             >
-                                                <div className="dex-price-outer">
-                                                    {isGlobalLoading && (
-                                                        <Skeleton
-                                                            style={{
-                                                                width: 'inherit',
-                                                                position:
-                                                                    'absolute',
-                                                                zIndex: 5,
-                                                                borderRadius: 4,
-                                                            }}
-                                                            variant="rect"
-                                                            animation="wave"
-                                                            width="100%"
-                                                            height={370}
-                                                        />
-                                                    )}
-                                                    <span className="dex-price-title">
-                                                        SushiSwap OHM/DAI Price
-                                                        & Volume,{' '}
-                                                        {
-                                                            timeframesConfig[
-                                                                timeframe
-                                                            ].name
-                                                        }
-                                                    </span>
-                                                    {isPartialLoading && (
-                                                        <div className="loading-spinner">
-                                                            <LoadingSpinner />
-                                                        </div>
-                                                    )}
-                                                    <div
-                                                        style={
-                                                            isGlobalLoading
-                                                                ? { zIndex: -1 }
-                                                                : {}
-                                                        }
-                                                        className="ga-chart dex-price"
-                                                        ref={refs[0]}
-                                                    ></div>
-                                                </div>
-                                                <div className="staking-volume-outer">
-                                                    {isGlobalLoading && (
-                                                        <Skeleton
-                                                            style={{
-                                                                width: 'inherit',
-                                                                position:
-                                                                    'absolute',
-                                                                zIndex: 5,
-                                                                borderRadius: 4,
-                                                            }}
-                                                            variant="rect"
-                                                            animation="wave"
-                                                            width="100%"
-                                                            height={200}
-                                                        />
-                                                    )}
-                                                    <span className="staking-volume-title">
-                                                        {parse(
-                                                            methodPropsChartConfigs[
-                                                                method.type
-                                                            ][
-                                                                method
-                                                                    .orderNumber
-                                                            ].title
-                                                        )}
-                                                        ,
-                                                        {` ${timeframesConfig[timeframe].name}`}
-                                                    </span>
-                                                    {isPartialLoading && (
-                                                        <div className="loading-spinner">
-                                                            <LoadingSpinner />
-                                                        </div>
-                                                    )}
-                                                    <div
-                                                        style={
-                                                            isGlobalLoading
-                                                                ? { zIndex: -1 }
-                                                                : {}
-                                                        }
-                                                        className="ga-chart staking-volume"
-                                                        ref={refs[1]}
-                                                    ></div>
-                                                </div>
+                                                {methods.map((method, idx) => (
+                                                    <Chart
+                                                        key={idx}
+                                                        chartRef={refs[idx]}
+                                                        index={idx}
+                                                        {...{
+                                                            timeframe,
+                                                            method,
+                                                        }}
+                                                    />
+                                                ))}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <ChartParamsSelection
-                                            {...{
-                                                timeframe,
-                                                changeTimeframe,
-                                                timezone,
-                                                changeTimezone,
-                                                isGlobalLoading,
-                                            }}
-                                        />
+                                        <ChartParamsSelection />
                                         <p></p>
-                                        <ChartLegend
-                                            {...{
-                                                isGlobalLoading,
-                                                method,
-                                                changeMethod,
-                                            }}
-                                        />
+                                        <ChartLegend />
                                     </div>
                                 </div>
                             </div>
