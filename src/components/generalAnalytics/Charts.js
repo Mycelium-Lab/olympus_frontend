@@ -168,7 +168,7 @@ export default function GeneralAnalytics() {
                         intervalDiff,
                         timeframe,
                         timezone,
-                        shouldTrimEnd: false,
+                        shouldTrimEnd: true,
                         methods,
                         charts,
                         oldMappedDataSets: mappedDataSets,
