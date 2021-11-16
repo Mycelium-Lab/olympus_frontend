@@ -404,6 +404,11 @@ export const methodPropsChartConfigs = {
             null
         ),
     ],
+    index: [
+        new MethodPropsChartConfig('sOHM Index', (...args) =>
+            setBaseHist(...args, 'index')
+        ),
+    ],
     bonds: [
         new MethodPropsChartConfig(
             'Bond Purchase Volume, DAI',

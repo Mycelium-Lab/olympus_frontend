@@ -1,7 +1,7 @@
 import { getStakesInfoFunction, mapStakes } from '../dataFetch/stakes'
 import { getBondsInfoFunction, mapBonds } from '../dataFetch/bonds'
 import { getRebasesInfoFunction, mapRebases } from '../dataFetch/rebases'
-
+import { getIndexesInfoFunction, mapIndexes } from '../dataFetch/sOhmIndexes'
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 
 import moment from 'moment'
@@ -38,6 +38,11 @@ export const getMappedScData = async (
             const getRebasesInfo = getRebasesInfoFunction(timeframe)
             data = await getRebasesInfo(startTime, endTime)
             mappedData = mapRebases(data)
+            break
+        case 'index':
+            const getIndexesInfo = getIndexesInfoFunction(timeframe)
+            data = await getIndexesInfo(startTime, endTime)
+            mappedData = mapIndexes(data)
             break
         case 'bonds':
             const getBondsInfo = getBondsInfoFunction(timeframe)
