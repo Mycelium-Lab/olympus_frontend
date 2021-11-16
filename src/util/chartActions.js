@@ -73,17 +73,22 @@ export const previousDataFetch = async ({
     oldSeries,
 }) => {
     const unixDelta = fetchBackDelta * baseGranularityUnix
-    let startTimestamp = lastTimestamp - unixDelta * timesFetchedPrevious
-    let endTimestamp = startTimestamp - unixDelta
+    let startTimestamp = lastTimestamp - unixDelta * (timesFetchedPrevious + 1)
+    let endTimestamp = lastTimestamp - unixDelta * timesFetchedPrevious
 
     if (timeframe === 0) {
         startTimestamp = moment
             .unix(startTimestamp)
             .utc()
-            .subtract(1, 'days')
+            .subtract(timesFetchedPrevious + 1, 'weeks')
             .startOf('isoWeek')
             .unix()
-        endTimestamp = moment.unix(endTimestamp).utc().endOf('isoWeek').unix()
+        endTimestamp = moment
+            .unix(endTimestamp)
+            .utc()
+            .subtract(timesFetchedPrevious + 1, 'weeks')
+            .endOf('isoWeek')
+            .unix()
     }
 
     let mappedDataSets = await fetchMappedData(
