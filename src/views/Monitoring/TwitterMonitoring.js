@@ -82,7 +82,7 @@ export default function TwitterMonitoring() {
         script.src = 'https://platform.twitter.com/widgets.js'
         script.async = ref.current.appendChild(script)
         const lsUsernames = getStorageItem('twitterUsernames')
-        if (lsUsernames.length) {
+        if (lsUsernames) {
             setUsernames(lsUsernames)
         } else {
             setUsernames(['OlympusDAO', 'ohmzeus', 'OlympusAgora'])
