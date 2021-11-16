@@ -1867,8 +1867,6 @@ export async function getDepositsInfoMinutes(startTimestamp, endTime) {
     `
 
     try {
-        console.log(Date())
-
         const depositDataDai = await axios({
             url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
@@ -1919,7 +1917,6 @@ export async function getDepositsInfoMinutes(startTimestamp, endTime) {
                 query: depositQueryOhmLusd,
             },
         })
-        console.log(Date())
         const daiDeposits = depositDataDai.data.data.depositYearDaiEntities
         const ethDeposits = depositDataEth.data.data.depositYearETHEntities
         const fraxDeposits = depositDataFrax.data.data.depositYearFraxEntities
@@ -2532,7 +2529,6 @@ export async function getDepositsInfoMinutes(startTimestamp, endTime) {
             }
             data.push(obj)
         }
-        console.log(Date())
         return data
     } catch (err) {
         console.log(err)
@@ -2740,8 +2736,6 @@ export async function getDepositsInfoNMinutes(
     `
 
     try {
-        console.log(Date())
-
         const depositDataDai = await axios({
             url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
@@ -2792,7 +2786,6 @@ export async function getDepositsInfoNMinutes(
                 query: depositQueryOhmLusd,
             },
         })
-        console.log(Date())
         const daiDeposits = depositDataDai.data.data.depositYearDaiEntities
         const ethDeposits = depositDataEth.data.data.depositYearETHEntities
         const fraxDeposits = depositDataFrax.data.data.depositYearFraxEntities
