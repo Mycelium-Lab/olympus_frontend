@@ -98,7 +98,7 @@
     }
 
     .chart-title {
-        max-width: 60%;
+        max-width: 52%;
         position: absolute;
         top: 10px;
         left: 15px;
@@ -107,15 +107,63 @@
         font-family: 'Lato', sans-serif;
     }
 
+    .chart-ohlc {
+        position: absolute;
+        z-index: 2;
+        display: inline-flex;
+
+        &-positive {
+            & > div > span:nth-child(2) {
+                color: rgb(37, 166, 154);
+            }
+        }
+
+        &-negative {
+            & > div > span:nth-child(2) {
+                color: rgb(239, 83, 80);
+            }
+        }
+
+        & > div:not(:first-child) {
+            margin-left: 5px;
+        }
+    }
+
+    @media (min-width: 1000px) {
+        .chart-ohlc {
+            top: 10px;
+            right: 100px;
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .chart-ohlc {
+            top: 28px;
+            left: 15px;
+        }
+    }
+
     @media (min-width: 600px) {
-        .chart-title {
+        .chart-title,
+        .chart-ohlc {
             font-size: 14px;
         }
     }
 
     @media (max-width: 600px) {
-        .chart-title {
+        .chart-title,
+        .chart-ohlc {
             font-size: 10px;
+        }
+
+        .chart-ohlc {
+            top: 22px;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .chart-ohlc {
+            display: none;
         }
     }
 

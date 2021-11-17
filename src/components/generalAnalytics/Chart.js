@@ -12,10 +12,31 @@ import {
     chartConfig,
 } from '../../util/config'
 
-export default function Chart({ chartRef, method, index, timeframe }) {
+export default function Chart({ chartRef, method, index, timeframe, ohlc }) {
     const { isGlobalLoading, isPartialLoading, sideChartHeight } = useSelector(
         (state) => state.ga
     )
+    const getOhlcClass = (open, close) => {
+        if (open < close) return 'positive'
+        if (open > close) return 'negative'
+        return 'neutral'
+    }
+
+    const validateOhlc = (ohlc) => {
+        let isValid = false
+        if (ohlc) {
+            if (
+                ohlc.hasOwnProperty('open') &&
+                ohlc.hasOwnProperty('high') &&
+                ohlc.hasOwnProperty('low') &&
+                ohlc.hasOwnProperty('close')
+            ) {
+                isValid = true
+            }
+        }
+        return isValid
+    }
+
     return (
         <div className="chart-outer">
             {isGlobalLoading && (
@@ -45,6 +66,31 @@ export default function Chart({ chartRef, method, index, timeframe }) {
             {isPartialLoading && (
                 <div className="loading-spinner">
                     <LoadingSpinner />
+                </div>
+            )}
+            {validateOhlc(ohlc) && (
+                <div
+                    className={`chart-ohlc chart-ohlc-${getOhlcClass(
+                        ohlc.open,
+                        ohlc.close
+                    )}`}
+                >
+                    <div>
+                        <span>O:</span>
+                        <span>{parseFloat(ohlc.open).toFixed(2)}</span>
+                    </div>
+                    <div>
+                        <span>H:</span>
+                        <span>{parseFloat(ohlc.high).toFixed(2)}</span>
+                    </div>
+                    <div>
+                        <span>L:</span>
+                        <span>{parseFloat(ohlc.low).toFixed(2)}</span>
+                    </div>
+                    <div>
+                        <span>C:</span>
+                        <span>{parseFloat(ohlc.close).toFixed(2)}</span>
+                    </div>
                 </div>
             )}
             <div

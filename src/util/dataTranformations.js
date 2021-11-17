@@ -162,3 +162,9 @@ export const transformTimezone = (dataSet, timezoneIndex = 0) => {
 export const dateFormatter = (date) => {
     return '(' + moment.utc(date).local().format('DD/MM/YYYY hh:mm:ss') + ')'
 }
+
+export const getEmptyObjectWithFillers = (length, filler) =>
+    [...Array(length).keys()].reduce((acc, _, idx) => {
+        acc[idx] = filler
+        return acc
+    }, {})

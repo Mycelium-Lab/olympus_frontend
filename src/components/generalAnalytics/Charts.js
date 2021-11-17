@@ -21,6 +21,8 @@ import {
     updateDataFetch,
 } from '../../util/chartActions'
 
+import { getEmptyObjectWithFillers } from '../../util/dataTranformations'
+
 import { basicMessages } from '../../util/messages'
 
 import Chart from './Chart'
@@ -41,12 +43,14 @@ export default function GeneralAnalytics() {
     )
     const [key, setKey] = useState(null) // a key to compare refs' changes
     const [updateSetInterval, setUpdateSetInterval] = useState(null) // setInterval function for rt updates
-    // const [timesFetchedPrevious, setTimesFetchedPrevious] = useState(0)
+    const [ohlcs, setOhlcs] = useState(getEmptyObjectWithFillers(nCharts, null))
 
     const updateRefs = () => {
         setKey(v4()) // set the new key to toggle rerendering
         const newRefs = [...Array(nCharts).keys()].map(() => createRef())
+        const newOhlc = getEmptyObjectWithFillers(nCharts, null)
         setRefs(newRefs)
+        setOhlcs(newOhlc)
     }
 
     useEffect(() => {
@@ -96,6 +100,14 @@ export default function GeneralAnalytics() {
                     .concat(charts.slice(idx + 1))
                     .forEach((c) => c.moveCrosshair(param.point))
                 isCrosshairMoving = false
+
+                if (param.hasOwnProperty('seriesPrices')) {
+                    const iter = param.seriesPrices.values()
+                    setOhlcs({
+                        ...ohlcs,
+                        [idx]: iter.next().value,
+                    })
+                }
             })
         })
 
@@ -206,6 +218,7 @@ export default function GeneralAnalytics() {
                         key={idx}
                         chartRef={refs[idx]}
                         index={idx}
+                        ohlc={ohlcs[idx]}
                         {...{
                             timeframe,
                             method,
