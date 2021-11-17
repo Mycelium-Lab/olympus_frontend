@@ -405,121 +405,123 @@ export const methodPropsChartConfigs = {
         ),
     ],
     index: [
-        new MethodPropsChartConfig('sOHM Index', (...args) =>
-            setBaseHist(...args, 'index')
+        new MethodPropsChartConfig(
+            'sOHM Index',
+            (...args) => setBaseHist(...args, 'index'),
+            'How Much sOHM One Would Have if They Staked and Held a Single OHM From Day 1'
         ),
     ],
     bonds: [
         new MethodPropsChartConfig(
             'Bond Purchase Volume, DAI',
             (...args) => setBaseHist(...args, 'amountDai'),
-            null
+            'How Much DAI Was Spent for DAI Bonds Acquisition per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, DAI',
             (...args) => setBaseHist(...args, 'depositCountDai'),
-            null
+            'How Many Times DAI Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, DAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVDai'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for DAI Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, wETH',
             (...args) => setBaseHist(...args, 'amountEth'),
-            null
+            'How Much wETH Was Spent for wETH Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, wETH',
             (...args) => setBaseHist(...args, 'depositCountEth'),
-            null
+            'How Many Times wETH Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, wETH (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVEth'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for wETH Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, FRAX',
             (...args) => setBaseHist(...args, 'amountFrax'),
-            null
+            'How Much FRAX Was Spent for FRAX Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, FRAX',
             (...args) => setBaseHist(...args, 'depositCountFrax'),
-            null
+            'How Many Times FRAX Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, FRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVFrax'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for FRAX Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, LUSD',
             (...args) => setBaseHist(...args, 'amountLusd'),
-            null
+            'How Much LUSD Was Spent for LUSD Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, LUSD',
             (...args) => setBaseHist(...args, 'depositCountLusd'),
-            null
+            'How Many Times LUSD Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, LUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVLusd'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for LUSD Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMDAI',
             (...args) => setBaseHist(...args, 'amountOhmDai'),
-            null
+            'How Much LP OHMDAI Was Spent for LP OHMDAI Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMDAI',
             (...args) => setBaseHist(...args, 'depositCountOhmDai'),
-            null
+            'How Many Times LP OHMDAI Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMDAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmDai'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for LP OHMDAI Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amountOhmFrax'),
-            null
+            'How Much LP OHMFRAX Was Spent for LP OHMFRAX Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'depositCountOhmFrax'),
-            null
+            'How Many Times LP OHMFRAX Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMFRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmFrax'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for LP OHMFRAX Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
 
         new MethodPropsChartConfig(
             'Bond Purchase Volume, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amountOhmLusd'),
-            null
+            'How Much LP OHMLUSD Was Spent for LP OHMLUSD Bonds Purchasing per Bar'
         ),
         new MethodPropsChartConfig(
             'Bond Times Purchased, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'depositCountOhmLusd'),
-            null
+            'How Many Times LP OHMLUSD Bonds Were Acquired per Bar'
         ),
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMLUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmLusd'),
-            null
+            'The Scaling Factor at Which Bond Prices Change for LP OHMLUSD Bonds. A Higher BCV Means a Lower Discount for Bonders'
         ),
     ],
     treasury: [
