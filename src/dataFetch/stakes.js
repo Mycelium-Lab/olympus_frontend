@@ -84,7 +84,7 @@ export async function getStakesInfoNDays(startTimestamp, endTime, days) {
                 ) {
                     obj.stakeCount += Number(stakes[j].stakeCount)
                     obj.unstakeCount += Number(stakes[j].unstakeCount)
-                    obj.usdRate += Number(stakes[j].usdRate)
+                    obj.usdRate = Number(stakes[j].usdRate)
                     obj.amountStaked += Number(stakes[j].amountStaked)
                     obj.amountUnstaked += Number(stakes[j].amountUnstaked)
                     obj.currentStaked = Number(stakes[j].currentStaked)
@@ -217,7 +217,7 @@ export async function getStakesInfoNHours(startTimestamp, endTime, hours) {
                 ) {
                     obj.stakeCount += Number(stakes[j].stakeCount)
                     obj.unstakeCount += Number(stakes[j].unstakeCount)
-                    obj.usdRate += Number(stakes[j].usdRate)
+                    obj.usdRate = Number(stakes[j].usdRate)
                     obj.amountStaked += Number(stakes[j].amountStaked)
                     obj.amountUnstaked += Number(stakes[j].amountUnstaked)
                     obj.currentStaked = Number(stakes[j].currentStaked)
@@ -380,7 +380,7 @@ export async function getStakesInfoNMinutes(startTimestamp, endTime, minutes) {
                 ) {
                     obj.stakeCount += Number(stakes[j].stakeCount)
                     obj.unstakeCount += Number(stakes[j].unstakeCount)
-                    obj.usdRate += Number(stakes[j].usdRate)
+                    obj.usdRate = Number(stakes[j].usdRate)
                     obj.amountStaked += Number(stakes[j].amountStaked)
                     obj.amountUnstaked += Number(stakes[j].amountUnstaked)
                     obj.currentStaked = Number(stakes[j].currentStaked)
