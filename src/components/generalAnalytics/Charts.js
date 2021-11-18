@@ -71,25 +71,30 @@ export default function GeneralAnalytics() {
 
         // fetch data and set charts
 
-        dispatch(setIsGlobalLoading(true))
-        const rebasesTimestamps = shouldRebasesLoad
-            ? await getRebasesTimestamps()
-            : []
-
         let { fetchBackDelta, startTimestamp, endTimestamp, intervalDiff } =
             timeframesConfig[timeframe]
+        let mappedDataSets, series
 
-        let [mappedDataSets, series] = await initialDataFetch({
-            startTimestamp,
-            endTimestamp,
-            intervalDiff,
-            timeframe,
-            timezone,
-            shouldTrimEnd: true,
-            methods,
-            charts,
-            rebasesTimestamps,
-        })
+        dispatch(setIsGlobalLoading(true))
+        try {
+            const rebasesTimestamps = shouldRebasesLoad
+                ? await getRebasesTimestamps()
+                : []
+
+            ;[mappedDataSets, series] = await initialDataFetch({
+                startTimestamp,
+                endTimestamp,
+                intervalDiff,
+                timeframe,
+                timezone,
+                shouldTrimEnd: true,
+                methods,
+                charts,
+                rebasesTimestamps,
+            })
+        } catch (_) {
+            dispatch(setMessage(basicMessages.requestError))
+        }
         dispatch(setIsGlobalLoading(false))
 
         // crosshair
@@ -140,22 +145,28 @@ export default function GeneralAnalytics() {
                         chartNeedsUpdate = true
                         // update price and volume chart
                         dispatch(setIsPartialLoading(true))
-                        ;[mappedDataSets, series] = await previousDataFetch({
-                            lastTimestamp: startTimestamp,
-                            timesFetchedPrevious,
-                            fetchBackDelta,
-                            intervalDiff,
-                            timeframe,
-                            timezone,
-                            shouldTrimEnd: false,
-                            methods,
-                            charts,
-                            oldMappedDataSets: mappedDataSets,
-                            oldSeries: series,
-                        })
+                        try {
+                            ;[mappedDataSets, series] = await previousDataFetch(
+                                {
+                                    lastTimestamp: startTimestamp,
+                                    timesFetchedPrevious,
+                                    fetchBackDelta,
+                                    intervalDiff,
+                                    timeframe,
+                                    timezone,
+                                    shouldTrimEnd: false,
+                                    methods,
+                                    charts,
+                                    oldMappedDataSets: mappedDataSets,
+                                    oldSeries: series,
+                                }
+                            )
+                            timesFetchedPrevious++
+                            chartNeedsUpdate = false
+                        } catch (_) {
+                            dispatch(setMessage(basicMessages.requestError))
+                        }
                         dispatch(setIsPartialLoading(false))
-                        timesFetchedPrevious++
-                        chartNeedsUpdate = false
                     }
                 })
 
