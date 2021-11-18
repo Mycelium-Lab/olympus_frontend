@@ -41,8 +41,9 @@ export const initialDataFetch = async ({
     shouldTrimEnd,
     methods,
     charts,
+    rebasesTimestamps,
 }) => {
-    let mappedDataSets = await fetchMappedData(
+    const mappedDataSets = await fetchMappedData(
         startTimestamp,
         endTimestamp,
         intervalDiff,
@@ -52,8 +53,14 @@ export const initialDataFetch = async ({
         methods
     )
 
-    let series = mappedDataSets.map((mappedData, idx) =>
-        fillChart(charts[idx], methods[idx], mappedData)
+    const series = mappedDataSets.map((mappedData, idx) =>
+        fillChart(
+            charts[idx],
+            methods[idx],
+            mappedData,
+            null, // series are not defined yet
+            rebasesTimestamps
+        )
     )
 
     return [mappedDataSets, series]

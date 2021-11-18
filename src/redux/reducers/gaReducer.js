@@ -1,6 +1,9 @@
 import {
     SET_IS_GLOBAL_LOADING,
     SET_IS_PARTIAL_LOADING,
+    SET_IS_REBASES_LOADING,
+    SET_SHOULD_REBASES_LOAD,
+    SET_REBASES,
     SET_METHODS,
     SET_TIMEFRAME,
     SET_TIMEZONE,
@@ -13,9 +16,20 @@ const parsedDefaultTimeframe = parseInt(defaultTimeframe)
 const defaultTimezone = localStorage.getItem('ga_default_timezone')
 const parsedDefaultTimezone = parseInt(defaultTimezone)
 
+const defaultShouldRebasesLoad = localStorage.getItem(
+    'ga_default_should_rebases_load'
+)
+const parsedDefaultShouldRebasesLoad =
+    defaultShouldRebasesLoad === null || defaultShouldRebasesLoad === 'false'
+        ? false
+        : true
+
 const initialState = {
     isGlobalLoading: false,
     isPartialLoading: false,
+    isRebasesLoading: false, // not in use yet
+    shouldRebasesLoad: parsedDefaultShouldRebasesLoad,
+    rebases: null,
     methods: [
         // default charts
         { type: 'dex', orderNumber: 0, id: v4() }, // dex price
@@ -51,6 +65,21 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isGlobalLoading: action.payload.isGlobalLoading,
+            }
+        case SET_IS_REBASES_LOADING:
+            return {
+                ...state,
+                isRebasesLoading: action.payload.isRebasesLoading,
+            }
+        case SET_SHOULD_REBASES_LOAD:
+            return {
+                ...state,
+                shouldRebasesLoad: action.payload.shouldRebasesLoad,
+            }
+        case SET_REBASES:
+            return {
+                ...state,
+                rebases: action.payload.rebases,
             }
         case SET_METHODS:
             return {

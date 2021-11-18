@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 
 /**
  * @dev : Get rebases (days)
@@ -589,4 +590,12 @@ export function getRebasesInfoFunction(timeframe) {
         default:
             return
     }
+}
+
+export const getRebasesTimestamps = async () => {
+    const now = moment.utc().unix()
+    return await axios({
+        method: 'get',
+        url: `${process.env.REACT_APP_API_URL}/api/get_rebase_timestamps?start=1615291702&end=${now}`,
+    }).then((response) => response.data.data)
 }

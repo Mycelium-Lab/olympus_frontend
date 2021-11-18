@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import TooltippedComponent from '../util/TooltippedComponent'
 
 import timezones from '../../util/timezones'
 import { timeframesConfig } from '../../util/config'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { setTimeframe, setTimezone } from '../../redux/actions/gaActions'
+import {
+    setTimeframe,
+    setTimezone,
+    setRebases,
+} from '../../redux/actions/gaActions'
 
 export default function ChartParamsSelection() {
-    const { isGlobalLoading, timeframe, timezone } = useSelector(
-        (state) => state.ga
-    )
+    const { isGlobalLoading, timeframe, timezone, shouldRebasesLoad } =
+        useSelector((state) => state.ga)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(setRebases())
+    }, [])
+
     return (
         <div className="card card-filter">
             <div className="card-body">
@@ -62,6 +70,21 @@ export default function ChartParamsSelection() {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </TooltippedComponent>
+
+                        <TooltippedComponent info={'Enable Rebases'}>
+                            <div>
+                                <button
+                                    className="form-control"
+                                    disabled={isGlobalLoading}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        dispatch(setRebases())
+                                    }}
+                                >
+                                    Rebases {shouldRebasesLoad ? 'On' : 'Off'}
+                                </button>
                             </div>
                         </TooltippedComponent>
                     </div>

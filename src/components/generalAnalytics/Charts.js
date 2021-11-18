@@ -35,6 +35,7 @@ export default function GeneralAnalytics() {
         timezone,
         refreshRateSeconds,
         sideChartHeight,
+        rebases,
     } = useSelector((state) => state.ga)
     const nCharts = methods.length
 
@@ -43,7 +44,7 @@ export default function GeneralAnalytics() {
     )
     const [key, setKey] = useState(null) // a key to compare refs' changes
     const [updateSetInterval, setUpdateSetInterval] = useState(null) // setInterval function for rt updates
-    const [ohlcs, setOhlcs] = useState(getEmptyObjectWithFillers(nCharts, null))
+    const [ohlcs, setOhlcs] = useState(getEmptyObjectWithFillers(nCharts, null)) // open/high/low/close data
 
     const updateRefs = () => {
         setKey(v4()) // set the new key to toggle rerendering
@@ -55,148 +56,157 @@ export default function GeneralAnalytics() {
 
     useEffect(() => {
         updateRefs()
-    }, [methods, timeframe, timezone])
+    }, [methods, timeframe, timezone, rebases])
 
     useEffect(async () => {
-        const charts = refs.map((_, i) =>
-            createChart(refs[i].current, {
-                ...chartConfig,
-                ...timeVisibleConfig(timeframe),
-                height: i > 0 ? sideChartHeight : chartConfig.height, // keep the price chart bigger
+        let charts,
+            els = [] // charts and event listeners
+
+        if (rebases) {
+            // if rebases haven't been set as an array, don't start loading the rest
+            const charts = refs.map((_, i) =>
+                createChart(refs[i].current, {
+                    ...chartConfig,
+                    ...timeVisibleConfig(timeframe),
+                    height: i > 0 ? sideChartHeight : chartConfig.height, // keep the price chart bigger
+                })
+            )
+
+            // fetch data and set charts
+
+            // dispatch(setIsGlobalLoading(true))
+            let { fetchBackDelta, startTimestamp, endTimestamp, intervalDiff } =
+                timeframesConfig[timeframe]
+
+            let [mappedDataSets, series] = await initialDataFetch({
+                startTimestamp,
+                endTimestamp,
+                intervalDiff,
+                timeframe,
+                timezone,
+                shouldTrimEnd: true,
+                methods,
+                charts,
+                rebasesTimestamps: rebases,
             })
-        )
+            dispatch(setIsGlobalLoading(false))
 
-        // fetch data and set charts
+            // crosshair
 
-        dispatch(setIsGlobalLoading(true))
-        let { fetchBackDelta, startTimestamp, endTimestamp, intervalDiff } =
-            timeframesConfig[timeframe]
+            let isCrosshairMoving = false
 
-        let [mappedDataSets, series] = await initialDataFetch({
-            startTimestamp,
-            endTimestamp,
-            intervalDiff,
-            timeframe,
-            timezone,
-            shouldTrimEnd: true,
-            methods,
-            charts,
-        })
-        dispatch(setIsGlobalLoading(false))
+            charts.forEach((chart, idx) => {
+                chart.subscribeCrosshairMove((param) => {
+                    if (!param.point) return
+                    if (!param.time) return
+                    if (isCrosshairMoving) return
 
-        // crosshair
-
-        let isCrosshairMoving = false
-
-        charts.forEach((chart, idx) => {
-            chart.subscribeCrosshairMove((param) => {
-                if (!param.point) return
-                if (!param.time) return
-                if (isCrosshairMoving) return
-
-                isCrosshairMoving = true
-                charts
-                    .slice(0, idx)
-                    .concat(charts.slice(idx + 1))
-                    .forEach((c) => c.moveCrosshair(param.point))
-                isCrosshairMoving = false
-
-                if (param.hasOwnProperty('seriesPrices')) {
-                    const iter = param.seriesPrices.values()
-                    setOhlcs({
-                        ...ohlcs,
-                        [idx]: iter.next().value,
-                    })
-                }
-            })
-        })
-
-        // fetching past data
-
-        let chartNeedsUpdate = false
-        let timesFetchedPrevious = 0
-        let els = [...Array(nCharts).keys()].map((_) => null)
-
-        charts.forEach((chart, idx) => {
-            chart
-                .timeScale()
-                .subscribeVisibleLogicalRangeChange(async (range) => {
+                    isCrosshairMoving = true
                     charts
                         .slice(0, idx)
                         .concat(charts.slice(idx + 1))
-                        .forEach((c) =>
-                            c.timeScale().setVisibleLogicalRange(range)
-                        )
+                        .forEach((c) => c.moveCrosshair(param.point))
+                    isCrosshairMoving = false
 
-                    if (range.from < 0 && !chartNeedsUpdate) {
-                        chartNeedsUpdate = true
-                        // update price and volume chart
-                        dispatch(setIsPartialLoading(true))
-                        ;[mappedDataSets, series] = await previousDataFetch({
-                            lastTimestamp: startTimestamp,
-                            timesFetchedPrevious,
-                            fetchBackDelta,
+                    if (param.hasOwnProperty('seriesPrices')) {
+                        const iter = param.seriesPrices.values()
+                        setOhlcs({
+                            ...ohlcs,
+                            [idx]: iter.next().value,
+                        })
+                    }
+                })
+            })
+
+            // fetching past data
+
+            let chartNeedsUpdate = false
+            let timesFetchedPrevious = 0
+            let els = [...Array(nCharts).keys()].map((_) => null)
+
+            charts.forEach((chart, idx) => {
+                chart
+                    .timeScale()
+                    .subscribeVisibleLogicalRangeChange(async (range) => {
+                        charts
+                            .slice(0, idx)
+                            .concat(charts.slice(idx + 1))
+                            .forEach((c) =>
+                                c.timeScale().setVisibleLogicalRange(range)
+                            )
+
+                        if (range.from < 0 && !chartNeedsUpdate) {
+                            chartNeedsUpdate = true
+                            // update price and volume chart
+                            dispatch(setIsPartialLoading(true))
+                            ;[mappedDataSets, series] = await previousDataFetch(
+                                {
+                                    lastTimestamp: startTimestamp,
+                                    timesFetchedPrevious,
+                                    fetchBackDelta,
+                                    intervalDiff,
+                                    timeframe,
+                                    timezone,
+                                    shouldTrimEnd: false,
+                                    methods,
+                                    charts,
+                                    oldMappedDataSets: mappedDataSets,
+                                    oldSeries: series,
+                                }
+                            )
+                            dispatch(setIsPartialLoading(false))
+                            timesFetchedPrevious++
+                            chartNeedsUpdate = false
+                        }
+                    })
+
+                if (refs.length === nCharts && refs[idx].current != null) {
+                    const ro = new ResizeObserver((entries) => {
+                        const cr = entries[0].contentRect
+                        chart.resize(cr.width, cr.height)
+                    })
+                    ro.observe(refs[idx].current)
+                }
+
+                els[idx] = document.addEventListener('resize', () => {
+                    chart.resize(
+                        refs[idx].current.innerWidth,
+                        refs[idx].current.innerHeight
+                    )
+                })
+            })
+
+            // updating charts
+
+            if (updateSetInterval) {
+                clearInterval(updateSetInterval)
+            }
+
+            setUpdateSetInterval(
+                setInterval(async () => {
+                    try {
+                        ;[mappedDataSets, series] = await updateDataFetch({
                             intervalDiff,
                             timeframe,
                             timezone,
-                            shouldTrimEnd: false,
+                            shouldTrimEnd: true,
                             methods,
                             charts,
                             oldMappedDataSets: mappedDataSets,
                             oldSeries: series,
                         })
-                        dispatch(setIsPartialLoading(false))
-                        timesFetchedPrevious++
-                        chartNeedsUpdate = false
-                    }
-                })
-
-            if (refs.length === nCharts && refs[idx].current != null) {
-                const ro = new ResizeObserver((entries) => {
-                    const cr = entries[0].contentRect
-                    chart.resize(cr.width, cr.height)
-                })
-                ro.observe(refs[idx].current)
-            }
-
-            els[idx] = document.addEventListener('resize', () => {
-                chart.resize(
-                    refs[idx].current.innerWidth,
-                    refs[idx].current.innerHeight
-                )
-            })
-        })
-
-        // updating charts
-
-        if (updateSetInterval) {
-            clearInterval(updateSetInterval)
-        }
-
-        setUpdateSetInterval(
-            setInterval(async () => {
-                try {
-                    ;[mappedDataSets, series] = await updateDataFetch({
-                        intervalDiff,
-                        timeframe,
-                        timezone,
-                        shouldTrimEnd: true,
-                        methods,
-                        charts,
-                        oldMappedDataSets: mappedDataSets,
-                        oldSeries: series,
-                    })
-                } catch (e) {
-                    dispatch(
-                        setMessage(
-                            basicMessages.refreshRequestError(
-                                refreshRateSeconds
+                    } catch (e) {
+                        dispatch(
+                            setMessage(
+                                basicMessages.refreshRequestError(
+                                    refreshRateSeconds
+                                )
                             )
                         )
-                    )
-                }
-            }, refreshRateSeconds * 1000)
-        )
+                    }
+                }, refreshRateSeconds * 1000)
+            )
+        }
 
         return () => {
             if (updateSetInterval) clearInterval(updateSetInterval)

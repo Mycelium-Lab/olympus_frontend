@@ -219,10 +219,18 @@ class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
     }
 }
 
+const getRebaseMarker = (timestamp) => ({
+    time: timestamp,
+    position: 'aboveBar',
+    color: 'orange',
+    shape: 'circle',
+})
+
 const setBaseHist = (
     chart,
     data,
     series,
+    rebases,
     dataProperty,
     seriesConfig = baseLineConfig
 ) => {
@@ -236,11 +244,12 @@ const setBaseHist = (
         hist = series[0]
     }
     hist.setData(data[dataProperty])
+    if (rebases) hist.setMarkers(rebases.map((r) => getRebaseMarker(r)))
     return [hist]
 }
 
 // polar, e.g., staking & unstaking, the former is positive, the latter is negative
-const setBasePolarHist = (chart, data, series, dataProperties) => {
+const setBasePolarHist = (chart, data, series, rebases, dataProperties) => {
     let posHist, negHist
 
     if (!series) {
@@ -260,6 +269,8 @@ const setBasePolarHist = (chart, data, series, dataProperties) => {
     posHist.setData(data[dataProperties[0]])
     negHist.setData(data[dataProperties[1]])
 
+    if (rebases) posHist.setMarkers(rebases.map((r) => getRebaseMarker(r)))
+
     return [posHist, negHist]
 }
 
@@ -267,7 +278,7 @@ export const methodPropsChartConfigs = {
     dex: [
         new MethodPropsChartConfig(
             'SushiSwap OHM/DAI Price',
-            (chart, data, series) => {
+            (chart, data, series, rebases) => {
                 let candleSeries
                 if (!series) {
                     candleSeries = chart.addCandlestickSeries(baseCandleConfig)
@@ -275,12 +286,16 @@ export const methodPropsChartConfigs = {
                     ;[candleSeries] = series
                 }
                 candleSeries.setData(data.priceCandles)
+                if (rebases)
+                    candleSeries.setMarkers(
+                        rebases.map((r) => getRebaseMarker(r))
+                    )
                 return [candleSeries]
             }
         ),
         new MethodPropsChartConfig(
             'SushiSwap OHM/DAI Volume',
-            (chart, data, series) => {
+            (chart, data, series, rebases) => {
                 let volumeUpHistSeries, volumeDownHistSeries
                 if (!series) {
                     volumeUpHistSeries = chart.addHistogramSeries({
@@ -299,6 +314,11 @@ export const methodPropsChartConfigs = {
                 volumeUpHistSeries.setData(data.volumeUp)
                 volumeDownHistSeries.setData(data.volumeDown)
 
+                if (rebases)
+                    volumeDownHistSeries.setMarkers(
+                        rebases.map((r) => getRebaseMarker(r))
+                    )
+
                 return [volumeUpHistSeries, volumeDownHistSeries]
             }
         ),
@@ -316,7 +336,7 @@ export const methodPropsChartConfigs = {
         ),
         new MethodPropsChartConfig(
             'Staking & Unstaking Volume with Netto, OHM',
-            (chart, data, series) => {
+            (chart, data, series, rebases) => {
                 let posHist, negHist, nettoHist
 
                 if (!series) {
@@ -338,6 +358,9 @@ export const methodPropsChartConfigs = {
                 posHist.setData(data.stakedWithNetto)
                 negHist.setData(data.unstakedWithNetto)
                 nettoHist.setData(data.nettoStaked)
+
+                if (rebases)
+                    posHist.setMarkers(rebases.map((r) => getRebaseMarker(r)))
 
                 return [posHist, negHist, nettoHist]
             },
@@ -663,9 +686,10 @@ export const methodPropsChartConfigs = {
     ],
 }
 
-export const fillChart = (chart, method, mappedData, scSeries) =>
+export const fillChart = (chart, method, mappedData, scSeries, rebases) =>
     methodPropsChartConfigs[method.type][method.orderNumber].setChart(
         chart,
         mappedData,
-        scSeries
+        scSeries,
+        rebases
     )
