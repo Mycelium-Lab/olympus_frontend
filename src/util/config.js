@@ -372,6 +372,11 @@ export const methodPropsChartConfigs = {
             'OHM Staked at the Moment'
         ),
         new MethodPropsChartConfig(
+            'Current Staked (Cumulative), USD',
+            (...args) => setBaseHist(...args, 'currentStakedUsd'),
+            'OHM Staked at the Moment Multiplied by SushiSwap "Aggregated USD" OHM Price'
+        ),
+        new MethodPropsChartConfig(
             'Stake & Unstake Count',
             (...args) =>
                 setBasePolarHist(...args, ['stakeCount', 'unstakeCount']),
