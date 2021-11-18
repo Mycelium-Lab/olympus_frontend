@@ -3,7 +3,6 @@ import {
     SET_IS_PARTIAL_LOADING,
     SET_IS_REBASES_LOADING,
     SET_SHOULD_REBASES_LOAD,
-    SET_REBASES,
     SET_METHODS,
     SET_TIMEFRAME,
     SET_TIMEZONE,
@@ -29,7 +28,6 @@ const initialState = {
     isPartialLoading: false,
     isRebasesLoading: false, // not in use yet
     shouldRebasesLoad: parsedDefaultShouldRebasesLoad,
-    rebases: null,
     methods: [
         // default charts
         { type: 'dex', orderNumber: 0, id: v4() }, // dex price
@@ -75,11 +73,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 shouldRebasesLoad: action.payload.shouldRebasesLoad,
-            }
-        case SET_REBASES:
-            return {
-                ...state,
-                rebases: action.payload.rebases,
             }
         case SET_METHODS:
             return {

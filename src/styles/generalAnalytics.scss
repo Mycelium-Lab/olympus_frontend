@@ -64,17 +64,36 @@
         width: 75px !important;
     }
 
+    .tv-selector-container {
+        & .rebases-button {
+            &-active:not(:disabled) {
+                background-color: rgb(255, 173, 22);
+                color: rgb(0, 0, 0);
+                font-weight: 600;
+            }
+        }
+    }
+
     @media (min-width: 1250px) {
         .tv-selector-container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+
+            & * {
+                font-size: 0.7rem;
+            }
+
             & > div:first-child {
-                width: 36%;
+                width: 28%;
             }
 
             & > div:nth-child(2) {
-                width: 60%;
+                width: 50%;
+            }
+
+            & > div:nth-child(3) {
+                width: 16%;
             }
         }
     }
@@ -235,7 +254,8 @@
         text-decoration: underline dotted;
     }
 
-    select:disabled {
+    select:disabled,
+    button:disabled {
         color: rgba($color: #b4b4b4, $alpha: 1);
     }
 }

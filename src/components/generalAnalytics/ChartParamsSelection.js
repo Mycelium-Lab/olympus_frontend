@@ -8,18 +8,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     setTimeframe,
     setTimezone,
-    setRebases,
+    setShouldRebasesLoad,
 } from '../../redux/actions/gaActions'
 
 export default function ChartParamsSelection() {
     const { isGlobalLoading, timeframe, timezone, shouldRebasesLoad } =
         useSelector((state) => state.ga)
     const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(setRebases())
-    }, [])
-
     return (
         <div className="card card-filter">
             <div className="card-body">
@@ -73,17 +68,25 @@ export default function ChartParamsSelection() {
                             </div>
                         </TooltippedComponent>
 
-                        <TooltippedComponent info={'Enable Rebases'}>
+                        <TooltippedComponent info={'Display Rebases'}>
                             <div>
                                 <button
-                                    className="form-control"
+                                    className={`form-control rebases-button-${
+                                        shouldRebasesLoad
+                                            ? 'active'
+                                            : 'inactive'
+                                    }`}
                                     disabled={isGlobalLoading}
                                     onClick={(e) => {
                                         e.preventDefault()
-                                        dispatch(setRebases())
+                                        dispatch(
+                                            setShouldRebasesLoad(
+                                                !shouldRebasesLoad
+                                            )
+                                        )
                                     }}
                                 >
-                                    Rebases {shouldRebasesLoad ? 'On' : 'Off'}
+                                    R
                                 </button>
                             </div>
                         </TooltippedComponent>
