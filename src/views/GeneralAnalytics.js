@@ -1,12 +1,13 @@
 import React from 'react'
 
-import ChartParamsSelection from '../components/generalAnalytics/ChartParamsSelection'
-import ChartLegend from '../components/generalAnalytics/ChartLegend'
-import Charts from '../components/generalAnalytics/Charts'
+import ChartParamsSelection from '../components/charts/ChartParamsSelection'
+import ChartLegend from '../components/charts/ChartLegend'
+import Charts from '../components/charts/Charts'
 
 import '../styles/generalAnalytics.scss'
 
 export default function GeneralAnalytics() {
+    const store = 'ga'
     return (
         <div className="main-content general-analytics-view">
             <div className="page-content">
@@ -16,12 +17,12 @@ export default function GeneralAnalytics() {
                             <div className="card-body">
                                 <div className="row">
                                     <div className="col-md-9">
-                                        <Charts />
+                                        <Charts store={store} />
                                     </div>
                                     <div className="col-md-3">
-                                        <ChartParamsSelection />
+                                        <ChartParamsSelection store={store} />
                                         <p></p>
-                                        <ChartLegend />
+                                        <ChartLegend store={store} />
                                     </div>
                                 </div>
                             </div>

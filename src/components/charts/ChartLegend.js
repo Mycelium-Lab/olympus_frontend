@@ -4,8 +4,8 @@ import ChartSelectSection from './ChartSelectSection'
 import { methodPropsChartConfigs } from '../../util/config'
 import { useSelector } from 'react-redux'
 
-export default function ChartLegend() {
-    const { isGlobalLoading, methods } = useSelector((state) => state.ga)
+export default function ChartLegend({ store }) {
+    const { isGlobalLoading, methods } = useSelector((state) => state[store])
     return (
         <div className="card card-filter card-filter-scrollable">
             <div className="card-body">
@@ -22,6 +22,7 @@ export default function ChartLegend() {
                                             {...{
                                                 isGlobalLoading,
                                                 methods,
+                                                store,
                                             }}
                                         />
                                     </Fragment>

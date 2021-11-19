@@ -1,0 +1,152 @@
+.loading-spinner {
+    position: absolute;
+    z-index: 9999;
+}
+
+@media (min-width: 475px) {
+    .loading-spinner {
+        top: 25px;
+    }
+}
+
+@media (max-width: 475px) {
+    .loading-spinner {
+        top: 45px;
+    }
+}
+
+.tv-lightweight-charts > table > tr:first-child > td:nth-child(3) {
+    width: 75px !important;
+}
+
+.tv-selector-container {
+    & .rebases-button {
+        &-active:not(:disabled) {
+            background-color: rgb(255, 173, 22);
+            color: rgb(0, 0, 0);
+            font-weight: 600;
+        }
+    }
+}
+
+@media (min-width: 1250px) {
+    .tv-selector-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & * {
+            font-size: 0.7rem;
+        }
+
+        & > div:first-child {
+            width: 28%;
+        }
+
+        & > div:nth-child(2) {
+            width: 50%;
+        }
+
+        & > div:nth-child(3) {
+            width: 16%;
+        }
+    }
+}
+
+@media (max-width: 1250px) {
+    .tv-selector-container {
+        display: flex;
+        flex-direction: column;
+
+        & div:not(:first-child) {
+            margin-top: 1rem;
+        }
+    }
+}
+
+.charts-container {
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.chart-title {
+    max-width: 52%;
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    color: rgb(18, 23, 34);
+    z-index: 1000;
+    font-family: 'Lato', sans-serif;
+}
+
+.chart-ohlc {
+    position: absolute;
+    z-index: 2;
+    display: inline-flex;
+
+    &-positive {
+        & > div > span:nth-child(2) {
+            color: rgb(37, 166, 154);
+        }
+    }
+
+    &-negative {
+        & > div > span:nth-child(2) {
+            color: rgb(239, 83, 80);
+        }
+    }
+
+    & > div:not(:first-child) {
+        margin-left: 5px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .chart-ohlc {
+        top: 10px;
+        right: 100px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .chart-ohlc {
+        top: 28px;
+        left: 15px;
+    }
+}
+
+@media (min-width: 600px) {
+    .chart-title,
+    .chart-ohlc {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    .chart-title,
+    .chart-ohlc {
+        font-size: 10px;
+    }
+
+    .chart-ohlc {
+        top: 22px;
+    }
+}
+
+@media (max-width: 450px) {
+    .chart-ohlc {
+        display: none;
+    }
+}
+
+.chart-outer {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+.chart-inner {
+    position: relative;
+}

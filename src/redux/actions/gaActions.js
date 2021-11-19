@@ -1,53 +1,34 @@
 import {
-    SET_IS_GLOBAL_LOADING,
-    SET_IS_PARTIAL_LOADING,
-    SET_IS_REBASES_LOADING,
-    SET_SHOULD_REBASES_LOAD,
-    SET_METHODS,
-    SET_TIMEFRAME,
-    SET_TIMEZONE,
-} from '../types'
+    setIsGlobalLoading,
+    setIsPartialLoading,
+    setIsRebasesLoading,
+    setMethods,
+    setTimeframe as _setTimeframe,
+    setTimezone as _setTimezone,
+    setShouldRebasesLoad as _setShouldRebasesLoad,
+} from './chartsActions'
 
-export const setIsGlobalLoading = (isGlobalLoading) => ({
-    type: SET_IS_GLOBAL_LOADING,
-    payload: { isGlobalLoading },
-})
-
-export const setIsPartialLoading = (isPartialLoading) => ({
-    type: SET_IS_PARTIAL_LOADING,
-    payload: { isPartialLoading },
-})
-
-export const setIsRebasesLoading = (isRebasesLoading) => ({
-    type: SET_IS_REBASES_LOADING,
-    payload: { isRebasesLoading },
-})
-
-export const setMethods = (newMethod) => ({
-    type: SET_METHODS,
-    payload: { newMethod },
-})
-
-export const setTimeframe = (timeframe) => {
+const setTimeframe = (timeframe) => {
     localStorage.setItem('ga_default_timeframe', timeframe)
-    return {
-        type: SET_TIMEFRAME,
-        payload: { timeframe },
-    }
+    return _setTimeframe(timeframe)
 }
 
-export const setTimezone = (timezone) => {
+const setTimezone = (timezone) => {
     localStorage.setItem('ga_default_timezone', timezone)
-    return {
-        type: SET_TIMEZONE,
-        payload: { timezone },
-    }
+    return _setTimezone(timezone)
 }
 
-export const setShouldRebasesLoad = (shouldRebasesLoad) => {
+const setShouldRebasesLoad = (shouldRebasesLoad) => {
     localStorage.setItem('ga_default_should_rebases_load', shouldRebasesLoad)
-    return {
-        type: SET_SHOULD_REBASES_LOAD,
-        payload: { shouldRebasesLoad },
-    }
+    return _setShouldRebasesLoad(shouldRebasesLoad)
+}
+
+export {
+    setIsGlobalLoading,
+    setIsPartialLoading,
+    setIsRebasesLoading,
+    setMethods,
+    setTimeframe,
+    setTimezone,
+    setShouldRebasesLoad,
 }

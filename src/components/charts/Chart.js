@@ -6,16 +6,16 @@ import { useSelector } from 'react-redux'
 import { ReactComponent as LoadingSpinner } from '../../images/vectors/spinner.svg'
 import { Skeleton } from '@mui/material'
 
-import {
-    methodPropsChartConfigs,
-    timeframesConfig,
-    chartConfig,
-} from '../../util/config'
+import { methodPropsChartConfigs, timeframesConfig } from '../../util/config'
 
-export default function Chart({ chartRef, method, index, timeframe, ohlc }) {
-    const { isGlobalLoading, isPartialLoading, sideChartHeight } = useSelector(
-        (state) => state.ga
-    )
+export default function Chart({ chartRef, method, index, ohlc, store }) {
+    const {
+        isGlobalLoading,
+        isPartialLoading,
+        timeframe,
+        mainChartHeight,
+        sideChartHeight,
+    } = useSelector((state) => state[store])
     const getOhlcClass = (open, close) => {
         if (open < close) return 'positive'
         if (open > close) return 'negative'
@@ -51,8 +51,7 @@ export default function Chart({ chartRef, method, index, timeframe, ohlc }) {
                     animation="wave"
                     width="100%"
                     height={
-                        (index === 0 ? chartConfig.height : sideChartHeight) -
-                        10 // 10 is the skeleton padding
+                        (index === 0 ? mainChartHeight : sideChartHeight) - 10 // 10 is the skeleton padding
                     }
                 />
             )}

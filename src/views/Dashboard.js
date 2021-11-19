@@ -4,8 +4,17 @@ import TooltippedComponent from '../components/util/TooltippedComponent'
 
 import twitter from '../images/twitter.png'
 
+import useCharts from '../hooks/useCharts'
+import Chart from '../components/charts/Chart'
+
 export default function Dashboard() {
     const ref = useRef()
+
+    const store = 'dashboard'
+    const { refs, methods, ohlcs, key } = useCharts({
+        store,
+        shouldBindCrossHair: false,
+    })
 
     useEffect(() => {
         const script = document.createElement('script')
@@ -19,7 +28,7 @@ export default function Dashboard() {
     }, [])
 
     return (
-        <div className="main-content dashboard-view">
+        <div key={key} className="main-content dashboard-view">
             <div className="page-content">
                 <div className="row pt-4">
                     <div className="col-md-3">
@@ -45,30 +54,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3 ml-auto">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '200px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <iframe
-                                        title="Current Index"
-                                        src="https://dune.xyz/embeds/30413/61311/a7789484-a119-44c4-931b-bbc52db36b9f"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 ml-auto">
+                    <div className="col-md-2 ml-auto">
                         <div className="card">
                             <div className="card-body">
                                 <div
@@ -91,7 +77,30 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3 ml-auto">
+                    <div className="col-md-2">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '200px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <iframe
+                                        title="Ohmies over Time"
+                                        src="https://dune.xyz/embeds/27661/57966/1fb96685-071d-4971-96b2-2ca1c220cff5"
+                                        frameBorder="0"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                        }}
+                                    ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
                         <div className="card">
                             <div className="card-body">
                                 <div
@@ -116,38 +125,13 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="row">
                     <div className="col-md-2">
                         <div className="card">
                             <div className="card-body">
                                 <div
                                     style={{
                                         width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <iframe
-                                        title="Ohmies over Time"
-                                        src="https://dune.xyz/embeds/27661/57966/1fb96685-071d-4971-96b2-2ca1c220cff5"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 ml-auto">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
+                                        height: '200px',
                                         overflow: 'hidden',
                                     }}
                                 >
@@ -166,56 +150,10 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3 ml-auto">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <iframe
-                                        title="TVL Staking"
-                                        src="https://dune.xyz/embeds/30178/60856/44e344f2-9fb3-43b8-b546-8b5f22417e91"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4 ml-auto">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <iframe
-                                        title="APY over Time"
-                                        src="https://dune.xyz/embeds/34202/69216/0e5e8b30-a6c9-4ec0-845a-d68f21afbd5e"
-                                        frameBorder="0"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                         <div className="card">
                             <div className="card-body">
                                 <div
@@ -238,7 +176,82 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={0}
+                                        chartRef={refs[0]}
+                                        index={0}
+                                        ohlc={ohlcs[0]}
+                                        method={methods[0]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={1}
+                                        chartRef={refs[1]}
+                                        index={1}
+                                        ohlc={ohlcs[1]}
+                                        method={methods[1]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={2}
+                                        chartRef={refs[2]}
+                                        index={2}
+                                        ohlc={ohlcs[2]}
+                                        method={methods[2]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-3">
                         <div className="card">
                             <div className="card-body">
                                 <div
@@ -257,6 +270,78 @@ export default function Dashboard() {
                                             height: '100%',
                                         }}
                                     ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={5}
+                                        chartRef={refs[5]}
+                                        index={5}
+                                        ohlc={ohlcs[5]}
+                                        method={methods[5]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={3}
+                                        chartRef={refs[3]}
+                                        index={3}
+                                        ohlc={ohlcs[3]}
+                                        method={methods[3]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card">
+                            <div className="card-body">
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '206px',
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Chart
+                                        key={4}
+                                        chartRef={refs[4]}
+                                        index={4}
+                                        ohlc={ohlcs[4]}
+                                        method={methods[4]}
+                                        {...{
+                                            store,
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>

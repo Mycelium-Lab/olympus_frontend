@@ -14,8 +14,9 @@ export default function ChartSelectSection({
     sectionName,
     isGlobalLoading,
     methods,
+    store,
 }) {
-    const { maxMethodsPerSection } = useSelector((state) => state.ga)
+    const { maxMethodsPerSection } = useSelector((state) => state[store])
     const dispatch = useDispatch()
     const checkIsMethodChecked = (sectionName, index) => {
         let isChecked = false

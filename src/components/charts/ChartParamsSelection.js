@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import TooltippedComponent from '../util/TooltippedComponent'
 
 import timezones from '../../util/timezones'
@@ -11,9 +11,9 @@ import {
     setShouldRebasesLoad,
 } from '../../redux/actions/gaActions'
 
-export default function ChartParamsSelection() {
+export default function ChartParamsSelection({ store }) {
     const { isGlobalLoading, timeframe, timezone, shouldRebasesLoad } =
-        useSelector((state) => state.ga)
+        useSelector((state) => state[store])
     const dispatch = useDispatch()
     return (
         <div className="card card-filter">

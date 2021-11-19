@@ -1,35 +1,33 @@
 import React, { useEffect, useState, createRef } from 'react'
 import { v4 } from 'uuid'
-import { createChart } from '../../tv-lightweight'
+import { createChart } from '../tv-lightweight'
 
-import { setMessage } from '../../redux/actions/messageActions'
+import { setMessage } from '../redux/actions/messageActions'
 import {
     setIsGlobalLoading,
     setIsPartialLoading,
-} from '../../redux/actions/gaActions'
+} from '../redux/actions/gaActions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
     chartConfig,
     timeframesConfig,
     timeVisibleConfig,
-} from '../../util/config'
+} from '../util/config'
 
 import {
     initialDataFetch,
     previousDataFetch,
     updateDataFetch,
-} from '../../util/chartActions'
+} from '../util/chartActions'
 
-import { getEmptyObjectWithFillers } from '../../util/dataTranformations'
+import { getEmptyObjectWithFillers } from '../util/dataTranformations'
 
-import { basicMessages } from '../../util/messages'
+import { basicMessages } from '../util/messages'
 
-import { getRebasesTimestamps } from '../../dataFetch/rebases'
+import { getRebasesTimestamps } from '../dataFetch/rebases'
 
-import Chart from './Chart'
-
-export default function GeneralAnalytics() {
+export default function useCharts({ store, shouldBindCrossHair }) {
     const dispatch = useDispatch()
     const {
         methods,
@@ -37,8 +35,9 @@ export default function GeneralAnalytics() {
         timezone,
         shouldRebasesLoad,
         refreshRateSeconds,
+        mainChartHeight,
         sideChartHeight,
-    } = useSelector((state) => state.ga)
+    } = useSelector((state) => state[store])
     const nCharts = methods.length
 
     const [refs, setRefs] = useState(
@@ -65,7 +64,7 @@ export default function GeneralAnalytics() {
             createChart(refs[i].current, {
                 ...chartConfig,
                 ...timeVisibleConfig(timeframe),
-                height: i > 0 ? sideChartHeight : chartConfig.height, // keep the price chart bigger
+                height: i === 0 ? mainChartHeight : sideChartHeight,
             })
         )
 
@@ -107,12 +106,14 @@ export default function GeneralAnalytics() {
                 if (!param.time) return
                 if (isCrosshairMoving) return
 
-                isCrosshairMoving = true
-                charts
-                    .slice(0, idx)
-                    .concat(charts.slice(idx + 1))
-                    .forEach((c) => c.moveCrosshair(param.point))
-                isCrosshairMoving = false
+                if (shouldBindCrossHair) {
+                    isCrosshairMoving = true
+                    charts
+                        .slice(0, idx)
+                        .concat(charts.slice(idx + 1))
+                        .forEach((c) => c.moveCrosshair(param.point))
+                    isCrosshairMoving = false
+                }
 
                 if (param.hasOwnProperty('seriesPrices')) {
                     const iter = param.seriesPrices.values()
@@ -134,12 +135,14 @@ export default function GeneralAnalytics() {
             chart
                 .timeScale()
                 .subscribeVisibleLogicalRangeChange(async (range) => {
-                    charts
-                        .slice(0, idx)
-                        .concat(charts.slice(idx + 1))
-                        .forEach((c) =>
-                            c.timeScale().setVisibleLogicalRange(range)
-                        )
+                    if (shouldBindCrossHair) {
+                        charts
+                            .slice(0, idx)
+                            .concat(charts.slice(idx + 1))
+                            .forEach((c) =>
+                                c.timeScale().setVisibleLogicalRange(range)
+                            )
+                    }
 
                     if (range.from < 0 && !chartNeedsUpdate) {
                         chartNeedsUpdate = true
@@ -226,25 +229,10 @@ export default function GeneralAnalytics() {
         }
     }, [refs])
 
-    return (
-        <div className="card card-body">
-            <div key={key} className="charts-container">
-                {methods.length === 0 && (
-                    <div>Please select a chart from the Legend</div>
-                )}
-                {methods.map((method, idx) => (
-                    <Chart
-                        key={idx}
-                        chartRef={refs[idx]}
-                        index={idx}
-                        ohlc={ohlcs[idx]}
-                        {...{
-                            timeframe,
-                            method,
-                        }}
-                    />
-                ))}
-            </div>
-        </div>
-    )
+    return {
+        refs,
+        ohlcs,
+        key,
+        methods,
+    }
 }
