@@ -4,6 +4,7 @@ import TooltippedComponent from '../components/util/TooltippedComponent'
 
 import useCharts from '../hooks/useCharts'
 import Chart from '../components/charts/Chart'
+import { methodPropsChartConfigs } from '../util/config'
 
 export default function Dashboard() {
     const store = 'dashboard'
@@ -161,78 +162,40 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={0}
-                                        chartRef={refs[0]}
-                                        index={0}
-                                        ohlc={ohlcs[0]}
-                                        method={methods[0]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
+                    {[0, 1, 2].map((idx) => (
+                        <div className="col-md-3">
+                            <div className="card">
+                                <div className="card-body">
+                                    <TooltippedComponent
+                                        info={
+                                            methodPropsChartConfigs[
+                                                methods[idx].type
+                                            ][methods[idx].orderNumber].info
+                                        }
+                                    >
+                                        <div
+                                            style={{
+                                                width: '100%',
+                                                height: '206px',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <Chart
+                                                key={idx}
+                                                chartRef={refs[idx]}
+                                                index={idx}
+                                                ohlc={ohlcs[idx]}
+                                                method={methods[idx]}
+                                                {...{
+                                                    store,
+                                                }}
+                                            />
+                                        </div>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={1}
-                                        chartRef={refs[1]}
-                                        index={1}
-                                        ohlc={ohlcs[1]}
-                                        method={methods[1]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={2}
-                                        chartRef={refs[2]}
-                                        index={2}
-                                        ohlc={ohlcs[2]}
-                                        method={methods[2]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 <div className="row">
@@ -259,78 +222,40 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={5}
-                                        chartRef={refs[5]}
-                                        index={5}
-                                        ohlc={ohlcs[5]}
-                                        method={methods[5]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
+                    {[5, 3, 4].map((idx) => (
+                        <div className="col-md-3">
+                            <div className="card">
+                                <div className="card-body">
+                                    <TooltippedComponent
+                                        info={
+                                            methodPropsChartConfigs[
+                                                methods[idx].type
+                                            ][methods[idx].orderNumber].info
+                                        }
+                                    >
+                                        <div
+                                            style={{
+                                                width: '100%',
+                                                height: '206px',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <Chart
+                                                key={idx}
+                                                chartRef={refs[idx]}
+                                                index={idx}
+                                                ohlc={ohlcs[idx]}
+                                                method={methods[idx]}
+                                                {...{
+                                                    store,
+                                                }}
+                                            />
+                                        </div>
+                                    </TooltippedComponent>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={3}
-                                        chartRef={refs[3]}
-                                        index={3}
-                                        ohlc={ohlcs[3]}
-                                        method={methods[3]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <div className="card-body">
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: '206px',
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    <Chart
-                                        key={4}
-                                        chartRef={refs[4]}
-                                        index={4}
-                                        ohlc={ohlcs[4]}
-                                        method={methods[4]}
-                                        {...{
-                                            store,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 <div className="row">

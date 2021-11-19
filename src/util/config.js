@@ -427,7 +427,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'Rebase Rate, %',
             (...args) => setBaseHist(...args, 'rebasePercentage'),
-            null
+            'Current Rebase Rate as Set in the Staking Contract'
         ),
         new MethodPropsChartConfig(
             'APY, %',
@@ -439,7 +439,7 @@ export const methodPropsChartConfigs = {
                         minMove: 0.001,
                     },
                 }),
-            null
+            '<a href="https://docs.olympusdao.finance/main/basics/basics#how-is-the-apy-calculated" target="_blank" rel=”noreferrer noopener”>APY Calculation Explanation</a>'
         ),
     ],
     index: [
