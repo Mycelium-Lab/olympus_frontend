@@ -65,12 +65,10 @@ export async function getRebasesInfoDays(startTimestamp, endTime) {
                     beginTimestamp <= data[j].timestamp &&
                     data[j].timestamp < endTimestamp
                 ) {
-                    if (Number(data[j].apy) < 1000) {
-                        obj.apy = data[j].apy
-                        obj.percentage = data[j].percentage
-                        prevPercentage = data[j].percentage
-                        prevApy = data[j].apy
-                    }
+                    obj.apy = data[j].apy
+                    obj.percentage = data[j].percentage
+                    prevPercentage = data[j].percentage
+                    prevApy = data[j].apy
                 }
             }
             resData.push(obj)
@@ -140,7 +138,7 @@ export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
-            if (apy < 1000) {
+            if (apy < 5000) {
                 obj.apy = apy
                 obj.percentage = Number(percentageSum) / rebasesCount
                 prevPercentage = Number(percentageSum) / rebasesCount
@@ -230,12 +228,10 @@ export async function getRebasesInfoHours(startTimestamp, endTime) {
                     beginTimestamp <= data[j].timestamp &&
                     data[j].timestamp < endTimestamp
                 ) {
-                    if (Number(data[j].apy) < 1000) {
-                        obj.apy = data[j].apy
-                        obj.percentage = data[j].percentage
-                        prevPercentage = data[j].percentage
-                        prevApy = data[j].apy
-                    }
+                    obj.apy = data[j].apy
+                    obj.percentage = data[j].percentage
+                    prevPercentage = data[j].percentage
+                    prevApy = data[j].apy
                 }
             }
             resData.push(obj)
@@ -319,7 +315,7 @@ export async function getRebasesInfoNHours(startTimestamp, endTime, hours) {
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
-            if (apy < 1000) {
+            if (apy < 5000) {
                 obj.apy = apy
                 obj.percentage = Number(percentageSum) / rebasesCount
                 prevPercentage = Number(percentageSum) / rebasesCount
@@ -423,12 +419,10 @@ export async function getRebasesInfoMinutes(startTimestamp, endTime) {
                     beginTimestamp <= data[j].timestamp &&
                     data[j].timestamp < endTimestamp
                 ) {
-                    if (Number(data[j].apy) < 1000) {
-                        obj.apy = data[j].apy
-                        obj.percentage = data[j].percentage
-                        prevPercentage = data[j].percentage
-                        prevApy = data[j].apy
-                    }
+                    obj.apy = data[j].apy
+                    obj.percentage = data[j].percentage
+                    prevPercentage = data[j].percentage
+                    prevApy = data[j].apy
                 }
             }
             resData.push(obj)
@@ -536,7 +530,7 @@ export async function getRebasesInfoNMinutes(startTimestamp, endTime, minutes) {
                 }
             }
             let apy = Math.pow(1 + Number(percentageSum) / rebasesCount, 1095)
-            if (apy < 1000) {
+            if (apy < 5000) {
                 obj.apy = apy
                 obj.percentage = Number(percentageSum) / rebasesCount
                 prevPercentage = Number(percentageSum) / rebasesCount
