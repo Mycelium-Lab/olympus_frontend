@@ -164,15 +164,22 @@
 
     &-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         margin-bottom: 12px;
     }
-    &-text {
-        margin-left: 58px;
-    }
-    &-title {
+    &-title,
+    &-text,
+    &-subtext {
         width: 100%;
+    }
+    &-text > span:first-child {
+        margin-top: 8px;
+    }
+    &-subtext {
+        display: flex;
+        flex-direction: column;
+        margin-top: 22px;
     }
     &-icon {
         margin-right: 14px;

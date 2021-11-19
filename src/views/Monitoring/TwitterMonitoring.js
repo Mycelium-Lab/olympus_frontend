@@ -186,7 +186,14 @@ export default function TwitterMonitoring() {
                         </ul>
                     ) : (
                         Array.apply(null, { length: 4 }).map((e, i) => (
-                            <div key={i} className="loader-timeline">
+                            <div
+                                key={i}
+                                className="loader-timeline"
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                }}
+                            >
                                 <div className="loader-header">
                                     <Skeleton
                                         variant="circular"
@@ -195,23 +202,27 @@ export default function TwitterMonitoring() {
                                         animation="wave"
                                         className="loader-icon"
                                     />
+                                </div>
+                                <div className="loader-text">
                                     <Skeleton
                                         variant="text"
                                         animation="wave"
                                         height={30}
                                         className="loader-title"
                                     />
+                                    <div className="loader-subtext">
+                                        <Skeleton
+                                            height={22}
+                                            variant="text"
+                                            animation="wave"
+                                        />
+                                        <Skeleton
+                                            height={22}
+                                            variant="text"
+                                            animation="wave"
+                                        />
+                                    </div>
                                 </div>
-                                <Skeleton
-                                    variant="text"
-                                    animation="wave"
-                                    className="loader-text"
-                                />
-                                <Skeleton
-                                    variant="text"
-                                    animation="wave"
-                                    className="loader-text"
-                                />
                             </div>
                         ))
                     )}
