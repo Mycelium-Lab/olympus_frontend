@@ -1,31 +1,16 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import '../styles/dashboard.scss'
 import TooltippedComponent from '../components/util/TooltippedComponent'
-
-import twitter from '../images/twitter.png'
 
 import useCharts from '../hooks/useCharts'
 import Chart from '../components/charts/Chart'
 
 export default function Dashboard() {
-    const ref = useRef()
-
     const store = 'dashboard'
     const { refs, methods, ohlcs, key } = useCharts({
         store,
         shouldBindCrossHair: false,
     })
-
-    useEffect(() => {
-        const script = document.createElement('script')
-
-        script.src = 'https://platform.twitter.com/widgets.js'
-        script.async = ref.current.appendChild(script)
-
-        return () => {
-            ref.current.removeChild(script)
-        }
-    }, [])
 
     return (
         <div key={key} className="main-content dashboard-view">
@@ -422,61 +407,6 @@ export default function Dashboard() {
                                     </TooltippedComponent>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row mb-3 mt-3"></div>
-
-                <div className="row">
-                    <div className="col-md-6">
-                        <img
-                            src={twitter}
-                            style={{ margin: '0 auto 30px', display: 'block' }}
-                        />
-                        <div
-                            ref={ref}
-                            style={{
-                                width: '100%',
-                                height: '388px',
-                                overflow: 'auto',
-                            }}
-                        >
-                            <a
-                                className="twitter-timeline"
-                                href="https://twitter.com/OlympMonitoring/lists/1449359533021835272?ref_src=twsrc%5Etfw"
-                            >
-                                A Twitter List by OlympMonitoring
-                            </a>{' '}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <span
-                            style={{
-                                display: 'block',
-                                fontWeight: 600,
-                                fontSize: '45px',
-                                lineHeight: 0.8,
-                                textAlign: 'center',
-                                color: '#000000',
-                                paddingBottom: '30px',
-                            }}
-                        >
-                            snapshot
-                        </span>
-                        <div
-                            style={{
-                                width: '100%',
-                                height: '388px',
-                                overflow: 'hidden',
-                            }}
-                        >
-                            <iframe
-                                title="Snapshot"
-                                src="https://snapshot.org/#/olympusdao.eth"
-                                frameBorder="0"
-                                style={{ width: '100%', height: '100%' }}
-                            ></iframe>
                         </div>
                     </div>
                 </div>
