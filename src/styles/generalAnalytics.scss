@@ -53,4 +53,8 @@
     }
 
     @import './charts.scss';
+
+    .tv-lightweight-charts > table > tr:first-child > td:nth-child(3) {
+        width: 75px !important;
+    }
 }

@@ -146,22 +146,28 @@
     // charts
 
     // charts css module can be imported from ↓
-    // @import './charts.scss';
+    @import './charts.scss';
+
+    .chart-title {
+        max-width: 100%;
+        position: absolute;
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 0 2px;
+        margin-left: -2px;
+        top: 3px;
+        left: 8px;
+        color: rgb(88, 88, 88);
+        z-index: 1000;
+        font-family: 'Lato', sans-serif;
+        font-weight: 500;
+        font-size: 0.74rem;
+    }
 
     .loading-spinner {
-        position: absolute;
-        z-index: 9999;
-    }
-
-    @media (min-width: 475px) {
-        .loading-spinner {
-            top: 25px;
-        }
-    }
-
-    @media (max-width: 475px) {
-        .loading-spinner {
-            top: 45px;
-        }
+        top: 20px;
+        left: 0px;
+        width: 28px;
+        height: 28px;
     }
 }

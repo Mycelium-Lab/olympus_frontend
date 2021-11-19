@@ -19,8 +19,8 @@ const initialState = {
     timeframe: 1, // 1D
     timezone: 11, // utc+00:00
     refreshRateSeconds: 60,
-    mainChartHeight: 186,
-    sideChartHeight: 186,
+    mainChartHeight: 210,
+    sideChartHeight: 210,
 }
 
 export default function (state = initialState, action) {
