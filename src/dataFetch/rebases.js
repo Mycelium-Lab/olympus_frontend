@@ -22,7 +22,7 @@ export async function getRebasesInfoDays(startTimestamp, endTime) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
@@ -96,7 +96,7 @@ export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
@@ -175,7 +175,7 @@ export async function getRebasesInfoHours(startTimestamp, endTime) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
@@ -266,7 +266,7 @@ export async function getRebasesInfoNHours(startTimestamp, endTime, hours) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
@@ -356,7 +356,7 @@ export async function getRebasesInfoMinutes(startTimestamp, endTime) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
@@ -461,7 +461,7 @@ export async function getRebasesInfoNMinutes(startTimestamp, endTime, minutes) {
      `
     try {
         const rebaseData = await axios({
-            url: 'https://api.thegraph.com/subgraphs/id/QmVknJSJUdQEALEBciLHGoaTBQB6ndAxMViKcsjQAjSmne',
+            url: 'https://api.thegraph.com/subgraphs/name/limenal/olympus-stake',
             method: 'post',
             data: {
                 query: rebaseQuery,
