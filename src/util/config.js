@@ -62,6 +62,8 @@ const baseHistConfig = {
     base: 0,
     priceFormat: {
         type: 'volume',
+        precision: 3,
+        minMove: 0.001,
     },
 }
 
@@ -69,6 +71,8 @@ const baseLineConfig = {
     base: 0,
     priceFormat: {
         type: 'volume',
+        precision: 3,
+        minMove: 0.001,
     },
     color: 'rgba(165, 165, 239, 0.89)',
 }
@@ -400,6 +404,8 @@ export const methodPropsChartConfigs = {
                 setBaseHist(...args, 'unstakedToStakedPercent', {
                     priceFormat: {
                         type: 'percent',
+                        precision: 3,
+                        minMove: 0.001,
                     },
                 }),
             '[-1 x 100 x (Unstaked - Staked) / Unstaked] per Bar'
@@ -410,6 +416,8 @@ export const methodPropsChartConfigs = {
                 setBaseHist(...args, 'unstakedOfTotalStakedPercent', {
                     priceFormat: {
                         type: 'percent',
+                        precision: 3,
+                        minMove: 0.001,
                     },
                 }),
             '[-1 x 100 x (Unstaked / Current Total Staked)] per Bar'
@@ -427,6 +435,8 @@ export const methodPropsChartConfigs = {
                 setBaseHist(...args, 'apy', {
                     priceFormat: {
                         type: 'percent',
+                        precision: 3,
+                        minMove: 0.001,
                     },
                 }),
             null
