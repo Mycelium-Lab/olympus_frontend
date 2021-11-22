@@ -2,11 +2,13 @@ import {
     setIsGlobalLoading,
     setIsPartialLoading,
     setIsRebasesLoading,
-    setMethods,
+    setMethods as _setMethods,
     setTimeframe as _setTimeframe,
     setTimezone as _setTimezone,
     setShouldRebasesLoad as _setShouldRebasesLoad,
 } from './chartsActions'
+
+const setMethods = (...args) => _setMethods(...args)('ga')
 
 const setTimeframe = (timeframe) => {
     localStorage.setItem('ga_default_timeframe', timeframe)

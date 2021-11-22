@@ -9,14 +9,10 @@ import {
 } from '../types'
 import { v4 } from 'uuid'
 
-const setMethodsState = (currentMethods, newMethod, maxMethodsLength) => {
+const setMethodsState = (currentMethods, newMethod) => {
     if (newMethod.hasOwnProperty('id')) {
         return currentMethods.filter((e) => e.id !== newMethod.id)
-    } else {
-        if (currentMethods.length <= maxMethodsLength - 1) {
-            return [...currentMethods, { ...newMethod, id: v4() }] // add an id if the method is new
-        } else return currentMethods
-    }
+    } else return [...currentMethods, { ...newMethod, id: v4() }] // add an id if the method is new
 }
 
 export default function (state = {}, action) {
@@ -46,8 +42,7 @@ export default function (state = {}, action) {
                 ...state,
                 methods: setMethodsState(
                     state.methods,
-                    action.payload.newMethod,
-                    state.maxMethodsLength
+                    action.payload.newMethod
                 ),
             }
         case SET_TIMEFRAME:

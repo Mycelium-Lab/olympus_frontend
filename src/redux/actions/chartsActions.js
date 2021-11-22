@@ -7,6 +7,7 @@ import {
     SET_TIMEFRAME,
     SET_TIMEZONE,
 } from '../types'
+import { setMessage } from './messageActions'
 
 export const setIsGlobalLoading = (isGlobalLoading) => ({
     type: SET_IS_GLOBAL_LOADING,
@@ -23,10 +24,26 @@ export const setIsRebasesLoading = (isRebasesLoading) => ({
     payload: { isRebasesLoading },
 })
 
-export const setMethods = (newMethod) => ({
-    type: SET_METHODS,
-    payload: { newMethod },
-})
+export const setMethods = (newMethod) => (store) => (dispatch, getState) => {
+    const {
+        [store]: { maxMethodsLength, methods },
+    } = getState()
+    if (
+        methods.length === maxMethodsLength && // if we are trying to add a new method but the limit has been reached
+        !newMethod.hasOwnProperty('id')
+    ) {
+        dispatch(
+            setMessage({
+                severity: 2,
+                text: `You cannot select more than ${maxMethodsLength} items`,
+            })
+        )
+    } else
+        dispatch({
+            type: SET_METHODS,
+            payload: { newMethod },
+        })
+}
 
 export const setTimeframe = (timeframe) => ({
     type: SET_TIMEFRAME,

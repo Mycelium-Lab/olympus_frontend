@@ -2,11 +2,13 @@ import {
     setIsGlobalLoading,
     setIsPartialLoading,
     setIsRebasesLoading,
-    setMethods,
+    setMethods as _setMethods,
     setTimeframe,
     setTimezone,
     setShouldRebasesLoad,
 } from './chartsActions'
+
+const setMethods = (...args) => _setMethods(...args)('dashboard')
 
 export {
     setIsGlobalLoading,

@@ -26,7 +26,7 @@ const initialState = {
         { type: 'dex', orderNumber: 1, id: v4() }, // dex volume
         { type: 'staking', orderNumber: 0, id: v4() }, // staking & unstaking volume
     ],
-    maxMethodsLength: 6,
+    maxMethodsLength: 7,
     maxMethodsPerSection: 2,
     timeframe: isNaN(parsedDefaultTimeframe) ? 1 : parsedDefaultTimeframe,
     timezone: isNaN(parsedDefaultTimezone) ? 11 : parsedDefaultTimezone,
