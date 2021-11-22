@@ -86,7 +86,7 @@ export default function useCharts({ store, shouldBindCrossHair }) {
                       await getRebasesTimestamps(),
                       -intervalDiff
                   )
-                : []
+                : null
 
             ;[mappedDataSets, series] = await initialDataFetch({
                 startTimestamp,
