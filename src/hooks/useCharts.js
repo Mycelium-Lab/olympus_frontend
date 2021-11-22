@@ -21,7 +21,10 @@ import {
     updateDataFetch,
 } from '../util/chartActions'
 
-import { getEmptyObjectWithFillers } from '../util/dataTranformations'
+import {
+    getEmptyObjectWithFillers,
+    changeArrayTimestampsByDelta,
+} from '../util/dataTranformations'
 
 import { basicMessages } from '../util/messages'
 
@@ -77,7 +80,12 @@ export default function useCharts({ store, shouldBindCrossHair }) {
         dispatch(setIsGlobalLoading(true))
         try {
             const rebasesTimestamps = shouldRebasesLoad
-                ? await getRebasesTimestamps()
+                ? // due to the fixed setMarkers logic in lightweight-charts,
+                  // we must apply a setback by 1 time unit to display data correctly
+                  changeArrayTimestampsByDelta(
+                      await getRebasesTimestamps(),
+                      -intervalDiff
+                  )
                 : []
 
             ;[mappedDataSets, series] = await initialDataFetch({

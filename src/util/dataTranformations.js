@@ -168,3 +168,6 @@ export const getEmptyObjectWithFillers = (length, filler) =>
         acc[idx] = filler
         return acc
     }, {})
+
+export const changeArrayTimestampsByDelta = (arr, delta) =>
+    arr.map((e) => e + delta)
