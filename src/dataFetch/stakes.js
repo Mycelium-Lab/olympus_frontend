@@ -394,8 +394,6 @@ export async function getStakesInfoNMinutes(startTimestamp, endTime, minutes) {
                     obj.unstakeAvg = obj.amountUnstaked / obj.unstakeCount
                     obj.nettoStaked =
                         stakes[j].amountStaked - stakes[j].amountUnstaked
-                    obj.nettoStaked =
-                        stakes[j].amountStaked - stakes[j].amountUnstaked
                     obj.unstakedToStakedPercent =
                         -1 *
                         100 *
@@ -465,22 +463,6 @@ export function mapStakes(stakes) {
             acc.unstakeCount.push(
                 new TVTimeValueObject(-Number(e.unstakeCount), time)
             )
-            acc.stakedWithNetto.push(
-                new TVTimeValueObject(
-                    Number(e.nettoStaked) >= 0
-                        ? Number(e.nettoStaked) + Number(e.amountStaked)
-                        : Number(e.amountStaked),
-                    time
-                )
-            )
-            acc.unstakedWithNetto.push(
-                new TVTimeValueObject(
-                    Number(e.nettoStaked) < 0
-                        ? Number(e.nettoStaked) - Number(e.amountUnstaked)
-                        : -Number(e.amountUnstaked),
-                    time
-                )
-            )
             return acc
         },
         {
@@ -497,8 +479,6 @@ export function mapStakes(stakes) {
             unstakedOfTotalStakedPercent: [],
             stakeCount: [],
             unstakeCount: [],
-            stakedWithNetto: [],
-            unstakedWithNetto: [],
         }
     )
 }

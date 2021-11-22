@@ -359,8 +359,8 @@ export const methodPropsChartConfigs = {
                     ;[posHist, negHist, nettoHist] = series
                 }
 
-                posHist.setData(data.stakedWithNetto)
-                negHist.setData(data.unstakedWithNetto)
+                posHist.setData(data.staked)
+                negHist.setData(data.unstaked)
                 nettoHist.setData(data.nettoStaked)
 
                 if (rebases)
