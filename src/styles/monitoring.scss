@@ -106,7 +106,7 @@
         &-list {
             &-item {
                 width: 50%;
-                margin-left: 12px;
+                margin-left: 2%;
             }
         }
         &-users {
@@ -116,6 +116,7 @@
         }
         &-nav {
             width: 50%;
+            margin-left: 2%;
         }
         &-main {
             margin-top: 25px;
@@ -125,20 +126,20 @@
         }
         &-tweet {
             position: fixed;
-            top: 70px;
-            right: 5%;
+            top: 92px;
+            right: 2%;
             width: 430px !important;
         }
     }
     .loader {
         position: fixed;
-        top: 70px;
-        right: 5%;
+        top: 92px;
+        right: 2%;
         width: 430px !important;
         height: 600px !important;
         &-timeline {
             width: 50%;
-            margin-left: 12px;
+            margin-left: 2%;
         }
         &-wrapper {
             position: fixed;

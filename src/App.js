@@ -13,7 +13,7 @@ import Messages from './components/messages/Messages'
 function App() {
     return (
         <Router>
-            <div className="container-fluid">
+            <div>
                 <div id="layout-wrapper">
                     <Switch>
                         <NavbarRoute
