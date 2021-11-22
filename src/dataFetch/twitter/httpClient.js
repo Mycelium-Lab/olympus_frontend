@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = 'https://535b-62-84-117-55.ngrok.io'
+const baseURL = process.env.REACT_APP_API_URL
 
 const httpClient = axios.create({
     baseURL,
