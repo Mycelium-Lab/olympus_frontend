@@ -61,6 +61,7 @@ A bulk of the codebase is located in <i>src</i> folder. The most essential folde
     <li>
         <i>tv-lightweight</i> — a modified version of <a targer="_blank" href="https://github.com/tradingview/lightweight-charts/">Lightweight Charts</a> by TradingView to support parallel crosshair;
     </li>
+    <li>
         <i>util</i> — functions for configuration of charts (please see more below), data transformation, common code and more; 
     </li>
     <li>
@@ -70,9 +71,9 @@ A bulk of the codebase is located in <i>src</i> folder. The most essential folde
 
 ## Adding New Parameters and Topics to the General Analytics Legend
 
-1. Add a new topic (.js file) to <i>src/dataFetch</i> or use the existing ones if you just want to create new parameters. The topic must contain a map{TopicName} function to gather all the parameters retrieved from a subgraph and a get{TopicName}InfoFunction to retrieve a "get data" function for the desired timeframe (currently there are 4 of them, but more can be added. Please refer to the mini-guide at the bottom of the page <a target="_blank" href="https://github.com/limenal/olympus-query">here</a>).
+1. Add a new topic (.js file) to <i>src/dataFetch</i> or use the existing ones if you just want to create new parameters. The topic must contain a `map{TopicName}` function to gather all the parameters retrieved from a subgraph and a `get{TopicName}InfoFunction` to retrieve a "get data" function for the desired timeframe (currently there are 4 of them, but more can be added. Please refer to the mini-guide at the bottom of the page <a target="_blank" href="https://github.com/limenal/olympus-query">here</a>).
 
-2. Add a new item to <i>methodPropsChartConfigs</i> object in <i>src/util/config.js</i>. If you are using an existing topic, please add your new param to the corresponding topic as follows:
+2. Add a new item to `methodPropsChartConfigs` object in <i>src/util/config.js</i>. If you are using an existing topic, please add your new param to the corresponding topic as follows:
 
 ```js
 staking: [
@@ -100,7 +101,7 @@ topic_name: [
 ]
 ```
 
-3. <b>Only if you have added a new topic (!)</b> Put your new topic inside the switch statement of <i>getMappedScData</i> function in <i>src/util/dataTransformations.js</i> as follows (make sure you have imported all the necessary functions from <i>src/dataFetch/topic_name.js</i> prior to that):
+3. <b>Only if you have added a new topic (!)</b> Put your new topic inside the switch statement of `getMappedScData` function in <i>src/util/dataTransformations.js</i> as follows (make sure you have imported all the necessary functions from <i>src/dataFetch/topic_name.js</i> prior to that):
 
 ```js
 case 'topic_name':
@@ -114,7 +115,7 @@ case 'topic_name':
 
 So far the application has 8 timeframes to view your charts on. However, functions managing timeframes can be customized further to create new intervals of a desired length. Two steps need to be taken to achieve this:
 
-1. Let's say that we would like to add a 2H interval. In <i>src/util/config.js</i> find the <i>timeframesConfig</i> function and add the following contents (the code below can be easily refactored to be more concise and enable automation, but so far is left as-is to increase flexibility):
+1. Let's say that we would like to add a 2H interval. In <i>src/util/config.js</i> find the `timeframesConfig` function and add the following contents (the code below can be easily refactored to be more concise and enable automation, but so far is left as-is to increase flexibility):
 
 ```js
 // select how much data (in days) will be fetched on first load.
@@ -171,7 +172,7 @@ return [
 ]
 ```
 
-2. Go to <i>src/dataFetch/topic_name.js</i>. The following must be done for all of the topics we have to enable the new timeframe, but let's take <i>src/dataFetch/stakes.js</i> as an example. Go to <i>getStakesInfoFunction</i> below and change some of its contents to:
+2. Go to <i>src/dataFetch/topic_name.js</i>. The following must be done for all of the topics we have to enable the new timeframe, but let's take <i>src/dataFetch/stakes.js</i> as an example. Go to `getStakesInfoFunction` below and change some of its contents to:
 
 ```js
 case 3:
@@ -183,3 +184,40 @@ case 5:
 ```
 
 The number in "case" corresponds to the index of the new timeframe in the return array from the section above. This is done as such to enable a possible reformation to strings (e.g., '2H', '4H') instead of numbers in the switch-case statement. As it can be seen, we have created our timeframe from a corresponding "NHours" function, passing "2" as our N. However, it can be applied to days and minutes as well, following the very same approach.
+
+## Integrating Charts
+
+To integrate charts with OlympusDAO stats as done in 'General Analytics' or 'Dashboard', one can employ the `useCharts` hook from <i>src/hooks/useCharts.js</i>. `useCharts` requires a `store` parameter which is the name of a Redux reducer consumed by a particular instance of `useCharts`. Some examples of stores (and actions) can be seen in <i>src/redux/reducers</i> and <i>src/redux/actions</i> correspondingly.
+
+The `useCharts` hook returns a plain js object containing some of the parameters required for consuming the charts in React components. These are `refs`, `key`, `ohlcs` and `methods`. The latter two stand for "open/high/close/low" and "types of data available for display" correspondingly and are left in the hook (instead of being placed in the Redux store) for performance reasons. The former two, however, are of much higher importance. `refs` are essentially the charts themselves and can be embedded into any DOM element as done in <i>src/views/Dashboard.js</i>, for instance, with the following bit of code:
+
+```jsx
+<Chart
+    key={idx}
+    chartRef={refs[idx]}
+    index={idx}
+    ohlc={ohlcs[idx]}
+    method={methods[idx]}
+    {...{
+        store,
+    }}
+/>
+```
+
+where `Chart` returns a plain div:
+
+```jsx
+<div
+    style={isGlobalLoading ? { zIndex: -1 } : {}}
+    className="chart-inner"
+    ref={chartRef}
+></div>
+```
+
+The `key` prop, in its turn, will help rerender the parent component which wraps the charts when `refs` change, so is essential for inclusion as follows:
+
+```jsx
+<div key={key} className="main-content dashboard-view">
+    ...your charts
+</div>
+```
