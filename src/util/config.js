@@ -463,7 +463,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, DAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVDai'),
-            'The Scaling Factor at Which Bond Prices Change for DAI Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for DAI Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -479,7 +479,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, wETH (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVEth'),
-            'The Scaling Factor at Which Bond Prices Change for wETH Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for wETH Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -495,7 +495,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, FRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVFrax'),
-            'The Scaling Factor at Which Bond Prices Change for FRAX Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for FRAX Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -511,7 +511,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, LUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVLusd'),
-            'The Scaling Factor at Which Bond Prices Change for LUSD Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for LUSD Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -527,7 +527,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMDAI (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmDai'),
-            'The Scaling Factor at Which Bond Prices Change for LP OHMDAI Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for LP OHMDAI Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -543,7 +543,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMFRAX (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmFrax'),
-            'The Scaling Factor at Which Bond Prices Change for LP OHMFRAX Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for LP OHMFRAX Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
 
         new MethodPropsChartConfig(
@@ -559,7 +559,7 @@ export const methodPropsChartConfigs = {
         new MethodPropsChartConfig(
             'BCV Rate, LP OHMLUSD (Scaled by 10<sup>7</sup>)',
             (...args) => setBaseHist(...args, 'newBCVOhmLusd'),
-            'The Scaling Factor at Which Bond Prices Change for LP OHMLUSD Bonds. A Higher BCV Means a Lower Discount for Bonders'
+            'The Scaling Factor at Which Bond Prices Change for LP OHMLUSD Bonds. A Higher BCV Means a Lower Discount for Bonders. <a href="https://docs.olympusdao.finance/main/references/equations#bonding" target="_blank" rel=”noreferrer noopener”>More Info.</a>'
         ),
     ],
     treasury: [
