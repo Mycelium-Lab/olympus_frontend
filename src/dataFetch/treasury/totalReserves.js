@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { token } from './config.js'
-import { getWholePeriodOfTime } from './utils/date.js'
 import { TVTimeValueObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
@@ -61,77 +60,7 @@ function reformToBigArrayForDays(days) {
     }
     return out
 }
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
-function fillBigArrayForDays(bigArray, startTimestamp, endTimestamp) {
-    let j = 0
-    while (bigArray[j].timestamp < startTimestamp) j++
 
-    let out = []
-    for (let i = j == 0 ? 1 : j; i < bigArray.length; i++) {
-        let timestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i - 1].timestamp),
-            day
-        )
-        let nextTimestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i].timestamp),
-            day
-        )
-        if (timestamp > endTimestamp) return out
-        if (timestamp >= startTimestamp) {
-            out.push({
-                totalReserves: bigArray[i - 1].finalTotalReserves,
-                timestamp: timestamp,
-                audited: bigArray[i - 1].audited,
-            })
-        }
-        timestamp += day
-        if (timestamp > endTimestamp) return out
-        while (timestamp < nextTimestamp) {
-            if (timestamp >= startTimestamp) {
-                out.push({
-                    totalReserves: bigArray[i - 1].finalTotalReserves,
-                    timestamp: timestamp,
-                    audited: false,
-                })
-            }
-
-            timestamp += day
-            if (timestamp > endTimestamp) return out
-        }
-    }
-
-    out.push({
-        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-        timestamp: getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            day
-        ), ////?
-        audited: bigArray[bigArray.length - 1].audited,
-    })
-    let timestamp = getWholePeriodOfTime(
-        parseInt(bigArray[bigArray.length - 1].timestamp),
-        day
-    )
-    timestamp += day
-    while (timestamp <= endTimestamp) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: timestamp,
-            audited: false,
-        })
-        timestamp += day
-    }
-    return out
-}
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
 function fillBigArrayForNDays(stakes, startTimestamp, endTime, days) {
     let data = []
     for (
@@ -147,6 +76,7 @@ function fillBigArrayForNDays(stakes, startTimestamp, endTime, days) {
                 data.length > 0 ? data[data.length - 1].totalReserves : 0,
             audited: false,
         }
+        console.log(stakes[0])
         for (let j = 0; j < stakes.length; ++j) {
             if (
                 beginTimestamp <= stakes[j].timestamp &&
@@ -228,75 +158,7 @@ function reformToBigArrayForHours(days) {
     }
     return out
 }
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
-function fillBigArrayForHours(bigArray, startTimestamp, endTimestamp) {
-    let out = []
-    let j = 0
-    while (bigArray[j].timestamp < startTimestamp) j++
-    for (let i = j == 0 ? 1 : j; i < bigArray.length; i++) {
-        let nextTimestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i].timestamp),
-            hour
-        )
-        let timestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i - 1].timestamp),
-            hour
-        )
-        if (timestamp > endTimestamp) return out
-        if (timestamp >= startTimestamp) {
-            out.push({
-                totalReserves: bigArray[i - 1].finalTotalReserves,
-                timestamp: timestamp,
-                audited: bigArray[i - 1].audited,
-            })
-        }
-        timestamp += hour
-        if (timestamp > endTimestamp) return out
-        while (timestamp < nextTimestamp) {
-            if (timestamp >= startTimestamp) {
-                out.push({
-                    totalReserves: bigArray[i - 1].finalTotalReserves,
-                    timestamp: timestamp,
-                    audited: false,
-                })
-            }
-            timestamp += hour
-            if (timestamp > endTimestamp) return out
-        }
-    }
 
-    out.push({
-        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-        timestamp: getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            hour
-        ),
-        audited: bigArray[bigArray.length - 1].audited,
-    })
-    let timestamp = getWholePeriodOfTime(
-        parseInt(bigArray[bigArray.length - 1].timestamp),
-        hour
-    )
-    timestamp += hour
-    while (timestamp <= endTimestamp) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: timestamp,
-            audited: false,
-        })
-        timestamp += hour
-    }
-    return out
-}
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
 function fillBigArrayForNHours(stakes, startTimestamp, endTime, hours) {
     let data = []
     for (
@@ -410,77 +272,6 @@ function reformToBigArrayForMinutes(days) {
     return out
 }
 
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
-function fillBigArrayForMinues(bigArray, startTimestamp, endTimestamp) {
-    let out = []
-    let j = 0
-
-    while (bigArray[j].timestamp < startTimestamp) j++
-    for (let i = j == 0 ? 1 : j; i < bigArray.length; i++) {
-        let nextTimestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i].timestamp),
-            minute
-        )
-        let timestamp = getWholePeriodOfTime(
-            parseInt(bigArray[i - 1].timestamp),
-            minute
-        )
-        if (timestamp > endTimestamp) return out
-        if (timestamp >= startTimestamp) {
-            out.push({
-                totalReserves: bigArray[i - 1].finalTotalReserves,
-                timestamp: timestamp,
-                audited: bigArray[i - 1].audited,
-            })
-        }
-        timestamp += minute
-        if (timestamp > endTimestamp) return out
-        while (timestamp < nextTimestamp) {
-            if (timestamp >= startTimestamp) {
-                out.push({
-                    totalReserves: bigArray[i - 1].finalTotalReserves,
-                    timestamp: timestamp,
-                    audited: false,
-                })
-            }
-            timestamp += minute
-            if (timestamp > endTimestamp) return out
-        }
-    }
-
-    out.push({
-        totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-        timestamp: getWholePeriodOfTime(
-            parseInt(bigArray[bigArray.length - 1].timestamp),
-            minute
-        ),
-        audited: bigArray[bigArray.length - 1].audited,
-    })
-    let timestamp = getWholePeriodOfTime(
-        parseInt(bigArray[bigArray.length - 1].timestamp),
-        minute
-    )
-    timestamp += minute
-    while (timestamp <= endTimestamp) {
-        out.push({
-            totalReserves: bigArray[bigArray.length - 1].finalTotalReserves,
-            timestamp: timestamp,
-            audited: false,
-        })
-        timestamp += minute
-    }
-    return out
-}
-
-/**
- * fills the array and divides it into equal time intervals
- * @param {*} bigArray
- * @returns
- */
 function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
     let data = []
     for (
