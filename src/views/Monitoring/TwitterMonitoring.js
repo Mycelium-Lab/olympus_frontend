@@ -5,7 +5,7 @@ import '../../styles/monitoring.scss'
 import { TextField, Button, Fab } from '@mui/material'
 import ClearSharpIcon from '@mui/icons-material/ClearSharp'
 
-import { getTwitList } from '../../dataFetch/twitter/twitter.api'
+import { getTwitList } from '../../util/twitter/twitter.api'
 import { dateFormatter } from '../../util/dataTranformations'
 import { setStorageItem, getStorageItem } from '../../util/localStorage'
 

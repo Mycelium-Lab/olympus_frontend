@@ -39,19 +39,22 @@ A bulk of the codebase is located in <i>src</i> folder. The most essential folde
         <i>dataFetch</i> — communication with subgraphs and data mapping for further utilization. Topics with sources:
         <ul>
             <li>
-                <a target="_blank" href="https://github.com/ilau020203/parser-subgrag-olympus">Treasury</a>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_subgraph_parsers/tree/master/treasury">Treasury</a>
             </li>
             <li>
-                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/deposits.js">Bonds</a>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_subgraph_parsers/blob/master/main/deposits.js">Bonds</a>
             </li>
             <li>
-                <a target="_blank" href="https://github.com/limenal/sushi-swap-query/blob/master/pairs.js">DEX</a>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_subgraph_parsers/blob/master/sushiswap-ohm/pairs.js">SushiSwap DEX</a>
             </li>
             <li>
-                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/stakes.js">Staking</a>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_subgraph_parsers/blob/master/main/stakes.js">Staking</a>
             </li>
             <li>
-                <a target="_blank" href="https://github.com/limenal/olympus-query/blob/master/rebases.js">Rebases</a>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_subgraph_parsers/blob/master/main/rebases.js">Rebases (Values + APY)</a> & <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_backend_v2/blob/main/app/scripts/rebases.py">Rebases' Timestamps</a>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/Mycelium-Lab/olympus_backend_v2/blob/main/app/scripts/indexes.py">sOHM Index</a>
             </li>
         </ul>
     </li>
@@ -65,7 +68,10 @@ A bulk of the codebase is located in <i>src</i> folder. The most essential folde
         <i>util</i> — functions for configuration of charts (please see more below), data transformation, common code and more; 
     </li>
     <li>
-        <i>views</i> — all views of the app — each has a designated url.
+        <i>views</i> — all views of the app — each has a designated url;
+    </li>
+    <li>
+        <i>hooks</i> — React hooks — encapsulated integration of data/DOM elements.
     </li>
 </ul>
 
