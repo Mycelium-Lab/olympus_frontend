@@ -8,8 +8,14 @@ import ClearSharpIcon from '@mui/icons-material/ClearSharp'
 import { getTwitList } from '../../dataFetch/twitter/twitter.api'
 import { dateFormatter } from '../../util/dataTranformations'
 import { setStorageItem, getStorageItem } from '../../util/localStorage'
+
+import { useDispatch } from 'react-redux'
+import { setMessage } from '../../redux/actions/messageActions'
+import { basicMessages } from '../../util/messages'
+
 export default function TwitterMonitoring() {
     const ref = useRef()
+    const dispatch = useDispatch()
 
     const [twitNameValidator, setTwitNameValidator] = React.useState(false)
     const [tweetLoading, setTweetLoading] = React.useState(true)
@@ -67,10 +73,24 @@ export default function TwitterMonitoring() {
     useEffect(async () => {
         if (usernames.length) {
             setTwitterList([])
-            const primaryTweets = await getTwitList(usernames.join())
-            setTwitterList(primaryTweets)
-            setTweet(primaryTweets[0].id)
-            setStorageItem('twitterUsernames', usernames)
+            try {
+                const primaryTweets = await getTwitList(usernames.join())
+                setTwitterList(primaryTweets)
+                setTweet(primaryTweets[0].id)
+                setStorageItem('twitterUsernames', usernames)
+            } catch (err) {
+                if (usernames.length > 0 && err instanceof TypeError) {
+                    dispatch(
+                        setMessage({
+                            severity: 3,
+                            text: 'Could not process this Twitter username',
+                        })
+                    )
+                    setUsernames(usernames.slice(0, usernames.length - 1))
+                    return
+                }
+                dispatch(setMessage(basicMessages.requestError))
+            }
         } else {
             document.getElementById('tweet').innerHTML = ''
             setUsernames(['OlympusDAO', 'ohmzeus', 'OlympusAgora'])
