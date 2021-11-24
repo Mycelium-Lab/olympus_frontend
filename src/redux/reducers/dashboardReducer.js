@@ -21,6 +21,7 @@ const initialState = {
     refreshRateSeconds: 60,
     mainChartHeight: 210,
     sideChartHeight: 210,
+    rightPriceScaleWidth: null,
 }
 
 export default function (state = initialState, action) {

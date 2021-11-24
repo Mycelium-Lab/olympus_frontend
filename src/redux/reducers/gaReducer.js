@@ -33,6 +33,7 @@ const initialState = {
     refreshRateSeconds: 30,
     mainChartHeight: 360,
     sideChartHeight: 220,
+    rightPriceScaleWidth: 70,
 }
 
 export default function (state = initialState, action) {

@@ -40,6 +40,7 @@ export default function useCharts({ store, shouldBindCrossHair }) {
         refreshRateSeconds,
         mainChartHeight,
         sideChartHeight,
+        rightPriceScaleWidth,
     } = useSelector((state) => state[store])
     const nCharts = methods.length
 
@@ -68,6 +69,12 @@ export default function useCharts({ store, shouldBindCrossHair }) {
                 ...chartConfig,
                 ...timeVisibleConfig(timeframe),
                 height: i === 0 ? mainChartHeight : sideChartHeight,
+                ...(rightPriceScaleWidth && {
+                    rightPriceScale: {
+                        ...chartConfig.rightPriceScale,
+                        width: rightPriceScaleWidth,
+                    },
+                }),
             })
         )
 

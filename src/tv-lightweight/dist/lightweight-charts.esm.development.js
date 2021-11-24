@@ -4617,6 +4617,7 @@ var PriceAxisRendererOptionsProvider = /** @class */ (function () {
             _internal_paddingOuter: 0,
             _internal_paddingTop: 0,
             _internal_baselineOffset: 0,
+            _internal_width: 0,
         }
         this._private__chartModel = chartModel
     }
@@ -4654,7 +4655,12 @@ var PriceAxisRendererOptionsProvider = /** @class */ (function () {
             )
         }
         rendererOptions._internal_color = this._private__textColor()
+        rendererOptions._internal_width = this._private__width()
         return this._private__rendererOptions
+    }
+    PriceAxisRendererOptionsProvider.prototype._private__width = function () {
+        return this._private__chartModel._internal_options().rightPriceScale
+            .width
     }
     PriceAxisRendererOptionsProvider.prototype._private__textColor =
         function () {
@@ -11061,38 +11067,10 @@ var PriceAxisWidget = /** @class */ (function () {
                 tickMarkMaxWidth = width
             }
         }
-        var firstValue = this._private__priceScale._internal_firstValue()
-        if (firstValue !== null && this._private__size !== null) {
-            var topValue =
-                this._private__priceScale._internal_coordinateToPrice(
-                    1,
-                    firstValue
-                )
-            var bottomValue =
-                this._private__priceScale._internal_coordinateToPrice(
-                    this._private__size._internal_h - 2,
-                    firstValue
-                )
-            tickMarkMaxWidth = Math.max(
-                tickMarkMaxWidth,
-                this._private__widthCache._internal_measureText(
-                    ctx,
-                    this._private__priceScale._internal_formatPrice(
-                        Math.floor(Math.min(topValue, bottomValue)) +
-                            0.11111111111111,
-                        firstValue
-                    )
-                ),
-                this._private__widthCache._internal_measureText(
-                    ctx,
-                    this._private__priceScale._internal_formatPrice(
-                        Math.ceil(Math.max(topValue, bottomValue)) -
-                            0.11111111111111,
-                        firstValue
-                    )
-                )
-            )
-        }
+        tickMarkMaxWidth = Math.max(
+            tickMarkMaxWidth,
+            rendererOptions._internal_width
+        )
         var res = Math.ceil(
             rendererOptions._internal_borderSize +
                 rendererOptions._internal_tickLength +
@@ -14964,6 +14942,7 @@ var priceScaleOptionsDefaults = {
         bottom: 0.1,
         top: 0.2,
     },
+    width: 0,
 }
 
 var timeScaleOptionsDefaults = {
@@ -15668,13 +15647,12 @@ var ChartApi = /** @class */ (function () {
     }
     ChartApi.prototype.moveCrosshair = function (point) {
         if (!point) return
+        var paneWidgets = this._private__chartWidget._internal_paneWidgets()
         var event = {
-            _internal_localX: Number(point.x),
-            _internal_localY: Number(point.y),
+            _internal_localX: point.x,
+            _internal_localY: point.y,
         }
-        this._private__chartWidget
-            ._internal_paneWidgets()[0]
-            ._internal_mouseMoveEvent(event)
+        paneWidgets[0]._internal_mouseMoveEvent(event)
     }
     ChartApi.prototype.priceScale = function (priceScaleId) {
         if (priceScaleId === undefined) {
