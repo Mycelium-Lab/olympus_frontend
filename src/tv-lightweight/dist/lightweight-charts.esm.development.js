@@ -1,22 +1,49 @@
 /*!
  * @license
- * TradingView Lightweight Charts v3.6.1
+ * TradingView Lightweight Charts v3.7.0
  * Copyright (c) 2020 TradingView, Inc.
  * Licensed under Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0
  */
 import { bindToDevicePixelRatio } from 'fancy-canvas/coordinate-space'
 
+/**
+ * Represents the possible line types.
+ */
 var LineType
 ;(function (LineType) {
+    /**
+     * A line.
+     */
     LineType[(LineType['Simple'] = 0)] = 'Simple'
+    /**
+     * A stepped line.
+     */
     LineType[(LineType['WithSteps'] = 1)] = 'WithSteps'
 })(LineType || (LineType = {}))
+/**
+ * Represents the possible line styles.
+ */
 var LineStyle
 ;(function (LineStyle) {
+    /**
+     * A solid line.
+     */
     LineStyle[(LineStyle['Solid'] = 0)] = 'Solid'
+    /**
+     * A dotted line.
+     */
     LineStyle[(LineStyle['Dotted'] = 1)] = 'Dotted'
+    /**
+     * A dashed line.
+     */
     LineStyle[(LineStyle['Dashed'] = 2)] = 'Dashed'
+    /**
+     * A dashed line with bigger dashes.
+     */
     LineStyle[(LineStyle['LargeDashed'] = 3)] = 'LargeDashed'
+    /**
+     * A dottled line with more space between dots.
+     */
     LineStyle[(LineStyle['SparseDotted'] = 4)] = 'SparseDotted'
 })(LineStyle || (LineStyle = {}))
 function setLineStyle(ctx, style) {
@@ -174,6 +201,7 @@ function ensure(value) {
  */
 function ensureNever(value) {}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function merge(dst) {
     var sources = []
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -181,6 +209,7 @@ function merge(dst) {
     }
     for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
         var src = sources_1[_a]
+        // eslint-disable-next-line no-restricted-syntax
         for (var i in src) {
             if (src[i] === undefined) {
                 continue
@@ -207,10 +236,13 @@ function isBoolean(value) {
     return typeof value === 'boolean'
 }
 function clone(object) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     var o = object
     if (!o || 'object' !== typeof o) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return o
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     var c
     if (Array.isArray(o)) {
         c = []
@@ -219,16 +251,22 @@ function clone(object) {
     }
     var p
     var v
+    // eslint-disable-next-line no-restricted-syntax
     for (p in o) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,no-prototype-builtins
         if (o.hasOwnProperty(p)) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             v = o[p]
             if (v && 'object' === typeof v) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 c[p] = clone(v)
             } else {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 c[p] = v
             }
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return c
 }
 function notNull(t) {
@@ -564,7 +602,12 @@ var CrosshairPaneView = /** @class */ (function () {
     return CrosshairPaneView
 })()
 
-/** @public see https://developer.mozilla.org/en-US/docs/Web/CSS/color_value */
+/**
+ * Note this object should be explicitly marked as public so that dts-bundle-generator does not mangle the property names.
+ *
+ * @public
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+ */
 var namedColorRgbHexStrings = {
     // The order of properties in this Record is not important for the internal logic.
     // It's just GZIPped better when props follows this order.
@@ -769,6 +812,7 @@ var rgbaRe =
     /^rgba\(\s*(-?\d{1,10})\s*,\s*(-?\d{1,10})\s*,\s*(-?\d{1,10})\s*,\s*(-?[\d]{0,10}(?:\.\d+)?)\s*\)$/
 function colorStringToRgba(colorString) {
     colorString = colorString.toLowerCase()
+    // eslint-disable-next-line no-restricted-syntax
     if (colorString in namedColorRgbHexStrings) {
         colorString = namedColorRgbHexStrings[colorString]
     }
@@ -932,6 +976,7 @@ function clearRect(ctx, x, y, w, h, clearColor) {
     ctx.fillRect(x, y, w, h)
     ctx.restore()
 }
+// eslint-disable-next-line max-params
 function clearRectWithGradient(ctx, x, y, w, h, topColor, bottomColor) {
     ctx.save()
     ctx.globalCompositeOperation = 'copy'
@@ -1430,15 +1475,6 @@ var DataSource = /** @class */ (function () {
     DataSource.prototype._internal_setPriceScale = function (priceScale) {
         this._internal__priceScale = priceScale
     }
-    DataSource.prototype._internal_priceAxisViews = function (
-        pane,
-        priceScale
-    ) {
-        return []
-    }
-    DataSource.prototype._internal_paneViews = function (pane) {
-        return []
-    }
     DataSource.prototype._internal_timeAxisViews = function () {
         return []
     }
@@ -1449,13 +1485,17 @@ var DataSource = /** @class */ (function () {
 })()
 
 /**
- * Enum of possible crosshair behavior modes.
- * Normal means that the crosshair always follows the pointer.
- * Magnet means that the vertical line of the crosshair follows the pointer, while the horizontal line is placed on the corresponding series point.
+ * Represents the crosshair mode.
  */
 var CrosshairMode
 ;(function (CrosshairMode) {
+    /**
+     * Crosshair's horizontal line is anchored to the closest data point's close price.
+     */
     CrosshairMode[(CrosshairMode['Normal'] = 0)] = 'Normal'
+    /**
+     * Crosshair moves freely on the chart.
+     */
     CrosshairMode[(CrosshairMode['Magnet'] = 1)] = 'Magnet'
 })(CrosshairMode || (CrosshairMode = {}))
 var Crosshair = /** @class */ (function (_super) {
@@ -1722,7 +1762,10 @@ var formatterOptions = {
     _internal_decimalSign: '.',
     _internal_decimalSignFractional: "'",
 }
-// length mustn't be more then 16
+/**
+ * @param value The number of convert.
+ * @param length The length. Must be between 0 and 16 inclusive.
+ */
 function numberToStringWithLeadingZero(value, length) {
     if (!isNumber(value)) {
         return 'n/a'
@@ -1825,6 +1868,7 @@ var PercentageFormatter = /** @class */ (function (_super) {
     return PercentageFormatter
 })(PriceFormatter)
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 var Delegate = /** @class */ (function () {
     function Delegate() {
         this._private__listeners = []
@@ -2087,7 +2131,6 @@ function convertPriceRangeFromLog(priceRange) {
     return new PriceRangeImpl(min, max)
 }
 
-var TICK_SPAN_EPSILON = 1e-9
 var PriceTickSpanCalculator = /** @class */ (function () {
     function PriceTickSpanCalculator(base, integralDividers) {
         this._private__base = base
@@ -2119,28 +2162,31 @@ var PriceTickSpanCalculator = /** @class */ (function () {
     ) {
         var minMovement =
             this._private__base === 0 ? 0 : 1 / this._private__base
-        var tickSpanEpsilon = TICK_SPAN_EPSILON
         var resultTickSpan = Math.pow(
             10,
             Math.max(0, Math.ceil(log10(high - low)))
         )
         var index = 0
         var c = this._private__integralDividers[0]
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             // the second part is actual for small with very small values like 1e-10
             // greaterOrEqual fails for such values
             var resultTickSpanLargerMinMovement =
-                greaterOrEqual(resultTickSpan, minMovement, tickSpanEpsilon) &&
-                resultTickSpan > minMovement + tickSpanEpsilon
+                greaterOrEqual(
+                    resultTickSpan,
+                    minMovement,
+                    1e-14 /* TickSpanEpsilon */
+                ) && resultTickSpan > minMovement + 1e-14 /* TickSpanEpsilon */
             var resultTickSpanLargerMaxTickSpan = greaterOrEqual(
                 resultTickSpan,
                 maxTickSpan * c,
-                tickSpanEpsilon
+                1e-14 /* TickSpanEpsilon */
             )
             var resultTickSpanLarger1 = greaterOrEqual(
                 resultTickSpan,
                 1,
-                tickSpanEpsilon
+                1e-14 /* TickSpanEpsilon */
             )
             var haveToContinue =
                 resultTickSpanLargerMinMovement &&
@@ -2155,13 +2201,13 @@ var PriceTickSpanCalculator = /** @class */ (function () {
                     ++index % this._private__integralDividers.length
                 ]
         }
-        if (resultTickSpan <= minMovement + tickSpanEpsilon) {
+        if (resultTickSpan <= minMovement + 1e-14 /* TickSpanEpsilon */) {
             resultTickSpan = minMovement
         }
         resultTickSpan = Math.max(1, resultTickSpan)
         if (
             this._private__fractionalDividers.length > 0 &&
-            equal(resultTickSpan, 1, tickSpanEpsilon)
+            equal(resultTickSpan, 1, 1e-14 /* TickSpanEpsilon */)
         ) {
             index = 0
             c = this._private__fractionalDividers[0]
@@ -2169,9 +2215,9 @@ var PriceTickSpanCalculator = /** @class */ (function () {
                 greaterOrEqual(
                     resultTickSpan,
                     maxTickSpan * c,
-                    tickSpanEpsilon
+                    1e-14 /* TickSpanEpsilon */
                 ) &&
-                resultTickSpan > minMovement + tickSpanEpsilon
+                resultTickSpan > minMovement + 1e-14 /* TickSpanEpsilon */
             ) {
                 resultTickSpan /= c
                 c =
@@ -2317,17 +2363,26 @@ function sortSources(sources) {
 }
 
 /**
- * Enum of possible price scale modes
- * Normal mode displays original price values
- * Logarithmic mode makes price scale show logarithms of series values instead of original values
- * Percentage turns the percentage mode on.
- * IndexedTo100 turns the "indexed to 100" mode on
+ * Represents the price scale mode.
  */
 var PriceScaleMode
 ;(function (PriceScaleMode) {
+    /**
+     * Price scale shows prices. Price range changes linearly.
+     */
     PriceScaleMode[(PriceScaleMode['Normal'] = 0)] = 'Normal'
+    /**
+     * Price scale shows prices. Price range changes logarithmically.
+     */
     PriceScaleMode[(PriceScaleMode['Logarithmic'] = 1)] = 'Logarithmic'
+    /**
+     * Price scale shows percentage values according the first visible value of the price scale.
+     * The first visible value is 0% in this mode.
+     */
     PriceScaleMode[(PriceScaleMode['Percentage'] = 2)] = 'Percentage'
+    /**
+     * The same as percentage mode, but the first value is moved to 100.
+     */
     PriceScaleMode[(PriceScaleMode['IndexedTo100'] = 3)] = 'IndexedTo100'
 })(PriceScaleMode || (PriceScaleMode = {}))
 var percentageFormatter = new PercentageFormatter()
@@ -2419,6 +2474,7 @@ var PriceScale = /** @class */ (function () {
             _internal_mode: this._private__options.mode,
         }
     }
+    // eslint-disable-next-line complexity
     PriceScale.prototype._internal_setMode = function (newMode) {
         var oldMode = this._internal_mode()
         var priceRange = null
@@ -2937,7 +2993,7 @@ var PriceScale = /** @class */ (function () {
         this._private__cachedOrderedSources = null
     }
     /**
-     * Returns the source which will be used as "formatter source" (take minMove for formatter)
+     * @returns The {@link IPriceDataSource} that will be used as the "formatter source" (take minMove for formatter).
      */
     PriceScale.prototype._private__formatterSource = function () {
         return this._private__dataSources[0] || null
@@ -3008,6 +3064,7 @@ var PriceScale = /** @class */ (function () {
         this._private__marksCache = null
         this._private__markBuilder._internal_rebuildTickMarks()
     }
+    // eslint-disable-next-line complexity
     PriceScale.prototype._private__recalculatePriceRangeImpl = function () {
         var visibleBars =
             this._private__invalidatedForRange._internal_visibleBars
@@ -3141,12 +3198,24 @@ function fillUpDownCandlesticksColors(options) {
         options.wickDownColor = options.wickColor
     }
 }
+/**
+ * Represents the type of the last price animation for series such as area or line.
+ */
 var LastPriceAnimationMode
 ;(function (LastPriceAnimationMode) {
+    /**
+     * Animation is always disabled
+     */
     LastPriceAnimationMode[(LastPriceAnimationMode['Disabled'] = 0)] =
         'Disabled'
+    /**
+     * Animation is always enabled.
+     */
     LastPriceAnimationMode[(LastPriceAnimationMode['Continuous'] = 1)] =
         'Continuous'
+    /**
+     * Animation is active after new data.
+     */
     LastPriceAnimationMode[(LastPriceAnimationMode['OnDataUpdate'] = 2)] =
         'OnDataUpdate'
 })(LastPriceAnimationMode || (LastPriceAnimationMode = {}))
@@ -3165,14 +3234,17 @@ function precisionByMinMove(minMove) {
     }
     return i
 }
+/**
+ * Represents the source of data to be used for the horizontal price line.
+ */
 var PriceLineSource
 ;(function (PriceLineSource) {
     /**
-     * The last bar data
+     * Use the last bar data.
      */
     PriceLineSource[(PriceLineSource['LastBar'] = 0)] = 'LastBar'
     /**
-     * The last visible bar in viewport
+     * Use the last visible data of the chart viewport.
      */
     PriceLineSource[(PriceLineSource['LastVisible'] = 1)] = 'LastVisible'
 })(PriceLineSource || (PriceLineSource = {}))
@@ -3293,6 +3365,52 @@ var DateTimeFormatter = /** @class */ (function () {
     }
     return DateTimeFormatter
 })()
+
+/**
+ * Binary function that accepts two arguments (the first of the type of array elements, and the second is always val), and returns a value convertible to bool.
+ * The value returned indicates whether the first argument is considered to go before the second.
+ * The function shall not modify any of its arguments.
+ */
+function lowerbound(arr, value, compare, start, to) {
+    if (start === void 0) {
+        start = 0
+    }
+    if (to === void 0) {
+        to = arr.length
+    }
+    var count = to - start
+    while (0 < count) {
+        var count2 = count >> 1
+        var mid = start + count2
+        if (compare(arr[mid], value)) {
+            start = mid + 1
+            count -= count2 + 1
+        } else {
+            count = count2
+        }
+    }
+    return start
+}
+function upperbound(arr, value, compare, start, to) {
+    if (start === void 0) {
+        start = 0
+    }
+    if (to === void 0) {
+        to = arr.length
+    }
+    var count = to - start
+    while (0 < count) {
+        var count2 = count >> 1
+        var mid = start + count2
+        if (!compare(value, arr[mid])) {
+            start = mid + 1
+            count -= count2 + 1
+        } else {
+            count = count2
+        }
+    }
+    return start
+}
 
 function defaultTickMarkFormatter(timePoint, tickMarkType, locale) {
     var formatOptions = {}
@@ -3430,19 +3548,24 @@ var TickMarks = /** @class */ (function () {
         this._private__marksByWeight = new Map()
         this._private__cache = null
     }
-    TickMarks.prototype._internal_setTimeScalePoints = function (newPoints) {
-        var _this = this
+    TickMarks.prototype._internal_setTimeScalePoints = function (
+        newPoints,
+        firstChangedPointIndex
+    ) {
+        this._private__removeMarksSinceIndex(firstChangedPointIndex)
         this._private__cache = null
-        this._private__marksByWeight.clear()
-        // TODO: it looks like this is quite fast even with thousands of points
-        // but there might be point of improvements by providing the only changed points
-        newPoints.forEach(function (point, index) {
-            var marksForWeight = _this._private__marksByWeight.get(
+        for (
+            var index = firstChangedPointIndex;
+            index < newPoints.length;
+            ++index
+        ) {
+            var point = newPoints[index]
+            var marksForWeight = this._private__marksByWeight.get(
                 point._internal_timeWeight
             )
             if (marksForWeight === undefined) {
                 marksForWeight = []
-                _this._private__marksByWeight.set(
+                this._private__marksByWeight.set(
                     point._internal_timeWeight,
                     marksForWeight
                 )
@@ -3452,7 +3575,7 @@ var TickMarks = /** @class */ (function () {
                 _internal_time: point._internal_time,
                 _internal_weight: point._internal_timeWeight,
             })
-        })
+        }
     }
     TickMarks.prototype._internal_build = function (spacing, maxWidth) {
         var maxIndexesPerMark = Math.ceil(maxWidth / spacing)
@@ -3468,6 +3591,35 @@ var TickMarks = /** @class */ (function () {
             }
         }
         return this._private__cache._internal_marks
+    }
+    TickMarks.prototype._private__removeMarksSinceIndex = function (
+        sinceIndex
+    ) {
+        if (sinceIndex === 0) {
+            this._private__marksByWeight.clear()
+            return
+        }
+        var weightsToClear = []
+        this._private__marksByWeight.forEach(function (marks, timeWeight) {
+            if (sinceIndex <= marks[0]._internal_index) {
+                weightsToClear.push(timeWeight)
+            } else {
+                marks.splice(
+                    lowerbound(marks, sinceIndex, function (tm) {
+                        return tm._internal_index < sinceIndex
+                    }),
+                    Infinity
+                )
+            }
+        })
+        for (
+            var _i = 0, weightsToClear_1 = weightsToClear;
+            _i < weightsToClear_1.length;
+            _i++
+        ) {
+            var weight = weightsToClear_1[_i]
+            this._private__marksByWeight.delete(weight)
+        }
     }
     TickMarks.prototype._private__buildMarksImpl = function (
         maxIndexesPerMark
@@ -3557,12 +3709,30 @@ var TimeScaleVisibleRange = /** @class */ (function () {
     return TimeScaleVisibleRange
 })()
 
+/**
+ * Represents the type of a tick mark on the time axis.
+ */
 var TickMarkType
 ;(function (TickMarkType) {
+    /**
+     * The start of the year (e.g. it's the first tick mark in a year).
+     */
     TickMarkType[(TickMarkType['Year'] = 0)] = 'Year'
+    /**
+     * The start of the month (e.g. it's the first tick mark in a month).
+     */
     TickMarkType[(TickMarkType['Month'] = 1)] = 'Month'
+    /**
+     * A day of the month.
+     */
     TickMarkType[(TickMarkType['DayOfMonth'] = 2)] = 'DayOfMonth'
+    /**
+     * A time without seconds.
+     */
     TickMarkType[(TickMarkType['Time'] = 3)] = 'Time'
+    /**
+     * A time with seconds.
+     */
     TickMarkType[(TickMarkType['TimeWithSeconds'] = 4)] = 'TimeWithSeconds'
 })(TickMarkType || (TickMarkType = {}))
 var TimeScale = /** @class */ (function () {
@@ -3653,21 +3823,20 @@ var TimeScale = /** @class */ (function () {
             // special case
             return findNearest ? this._private__points.length - 1 : null
         }
-        for (var i = 0; i < this._private__points.length; ++i) {
-            if (
-                time._internal_timestamp ===
-                this._private__points[i]._internal_time._internal_timestamp
-            ) {
-                return i
+        var index = lowerbound(
+            this._private__points,
+            time._internal_timestamp,
+            function (a, b) {
+                return a._internal_time._internal_timestamp < b
             }
-            if (
-                time._internal_timestamp <
-                this._private__points[i]._internal_time._internal_timestamp
-            ) {
-                return findNearest ? i : null
-            }
+        )
+        if (
+            time._internal_timestamp <
+            this._private__points[index]._internal_time._internal_timestamp
+        ) {
+            return findNearest ? index : null
         }
-        return null
+        return index
     }
     TimeScale.prototype._internal_isEmpty = function () {
         return this._private__width === 0 || this._private__points.length === 0
@@ -3711,9 +3880,6 @@ var TimeScale = /** @class */ (function () {
             from: ensureNotNull(this._internal_timeToIndex(range.from, true)),
             to: ensureNotNull(this._internal_timeToIndex(range.to, true)),
         }
-    }
-    TimeScale.prototype._internal_tickMarks = function () {
-        return this._private__tickMarks
     }
     TimeScale.prototype._internal_width = function () {
         return this._private__width
@@ -3851,10 +4017,6 @@ var TimeScale = /** @class */ (function () {
             ) {
                 continue
             }
-            var time = this._internal_indexToTime(tm._internal_index)
-            if (time === null) {
-                continue
-            }
             var label = void 0
             if (targetIndex < this._private__labels.length) {
                 label = this._private__labels[targetIndex]
@@ -3862,7 +4024,7 @@ var TimeScale = /** @class */ (function () {
                     tm._internal_index
                 )
                 label._internal_label = this._private__formatLabel(
-                    time,
+                    tm._internal_time,
                     tm._internal_weight
                 )
                 label._internal_weight = tm._internal_weight
@@ -3873,7 +4035,7 @@ var TimeScale = /** @class */ (function () {
                         tm._internal_index
                     ),
                     _internal_label: this._private__formatLabel(
-                        time,
+                        tm._internal_time,
                         tm._internal_weight
                     ),
                     _internal_weight: tm._internal_weight,
@@ -4050,10 +4212,16 @@ var TimeScale = /** @class */ (function () {
         }
         animationFn()
     }
-    TimeScale.prototype._internal_update = function (newPoints) {
+    TimeScale.prototype._internal_update = function (
+        newPoints,
+        firstChangedPointIndex
+    ) {
         this._private__visibleRangeInvalidated = true
         this._private__points = newPoints
-        this._private__tickMarks._internal_setTimeScalePoints(newPoints)
+        this._private__tickMarks._internal_setTimeScalePoints(
+            newPoints,
+            firstChangedPointIndex
+        )
         this._private__correctOffset()
     }
     TimeScale.prototype._internal_visibleBarsChanged = function () {
@@ -4247,23 +4415,11 @@ var TimeScale = /** @class */ (function () {
         weight
     ) {
         var _a
-        var tickMarkType
-        var timeVisible = this._private__options.timeVisible
-        if (weight < 20 /* Minute */ && timeVisible) {
-            tickMarkType = this._private__options.secondsVisible
-                ? 4 /* TimeWithSeconds */
-                : 3 /* Time */
-        } else if (weight < 40 /* Day */ && timeVisible) {
-            tickMarkType = 3 /* Time */
-        } else if (weight < 50 /* Week */) {
-            tickMarkType = 2 /* DayOfMonth */
-        } else if (weight < 60 /* Month */) {
-            tickMarkType = 2 /* DayOfMonth */
-        } else if (weight < 70 /* Year */) {
-            tickMarkType = 1 /* Month */
-        } else {
-            tickMarkType = 0 /* Year */
-        }
+        var tickMarkType = weightToTickMarkType(
+            weight,
+            this._private__options.timeVisible,
+            this._private__options.secondsVisible
+        )
         if (this._private__options.tickMarkFormatter !== undefined) {
             // this is temporary solution to make more consistency API
             // it looks like that all time types in API should have the same form
@@ -4358,16 +4514,59 @@ var TimeScale = /** @class */ (function () {
     }
     return TimeScale
 })()
+// eslint-disable-next-line complexity
+function weightToTickMarkType(weight, timeVisible, secondsVisible) {
+    switch (weight) {
+        case 0 /* LessThanSecond */:
+        case 10 /* Second */:
+            return timeVisible
+                ? secondsVisible
+                    ? 4 /* TimeWithSeconds */
+                    : 3 /* Time */
+                : 2 /* DayOfMonth */
+        case 20 /* Minute1 */:
+        case 21 /* Minute5 */:
+        case 22 /* Minute30 */:
+        case 30 /* Hour1 */:
+        case 31 /* Hour3 */:
+        case 32 /* Hour6 */:
+        case 33 /* Hour12 */:
+            return timeVisible ? 3 /* Time */ : 2 /* DayOfMonth */
+        case 50 /* Day */:
+            return 2 /* DayOfMonth */
+        case 60 /* Month */:
+            return 1 /* Month */
+        case 70 /* Year */:
+            return 0 /* Year */
+    }
+}
 
+/**
+ * Represents a type of color.
+ */
 var ColorType
 ;(function (ColorType) {
+    /** Solid color */
     ColorType['Solid'] = 'solid'
+    /** Vertical gradient color */
     ColorType['VerticalGradient'] = 'gradient'
 })(ColorType || (ColorType = {}))
 
+/**
+ * Check if a time value is a business day object.
+ *
+ * @param time The time to check.
+ * @returns `true` if `time` is a {@link BusinessDay} object, false otherwise.
+ */
 function isBusinessDay(time) {
     return !isNumber(time) && !isString(time)
 }
+/**
+ * Check if a time value is a UTC timestamp number.
+ *
+ * @param time The time to check.
+ * @returns `true` if `time` is a {@link UTCTimestamp} number, false otherwise.
+ */
 function isUTCTimestamp(time) {
     return isNumber(time)
 }
@@ -4385,7 +4584,12 @@ function isFulfilledData(data) {
 var defaultFontFamily = "'Trebuchet MS', Roboto, Ubuntu, sans-serif"
 /**
  * Generates a font string, which can be used to set in canvas' font property.
- * If no family provided, [defaultFontFamily] will be used.
+ * If no family provided, {@link defaultFontFamily} will be used.
+ *
+ * @param size Font size in pixels.
+ * @param family Optional font family.
+ * @param style Optional font style.
+ * @returns The font string.
  */
 function makeFont(size, family, style) {
     if (style !== undefined) {
@@ -4663,17 +4867,17 @@ function walkLine(ctx, points, lineType, visibleRange) {
     }
 }
 
-var PaneRendererArea = /** @class */ (function (_super) {
-    __extends(PaneRendererArea, _super)
-    function PaneRendererArea() {
+var PaneRendererAreaBase = /** @class */ (function (_super) {
+    __extends(PaneRendererAreaBase, _super)
+    function PaneRendererAreaBase() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this
         _this._internal__data = null
         return _this
     }
-    PaneRendererArea.prototype._internal_setData = function (data) {
+    PaneRendererAreaBase.prototype._internal_setData = function (data) {
         this._internal__data = data
     }
-    PaneRendererArea.prototype._internal__drawImpl = function (ctx) {
+    PaneRendererAreaBase.prototype._internal__drawImpl = function (ctx) {
         if (
             this._internal__data === null ||
             this._internal__data._internal_items.length === 0 ||
@@ -4683,7 +4887,6 @@ var PaneRendererArea = /** @class */ (function (_super) {
         }
         ctx.lineCap = 'butt'
         ctx.lineJoin = 'round'
-        ctx.strokeStyle = this._internal__data._internal_lineColor
         ctx.lineWidth = this._internal__data._internal_lineWidth
         setLineStyle(ctx, this._internal__data._internal_lineStyle)
         // walk lines with width=1 to have more accurate gradient's filling
@@ -4694,20 +4897,20 @@ var PaneRendererArea = /** @class */ (function (_super) {
             var halfBarWidth = this._internal__data._internal_barWidth / 2
             ctx.moveTo(
                 point._internal_x - halfBarWidth,
-                this._internal__data._internal_bottom
+                this._internal__data._internal_baseLevelCoordinate
             )
             ctx.lineTo(point._internal_x - halfBarWidth, point._internal_y)
             ctx.lineTo(point._internal_x + halfBarWidth, point._internal_y)
             ctx.lineTo(
                 point._internal_x + halfBarWidth,
-                this._internal__data._internal_bottom
+                this._internal__data._internal_baseLevelCoordinate
             )
         } else {
             ctx.moveTo(
                 this._internal__data._internal_items[
                     this._internal__data._internal_visibleRange.from
                 ]._internal_x,
-                this._internal__data._internal_bottom
+                this._internal__data._internal_baseLevelCoordinate
             )
             ctx.lineTo(
                 this._internal__data._internal_items[
@@ -4731,42 +4934,49 @@ var PaneRendererArea = /** @class */ (function (_super) {
                     this._internal__data._internal_items[
                         this._internal__data._internal_visibleRange.to - 1
                     ]._internal_x,
-                    this._internal__data._internal_bottom
+                    this._internal__data._internal_baseLevelCoordinate
                 )
                 ctx.lineTo(
                     this._internal__data._internal_items[
                         this._internal__data._internal_visibleRange.from
                     ]._internal_x,
-                    this._internal__data._internal_bottom
+                    this._internal__data._internal_baseLevelCoordinate
                 )
             }
         }
         ctx.closePath()
-        var gradient = ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            this._internal__data._internal_bottom
-        )
-        gradient.addColorStop(0, this._internal__data._internal_topColor)
-        gradient.addColorStop(1, this._internal__data._internal_bottomColor)
-        ctx.fillStyle = gradient
+        ctx.fillStyle = this._internal__fillStyle(ctx)
         ctx.fill()
     }
-    return PaneRendererArea
+    return PaneRendererAreaBase
 })(ScaledRenderer)
+var PaneRendererArea = /** @class */ (function (_super) {
+    __extends(PaneRendererArea, _super)
+    function PaneRendererArea() {
+        return (_super !== null && _super.apply(this, arguments)) || this
+    }
+    PaneRendererArea.prototype._internal__fillStyle = function (ctx) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        var data = this._internal__data
+        var gradient = ctx.createLinearGradient(0, 0, 0, data._internal_bottom)
+        gradient.addColorStop(0, data._internal_topColor)
+        gradient.addColorStop(1, data._internal_bottomColor)
+        return gradient
+    }
+    return PaneRendererArea
+})(PaneRendererAreaBase)
 
-var PaneRendererLine = /** @class */ (function (_super) {
-    __extends(PaneRendererLine, _super)
-    function PaneRendererLine() {
+var PaneRendererLineBase = /** @class */ (function (_super) {
+    __extends(PaneRendererLineBase, _super)
+    function PaneRendererLineBase() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this
         _this._internal__data = null
         return _this
     }
-    PaneRendererLine.prototype._internal_setData = function (data) {
+    PaneRendererLineBase.prototype._internal_setData = function (data) {
         this._internal__data = data
     }
-    PaneRendererLine.prototype._internal__drawImpl = function (ctx) {
+    PaneRendererLineBase.prototype._internal__drawImpl = function (ctx) {
         if (
             this._internal__data === null ||
             this._internal__data._internal_items.length === 0 ||
@@ -4777,7 +4987,7 @@ var PaneRendererLine = /** @class */ (function (_super) {
         ctx.lineCap = 'butt'
         ctx.lineWidth = this._internal__data._internal_lineWidth
         setLineStyle(ctx, this._internal__data._internal_lineStyle)
-        ctx.strokeStyle = this._internal__data._internal_lineColor
+        ctx.strokeStyle = this._internal__strokeStyle(ctx)
         ctx.lineJoin = 'round'
         ctx.beginPath()
         if (this._internal__data._internal_items.length === 1) {
@@ -4800,54 +5010,19 @@ var PaneRendererLine = /** @class */ (function (_super) {
         }
         ctx.stroke()
     }
-    return PaneRendererLine
+    return PaneRendererLineBase
 })(ScaledRenderer)
-
-/**
- * Binary function that accepts two arguments (the first of the type of array elements, and the second is always val), and returns a value convertible to bool.
- * The value returned indicates whether the first argument is considered to go before the second.
- * The function shall not modify any of its arguments.
- */
-function lowerbound(arr, value, compare, start, to) {
-    if (start === void 0) {
-        start = 0
+var PaneRendererLine = /** @class */ (function (_super) {
+    __extends(PaneRendererLine, _super)
+    function PaneRendererLine() {
+        return (_super !== null && _super.apply(this, arguments)) || this
     }
-    if (to === void 0) {
-        to = arr.length
+    PaneRendererLine.prototype._internal__strokeStyle = function () {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this._internal__data._internal_lineColor
     }
-    var count = to - start
-    while (0 < count) {
-        var count2 = count >> 1
-        var mid = start + count2
-        if (compare(arr[mid], value)) {
-            start = mid + 1
-            count -= count2 + 1
-        } else {
-            count = count2
-        }
-    }
-    return start
-}
-function upperbound(arr, value, compare, start, to) {
-    if (start === void 0) {
-        start = 0
-    }
-    if (to === void 0) {
-        to = arr.length
-    }
-    var count = to - start
-    while (0 < count) {
-        var count2 = count >> 1
-        var mid = start + count2
-        if (!compare(value, arr[mid])) {
-            start = mid + 1
-            count -= count2 + 1
-        } else {
-            count = count2
-        }
-    }
-    return start
-}
+    return PaneRendererLine
+})(PaneRendererLineBase)
 
 function lowerBoundItemsCompare(item, time) {
     return item._internal_time < time
@@ -5020,22 +5195,31 @@ var SeriesAreaPaneView = /** @class */ (function (_super) {
         }
         var areaStyleProperties = this._internal__series._internal_options()
         this._internal__makeValid()
-        var data = {
+        this._private__areaRenderer._internal_setData({
             _internal_lineType: areaStyleProperties.lineType,
             _internal_items: this._internal__items,
-            _internal_lineColor: areaStyleProperties.lineColor,
             _internal_lineStyle: areaStyleProperties.lineStyle,
             _internal_lineWidth: areaStyleProperties.lineWidth,
             _internal_topColor: areaStyleProperties.topColor,
             _internal_bottomColor: areaStyleProperties.bottomColor,
+            _internal_baseLevelCoordinate: height,
             _internal_bottom: height,
             _internal_visibleRange: this._internal__itemsVisibleRange,
             _internal_barWidth: this._internal__model
                 ._internal_timeScale()
                 ._internal_barSpacing(),
-        }
-        this._private__areaRenderer._internal_setData(data)
-        this._private__lineRenderer._internal_setData(data)
+        })
+        this._private__lineRenderer._internal_setData({
+            _internal_lineType: areaStyleProperties.lineType,
+            _internal_items: this._internal__items,
+            _internal_lineColor: areaStyleProperties.lineColor,
+            _internal_lineStyle: areaStyleProperties.lineStyle,
+            _internal_lineWidth: areaStyleProperties.lineWidth,
+            _internal_visibleRange: this._internal__itemsVisibleRange,
+            _internal_barWidth: this._internal__model
+                ._internal_timeScale()
+                ._internal_barSpacing(),
+        })
         return this._private__renderer
     }
     SeriesAreaPaneView.prototype._internal__createRawItem = function (
@@ -5085,6 +5269,7 @@ var PaneRendererBars = /** @class */ (function () {
     PaneRendererBars.prototype._internal_setData = function (data) {
         this._private__data = data
     }
+    // eslint-disable-next-line complexity
     PaneRendererBars.prototype._internal_draw = function (
         ctx,
         pixelRatio,
@@ -5301,6 +5486,123 @@ var SeriesBarsPaneView = /** @class */ (function (_super) {
     }
     return SeriesBarsPaneView
 })(BarsPaneViewBase)
+
+var PaneRendererBaselineArea = /** @class */ (function (_super) {
+    __extends(PaneRendererBaselineArea, _super)
+    function PaneRendererBaselineArea() {
+        return (_super !== null && _super.apply(this, arguments)) || this
+    }
+    PaneRendererBaselineArea.prototype._internal__fillStyle = function (ctx) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        var data = this._internal__data
+        var gradient = ctx.createLinearGradient(0, 0, 0, data._internal_bottom)
+        var baselinePercent = clamp(
+            data._internal_baseLevelCoordinate / data._internal_bottom,
+            0,
+            1
+        )
+        gradient.addColorStop(0, data._internal_topFillColor1)
+        gradient.addColorStop(baselinePercent, data._internal_topFillColor2)
+        gradient.addColorStop(baselinePercent, data._internal_bottomFillColor1)
+        gradient.addColorStop(1, data._internal_bottomFillColor2)
+        return gradient
+    }
+    return PaneRendererBaselineArea
+})(PaneRendererAreaBase)
+var PaneRendererBaselineLine = /** @class */ (function (_super) {
+    __extends(PaneRendererBaselineLine, _super)
+    function PaneRendererBaselineLine() {
+        return (_super !== null && _super.apply(this, arguments)) || this
+    }
+    PaneRendererBaselineLine.prototype._internal__strokeStyle = function (ctx) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        var data = this._internal__data
+        var gradient = ctx.createLinearGradient(0, 0, 0, data._internal_bottom)
+        var baselinePercent = clamp(
+            data._internal_baseLevelCoordinate / data._internal_bottom,
+            0,
+            1
+        )
+        gradient.addColorStop(0, data._internal_topColor)
+        gradient.addColorStop(baselinePercent, data._internal_topColor)
+        gradient.addColorStop(baselinePercent, data._internal_bottomColor)
+        gradient.addColorStop(1, data._internal_bottomColor)
+        return gradient
+    }
+    return PaneRendererBaselineLine
+})(PaneRendererLineBase)
+
+var SeriesBaselinePaneView = /** @class */ (function (_super) {
+    __extends(SeriesBaselinePaneView, _super)
+    function SeriesBaselinePaneView(series, model) {
+        var _this = _super.call(this, series, model) || this
+        _this._private__baselineAreaRenderer = new PaneRendererBaselineArea()
+        _this._private__baselineLineRenderer = new PaneRendererBaselineLine()
+        _this._private__compositeRenderer = new CompositeRenderer()
+        _this._private__compositeRenderer._internal_setRenderers([
+            _this._private__baselineAreaRenderer,
+            _this._private__baselineLineRenderer,
+        ])
+        return _this
+    }
+    SeriesBaselinePaneView.prototype._internal_renderer = function (
+        height,
+        width
+    ) {
+        if (!this._internal__series._internal_visible()) {
+            return null
+        }
+        var firstValue = this._internal__series._internal_firstValue()
+        if (firstValue === null) {
+            return null
+        }
+        var baselineProps = this._internal__series._internal_options()
+        this._internal__makeValid()
+        var baseLevelCoordinate = this._internal__series
+            ._internal_priceScale()
+            ._internal_priceToCoordinate(
+                baselineProps.baseValue.price,
+                firstValue._internal_value
+            )
+        var barWidth = this._internal__model
+            ._internal_timeScale()
+            ._internal_barSpacing()
+        this._private__baselineAreaRenderer._internal_setData({
+            _internal_items: this._internal__items,
+            _internal_topFillColor1: baselineProps.topFillColor1,
+            _internal_topFillColor2: baselineProps.topFillColor2,
+            _internal_bottomFillColor1: baselineProps.bottomFillColor1,
+            _internal_bottomFillColor2: baselineProps.bottomFillColor2,
+            _internal_lineWidth: baselineProps.lineWidth,
+            _internal_lineStyle: baselineProps.lineStyle,
+            _internal_lineType: 0 /* Simple */,
+            _internal_baseLevelCoordinate: baseLevelCoordinate,
+            _internal_bottom: height,
+            _internal_visibleRange: this._internal__itemsVisibleRange,
+            _internal_barWidth: barWidth,
+        })
+        this._private__baselineLineRenderer._internal_setData({
+            _internal_items: this._internal__items,
+            _internal_topColor: baselineProps.topLineColor,
+            _internal_bottomColor: baselineProps.bottomLineColor,
+            _internal_lineWidth: baselineProps.lineWidth,
+            _internal_lineStyle: baselineProps.lineStyle,
+            _internal_lineType: 0 /* Simple */,
+            _internal_baseLevelCoordinate: baseLevelCoordinate,
+            _internal_bottom: height,
+            _internal_visibleRange: this._internal__itemsVisibleRange,
+            _internal_barWidth: barWidth,
+        })
+        return this._private__compositeRenderer
+    }
+    SeriesBaselinePaneView.prototype._internal__createRawItem = function (
+        time,
+        price
+    ) {
+        return this._internal__createRawItemBase(time, price)
+    }
+    return SeriesBaselinePaneView
+})(LinePaneViewBase)
 
 var PaneRendererCandlesticks = /** @class */ (function () {
     function PaneRendererCandlesticks() {
@@ -5649,6 +5951,7 @@ var PaneRendererHistogram = /** @class */ (function () {
             )
         }
     }
+    // eslint-disable-next-line complexity
     PaneRendererHistogram.prototype._private__fillPrecalculatedCache =
         function (pixelRatio) {
             if (
@@ -5903,6 +6206,7 @@ var SeriesHistogramPaneView = /** @class */ (function (_super) {
 
 var SeriesLinePaneView = /** @class */ (function (_super) {
     __extends(SeriesLinePaneView, _super)
+    // eslint-disable-next-line no-useless-constructor
     function SeriesLinePaneView(series, model) {
         var _this = _super.call(this, series, model) || this
         _this._private__lineRenderer = new PaneRendererLine()
@@ -6165,6 +6469,7 @@ var SeriesHorizontalLinePaneView = /** @class */ (function () {
 
 var SeriesHorizontalBaseLinePaneView = /** @class */ (function (_super) {
     __extends(SeriesHorizontalBaseLinePaneView, _super)
+    // eslint-disable-next-line no-useless-constructor
     function SeriesHorizontalBaseLinePaneView(series) {
         return _super.call(this, series) || this
     }
@@ -6437,11 +6742,11 @@ var SeriesLastPriceAnimationPaneView = /** @class */ (function () {
         if (visibleRange === null || firstValue === null) {
             return
         }
-        var lastValue = this._private__series._internal_lastValueData(
-            true,
-            true
-        )
-        if (!visibleRange._internal_contains(lastValue._internal_index)) {
+        var lastValue = this._private__series._internal_lastValueData(true)
+        if (
+            lastValue._internal_noData ||
+            !visibleRange._internal_contains(lastValue._internal_index)
+        ) {
             return
         }
         var lastValuePoint = {
@@ -6782,9 +7087,9 @@ function hitTestShape(item, x, y) {
                 y
             )
     }
-    ensureNever(item._internal_shape)
 }
 
+// eslint-disable-next-line max-params
 function fillSizeAndY(
     rendererItem,
     marker,
@@ -7008,6 +7313,7 @@ var SeriesMarkersPaneView = /** @class */ (function () {
 
 var SeriesPriceLinePaneView = /** @class */ (function (_super) {
     __extends(SeriesPriceLinePaneView, _super)
+    // eslint-disable-next-line no-useless-constructor
     function SeriesPriceLinePaneView(series) {
         return _super.call(this, series) || this
     }
@@ -7340,6 +7646,12 @@ var SeriesBarColorer = /** @class */ (function () {
                 return this._private__lineStyle(seriesOptions)
             case 'Area':
                 return this._private__areaStyle(seriesOptions)
+            case 'Baseline':
+                return this._private__baselineStyle(
+                    seriesOptions,
+                    barIndex,
+                    precomputedBars
+                )
             case 'Bar':
                 return this._private__barStyle(
                     seriesOptions,
@@ -7409,6 +7721,23 @@ var SeriesBarColorer = /** @class */ (function () {
             _internal_barColor: areaStyle.lineColor,
         })
     }
+    SeriesBarColorer.prototype._private__baselineStyle = function (
+        baselineStyle,
+        barIndex,
+        precomputedBars
+    ) {
+        var currentBar = ensureNotNull(
+            this._private__findBar(barIndex, precomputedBars)
+        )
+        var isAboveBaseline =
+            currentBar._internal_value[3 /* Close */] >=
+            baselineStyle.baseValue.price
+        return __assign(__assign({}, emptyResult), {
+            _internal_barColor: isAboveBaseline
+                ? baselineStyle.topLineColor
+                : baselineStyle.bottomLineColor,
+        })
+    }
     SeriesBarColorer.prototype._private__lineStyle = function (lineStyle) {
         return __assign(__assign({}, emptyResult), {
             _internal_barColor: lineStyle.color,
@@ -7454,11 +7783,6 @@ var PlotList = /** @class */ (function () {
         this._private__items = []
         this._private__minMaxCache = new Map()
         this._private__rowSearchCache = new Map()
-    }
-    PlotList.prototype._internal_clear = function () {
-        this._private__items = []
-        this._private__minMaxCache.clear()
-        this._private__rowSearchCache.clear()
     }
     // @returns Last row
     PlotList.prototype._internal_last = function () {
@@ -7523,39 +7847,10 @@ var PlotList = /** @class */ (function () {
         }
         return result
     }
-    PlotList.prototype._internal_merge = function (plotRows) {
-        if (plotRows.length === 0) {
-            return
-        }
-        // if we get a bunch of history - just prepend it
-        if (
-            this._internal_isEmpty() ||
-            plotRows[plotRows.length - 1]._internal_index <
-                this._private__items[0]._internal_index
-        ) {
-            this._private__prepend(plotRows)
-            return
-        }
-        // if we get new rows - just append it
-        if (
-            plotRows[0]._internal_index >
-            this._private__items[this._private__items.length - 1]
-                ._internal_index
-        ) {
-            this._private__append(plotRows)
-            return
-        }
-        // if we get update for the last row - just replace it
-        if (
-            plotRows.length === 1 &&
-            plotRows[0]._internal_index ===
-                this._private__items[this._private__items.length - 1]
-                    ._internal_index
-        ) {
-            this._private__updateLast(plotRows[0])
-            return
-        }
-        this._private__merge(plotRows)
+    PlotList.prototype._internal_setData = function (plotRows) {
+        this._private__rowSearchCache.clear()
+        this._private__minMaxCache.clear()
+        this._private__items = plotRows
     }
     PlotList.prototype._private__indexAt = function (offset) {
         return this._private__items[offset]._internal_index
@@ -7614,16 +7909,13 @@ var PlotList = /** @class */ (function () {
             return b._internal_index > a
         })
     }
-    /**
-     * @param endIndex - Non-inclusive end
-     */
     PlotList.prototype._private__plotMinMax = function (
         startIndex,
-        endIndex,
+        endIndexExclusive,
         plotIndex
     ) {
         var result = null
-        for (var i = startIndex; i < endIndex; i++) {
+        for (var i = startIndex; i < endIndexExclusive; i++) {
             var values = this._private__items[i]._internal_value
             var v = values[plotIndex]
             if (Number.isNaN(v)) {
@@ -7641,42 +7933,6 @@ var PlotList = /** @class */ (function () {
             }
         }
         return result
-    }
-    PlotList.prototype._private__invalidateCacheForRow = function (row) {
-        var chunkIndex = Math.floor(row._internal_index / CHUNK_SIZE)
-        this._private__minMaxCache.forEach(function (cacheItem) {
-            return cacheItem.delete(chunkIndex)
-        })
-    }
-    PlotList.prototype._private__prepend = function (plotRows) {
-        assert(plotRows.length !== 0, 'plotRows should not be empty')
-        this._private__rowSearchCache.clear()
-        this._private__minMaxCache.clear()
-        this._private__items = plotRows.concat(this._private__items)
-    }
-    PlotList.prototype._private__append = function (plotRows) {
-        assert(plotRows.length !== 0, 'plotRows should not be empty')
-        this._private__rowSearchCache.clear()
-        this._private__minMaxCache.clear()
-        this._private__items = this._private__items.concat(plotRows)
-    }
-    PlotList.prototype._private__updateLast = function (plotRow) {
-        assert(!this._internal_isEmpty(), 'plot list should not be empty')
-        var currentLastRow =
-            this._private__items[this._private__items.length - 1]
-        assert(
-            currentLastRow._internal_index === plotRow._internal_index,
-            'last row index should match new row index'
-        )
-        this._private__invalidateCacheForRow(plotRow)
-        this._private__rowSearchCache.delete(plotRow._internal_index)
-        this._private__items[this._private__items.length - 1] = plotRow
-    }
-    PlotList.prototype._private__merge = function (plotRows) {
-        assert(plotRows.length !== 0, 'plot rows should not be empty')
-        this._private__rowSearchCache.clear()
-        this._private__minMaxCache.clear()
-        this._private__items = mergePlotRows(this._private__items, plotRows)
     }
     PlotList.prototype._private__minMaxOnRangeCachedImpl = function (
         start,
@@ -7769,82 +8025,6 @@ function mergeMinMax(first, second) {
         }
     }
 }
-/**
- * Merges two ordered plot row arrays and returns result (ordered plot row array).
- *
- * BEWARE: If row indexes from plot rows are equal, the new plot row is used.
- *
- * NOTE: Time and memory complexity are O(N+M).
- */
-function mergePlotRows(originalPlotRows, newPlotRows) {
-    var newArraySize = calcMergedArraySize(originalPlotRows, newPlotRows)
-    var result = new Array(newArraySize)
-    var originalRowsIndex = 0
-    var newRowsIndex = 0
-    var originalRowsSize = originalPlotRows.length
-    var newRowsSize = newPlotRows.length
-    var resultRowsIndex = 0
-    while (originalRowsIndex < originalRowsSize && newRowsIndex < newRowsSize) {
-        if (
-            originalPlotRows[originalRowsIndex]._internal_index <
-            newPlotRows[newRowsIndex]._internal_index
-        ) {
-            result[resultRowsIndex] = originalPlotRows[originalRowsIndex]
-            originalRowsIndex++
-        } else if (
-            originalPlotRows[originalRowsIndex]._internal_index >
-            newPlotRows[newRowsIndex]._internal_index
-        ) {
-            result[resultRowsIndex] = newPlotRows[newRowsIndex]
-            newRowsIndex++
-        } else {
-            result[resultRowsIndex] = newPlotRows[newRowsIndex]
-            originalRowsIndex++
-            newRowsIndex++
-        }
-        resultRowsIndex++
-    }
-    while (originalRowsIndex < originalRowsSize) {
-        result[resultRowsIndex] = originalPlotRows[originalRowsIndex]
-        originalRowsIndex++
-        resultRowsIndex++
-    }
-    while (newRowsIndex < newRowsSize) {
-        result[resultRowsIndex] = newPlotRows[newRowsIndex]
-        newRowsIndex++
-        resultRowsIndex++
-    }
-    return result
-}
-function calcMergedArraySize(firstPlotRows, secondPlotRows) {
-    var firstPlotsSize = firstPlotRows.length
-    var secondPlotsSize = secondPlotRows.length
-    // new plot rows size is (first plot rows size) + (second plot rows size) - common part size
-    // in this case we can just calculate common part size
-    var result = firstPlotsSize + secondPlotsSize
-    // TODO: we can move first/second indexes to the right and first/second size to lower/upper bound of opposite array
-    // to skip checking uncommon parts
-    var firstIndex = 0
-    var secondIndex = 0
-    while (firstIndex < firstPlotsSize && secondIndex < secondPlotsSize) {
-        if (
-            firstPlotRows[firstIndex]._internal_index <
-            secondPlotRows[secondIndex]._internal_index
-        ) {
-            firstIndex++
-        } else if (
-            firstPlotRows[firstIndex]._internal_index >
-            secondPlotRows[secondIndex]._internal_index
-        ) {
-            secondIndex++
-        } else {
-            firstIndex++
-            secondIndex++
-            result--
-        }
-    }
-    return result
-}
 
 function createSeriesPlotList() {
     return new PlotList()
@@ -7873,7 +8053,11 @@ var Series = /** @class */ (function (_super) {
             _this,
             model
         )
-        if (seriesType === 'Area' || seriesType === 'Line') {
+        if (
+            seriesType === 'Area' ||
+            seriesType === 'Line' ||
+            seriesType === 'Baseline'
+        ) {
             _this._private__lastPriceAnimationPaneView =
                 new SeriesLastPriceAnimationPaneView(_this)
         }
@@ -7889,17 +8073,7 @@ var Series = /** @class */ (function (_super) {
     Series.prototype._internal_priceLineColor = function (lastBarColor) {
         return this._private__options.priceLineColor || lastBarColor
     }
-    // returns object with:
-    // formatted price
-    // raw price (if withRawPrice)
-    // coordinate
-    // color
-    // or { "noData":true } if last value could not be found
-    // NOTE: should NEVER return null or undefined!
-    Series.prototype._internal_lastValueData = function (
-        globalLast,
-        withRawPrice
-    ) {
+    Series.prototype._internal_lastValueData = function (globalLast) {
         var noDataRes = { _internal_noData: true }
         var priceScale = this._internal_priceScale()
         if (
@@ -7952,7 +8126,7 @@ var Series = /** @class */ (function (_super) {
         )
         return {
             _internal_noData: false,
-            _internal_price: withRawPrice ? price : undefined,
+            _internal_price: price,
             _internal_text: priceScale._internal_formatPrice(
                 price,
                 firstValue._internal_value
@@ -7992,6 +8166,7 @@ var Series = /** @class */ (function (_super) {
             )
         }
         merge(this._private__options, options)
+
         if (
             this._internal__priceScale !== null &&
             options.scaleMargins !== undefined
@@ -8009,20 +8184,9 @@ var Series = /** @class */ (function (_super) {
         this._internal_model()._internal_updateCrosshair()
         this._private__paneView._internal_update('options')
     }
-    Series.prototype._internal_clearData = function () {
-        this._private__data._internal_clear()
-        // we must either re-create pane view on clear data
-        // or clear all caches inside pane views
-        // but currently we can't separate update/append last bar and full data replacement (update vs setData) in pane views invalidation
-        // so let's just re-create all views
-        this._private__recreatePaneViews()
-    }
-    Series.prototype._internal_updateData = function (data, clearData) {
+    Series.prototype._internal_setData = function (data) {
         var _a
-        if (clearData) {
-            this._private__data._internal_clear()
-        }
-        this._private__data._internal_merge(data)
+        this._private__data._internal_setData(data)
         this._private__recalculateMarkers()
         this._private__paneView._internal_update('data')
         this._private__markersPaneView._internal_update('data')
@@ -8225,12 +8389,13 @@ var Series = /** @class */ (function (_super) {
             : _a._internal_update()
     }
     Series.prototype._internal_priceScale = function () {
-        return ensureNotNull(this._internal__priceScale)
+        return ensureNotNull(_super.prototype._internal_priceScale.call(this))
     }
     Series.prototype._internal_markerDataAtIndex = function (index) {
         var getValue =
             (this._private__seriesType === 'Line' ||
-                this._private__seriesType === 'Area') &&
+                this._private__seriesType === 'Area' ||
+                this._private__seriesType === 'Baseline') &&
             this._private__options.crosshairMarkerVisible
         if (!getValue) {
             return null
@@ -8276,6 +8441,7 @@ var Series = /** @class */ (function (_super) {
         var plots =
             this._private__seriesType === 'Line' ||
             this._private__seriesType === 'Area' ||
+            this._private__seriesType === 'Baseline' ||
             this._private__seriesType === 'Histogram'
                 ? [3 /* Close */]
                 : [2 /* Low */, 1 /* High */]
@@ -8308,6 +8474,7 @@ var Series = /** @class */ (function (_super) {
         switch (this._private__seriesType) {
             case 'Line':
             case 'Area':
+            case 'Baseline':
                 return this._private__options.crosshairMarkerRadius
         }
         return 0
@@ -8315,7 +8482,8 @@ var Series = /** @class */ (function (_super) {
     Series.prototype._private__markerBorderColor = function () {
         switch (this._private__seriesType) {
             case 'Line':
-            case 'Area': {
+            case 'Area':
+            case 'Baseline': {
                 var crosshairMarkerBorderColor =
                     this._private__options.crosshairMarkerBorderColor
                 if (crosshairMarkerBorderColor.length !== 0) {
@@ -8328,7 +8496,8 @@ var Series = /** @class */ (function (_super) {
     Series.prototype._private__markerBackgroundColor = function (index) {
         switch (this._private__seriesType) {
             case 'Line':
-            case 'Area': {
+            case 'Area':
+            case 'Baseline': {
                 var crosshairMarkerBackgroundColor =
                     this._private__options.crosshairMarkerBackgroundColor
                 if (crosshairMarkerBackgroundColor.length !== 0) {
@@ -8447,6 +8616,13 @@ var Series = /** @class */ (function (_super) {
             }
             case 'Area': {
                 this._private__paneView = new SeriesAreaPaneView(
+                    this,
+                    this._internal_model()
+                )
+                break
+            }
+            case 'Baseline': {
+                this._private__paneView = new SeriesBaselinePaneView(
                     this,
                     this._internal_model()
                 )
@@ -9213,6 +9389,9 @@ var Watermark = /** @class */ (function (_super) {
         _this._private__paneView = new WatermarkPaneView(_this)
         return _this
     }
+    Watermark.prototype._internal_priceAxisViews = function () {
+        return []
+    }
     Watermark.prototype._internal_paneViews = function () {
         return [this._private__paneView]
     }
@@ -9561,11 +9740,15 @@ var ChartModel = /** @class */ (function () {
     }
     ChartModel.prototype._internal_updateTimeScale = function (
         newBaseIndex,
-        newPoints
+        newPoints,
+        firstChangedPointIndex
     ) {
         var oldFirstTime = this._private__timeScale._internal_indexToTime(0)
-        if (newPoints !== undefined) {
-            this._private__timeScale._internal_update(newPoints)
+        if (newPoints !== undefined && firstChangedPointIndex !== undefined) {
+            this._private__timeScale._internal_update(
+                newPoints,
+                firstChangedPointIndex
+            )
         }
         var newFirstTime = this._private__timeScale._internal_indexToTime(0)
         var currentBaseIndex = this._private__timeScale._internal_baseIndex()
@@ -10055,15 +10238,18 @@ var KineticAnimation = /** @class */ (function () {
  * thus, this allows use the navigator on the top level and being imported in server-side context as well
  * See issue #446
  */
+
 var isRunningOnClientSide = typeof window !== 'undefined'
 
 function checkTouchEvents() {
     if (!isRunningOnClientSide) {
         return false
     }
+    // eslint-disable-next-line no-restricted-syntax
     if ('ontouchstart' in window) {
         return true
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
     return Boolean(
         window.DocumentTouch && document instanceof window.DocumentTouch
     )
@@ -10072,10 +10258,12 @@ function getMobileTouch() {
     if (!isRunningOnClientSide) {
         return false
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
     var touch =
         !!navigator.maxTouchPoints ||
         !!navigator.msMaxTouchPoints ||
         checkTouchEvents()
+    // eslint-disable-next-line no-restricted-syntax
     return 'onorientationchange' in window && touch
 }
 var mobileTouch = getMobileTouch()
@@ -10181,9 +10369,11 @@ var MouseEventHandler = /** @class */ (function () {
             this._private__handler._internal_mouseMoveEvent
         )
     }
+    // eslint-disable-next-line complexity
     MouseEventHandler.prototype._private__mouseMoveWithDownHandler = function (
         moveEvent
     ) {
+        // eslint-disable-next-line no-restricted-syntax
         if ('button' in moveEvent && moveEvent.button !== 0 /* Left */) {
             return
         }
@@ -10253,6 +10443,7 @@ var MouseEventHandler = /** @class */ (function () {
     MouseEventHandler.prototype._private__mouseUpHandler = function (
         mouseUpEvent
     ) {
+        // eslint-disable-next-line no-restricted-syntax
         if ('button' in mouseUpEvent && mouseUpEvent.button !== 0 /* Left */) {
             return
         }
@@ -10306,6 +10497,7 @@ var MouseEventHandler = /** @class */ (function () {
     MouseEventHandler.prototype._private__mouseDownHandler = function (
         downEvent
     ) {
+        // eslint-disable-next-line no-restricted-syntax
         if ('button' in downEvent && downEvent.button !== 0 /* Left */) {
             return
         }
@@ -10571,8 +10763,10 @@ var MouseEventHandler = /** @class */ (function () {
         // We have to use the last Touch instead
         var eventLike
         if ('touches' in event && event.touches.length) {
+            // eslint-disable-line no-restricted-syntax
             eventLike = event.touches[0]
         } else if ('changedTouches' in event && event.changedTouches.length) {
+            // eslint-disable-line no-restricted-syntax
             eventLike = event.changedTouches[0]
         } else {
             eventLike = event
@@ -11739,12 +11933,6 @@ var PaneWidget = /** @class */ (function () {
                     _internal_object: hitTest._internal_object,
                 }
             )
-            if (
-                hitTest !== null &&
-                hitTest._internal_view._internal_moveHandler !== undefined
-            ) {
-                hitTest._internal_view._internal_moveHandler(x, y)
-            }
         }
     }
     PaneWidget.prototype._internal_mouseClickEvent = function (event) {
@@ -11753,13 +11941,6 @@ var PaneWidget = /** @class */ (function () {
         }
         var x = event._internal_localX
         var y = event._internal_localY
-        var hitTest = this._internal_hitTest(x, y)
-        if (
-            hitTest !== null &&
-            hitTest._internal_view._internal_clickHandler !== undefined
-        ) {
-            hitTest._internal_view._internal_clickHandler(x, y)
-        }
         if (this._private__clicked._internal_hasListeners()) {
             var currentTime = this._private__model()
                 ._internal_crosshairSource()
@@ -11768,6 +11949,7 @@ var PaneWidget = /** @class */ (function () {
         }
         this._private__tryExitTrackingMode()
     }
+    // eslint-disable-next-line complexity
     PaneWidget.prototype._internal_pressedMouseMoveEvent = function (event) {
         if (this._private__state === null) {
             return
@@ -12234,20 +12416,20 @@ var PaneWidget = /** @class */ (function () {
             return
         }
         var chart = this._private__chart
-        if (
-            !chart._internal_options().leftPriceScale.visible &&
-            this._private__leftPriceAxisWidget !== null
-        ) {
+        var leftAxisVisible = this._private__state
+            ._internal_leftPriceScale()
+            ._internal_options().visible
+        var rightAxisVisible = this._private__state
+            ._internal_rightPriceScale()
+            ._internal_options().visible
+        if (!leftAxisVisible && this._private__leftPriceAxisWidget !== null) {
             this._private__leftAxisCell.removeChild(
                 this._private__leftPriceAxisWidget._internal_getElement()
             )
             this._private__leftPriceAxisWidget._internal_destroy()
             this._private__leftPriceAxisWidget = null
         }
-        if (
-            !chart._internal_options().rightPriceScale.visible &&
-            this._private__rightPriceAxisWidget !== null
-        ) {
+        if (!rightAxisVisible && this._private__rightPriceAxisWidget !== null) {
             this._private__rightAxisCell.removeChild(
                 this._private__rightPriceAxisWidget._internal_getElement()
             )
@@ -12257,10 +12439,7 @@ var PaneWidget = /** @class */ (function () {
         var rendererOptionsProvider = chart
             ._internal_model()
             ._internal_rendererOptionsProvider()
-        if (
-            chart._internal_options().leftPriceScale.visible &&
-            this._private__leftPriceAxisWidget === null
-        ) {
+        if (leftAxisVisible && this._private__leftPriceAxisWidget === null) {
             this._private__leftPriceAxisWidget = new PriceAxisWidget(
                 this,
                 chart._internal_options().layout,
@@ -12271,10 +12450,7 @@ var PaneWidget = /** @class */ (function () {
                 this._private__leftPriceAxisWidget._internal_getElement()
             )
         }
-        if (
-            chart._internal_options().rightPriceScale.visible &&
-            this._private__rightPriceAxisWidget === null
-        ) {
+        if (rightAxisVisible && this._private__rightPriceAxisWidget === null) {
             this._private__rightPriceAxisWidget = new PriceAxisWidget(
                 this,
                 chart._internal_options().layout,
@@ -12541,6 +12717,7 @@ var TimeAxisWidget = /** @class */ (function () {
         this._private__rendererOptions = null
         this._private__mouseDown = false
         this._private__size = new Size(0, 0)
+        this._private__sizeChanged = new Delegate()
         this._private__widthCache = new TextWidthCache(5)
         this._private__canvasConfiguredHandler = function () {
             return _this._private__chart
@@ -12712,6 +12889,9 @@ var TimeAxisWidget = /** @class */ (function () {
     TimeAxisWidget.prototype._internal_getSize = function () {
         return this._private__size
     }
+    TimeAxisWidget.prototype._internal_sizeChanged = function () {
+        return this._private__sizeChanged
+    }
     TimeAxisWidget.prototype._internal_setSizes = function (
         timeAxisSize,
         leftStubWidth,
@@ -12732,6 +12912,7 @@ var TimeAxisWidget = /** @class */ (function () {
             })
             this._private__cell.style.width = timeAxisSize._internal_w + 'px'
             this._private__cell.style.height = timeAxisSize._internal_h + 'px'
+            this._private__sizeChanged._internal_fire(timeAxisSize)
         }
         if (this._private__leftStub !== null) {
             this._private__leftStub._internal_setSize(
@@ -12866,9 +13047,9 @@ var TimeAxisWidget = /** @class */ (function () {
             tickMarks[0]
         )._internal_weight
         // special case: it looks strange if 15:00 is bold but 14:00 is not
-        // so if maxWeight > 30 and < 40 reduce it to 30
-        if (maxWeight > 30 && maxWeight < 40) {
-            maxWeight = 30
+        // so if maxWeight > TickMarkWeight.Hour1 and < TickMarkWeight.Day reduce it to TickMarkWeight.Hour1
+        if (maxWeight > 30 /* Hour1 */ && maxWeight < 50 /* Day */) {
+            maxWeight = 30 /* Hour1 */
         }
         ctx.save()
         ctx.strokeStyle = this._private__lineColor()
@@ -13219,6 +13400,9 @@ var ChartWidget = /** @class */ (function () {
     ChartWidget.prototype._internal_paneWidgets = function () {
         return this._private__paneWidgets
     }
+    ChartWidget.prototype._internal_timeAxisWidget = function () {
+        return this._private__timeAxisWidget
+    }
     ChartWidget.prototype._internal_destroy = function () {
         this._private__element.removeEventListener(
             'wheel',
@@ -13301,9 +13485,11 @@ var ChartWidget = /** @class */ (function () {
                 invalidateMask._internal_invalidateForPane(i)._internal_level
             )
         }
-        this._private__timeAxisWidget._internal_paint(
-            invalidateMask._internal_fullInvalidation()
-        )
+        if (this._private__options.timeScale.visible) {
+            this._private__timeAxisWidget._internal_paint(
+                invalidateMask._internal_fullInvalidation()
+            )
+        }
     }
     ChartWidget.prototype._internal_applyOptions = function (options) {
         this._private__model._internal_applyOptions(options)
@@ -13469,6 +13655,7 @@ var ChartWidget = /** @class */ (function () {
                 : this._private__paneWidgets[0]._internal_rightPriceAxisWidget()
         return ensureNotNull(priceAxisWidget)._internal_getWidth()
     }
+    // eslint-disable-next-line complexity
     ChartWidget.prototype._private__adjustSizeImpl = function () {
         var totalStretch = 0
         var leftPriceAxisWidth = 0
@@ -13506,7 +13693,8 @@ var ChartWidget = /** @class */ (function () {
         // const separatorCount = this._paneSeparators.length;
         // const separatorHeight = SEPARATOR_HEIGHT;
         var separatorsHeight = 0 // separatorHeight * separatorCount;
-        var timeAxisHeight = this._private__options.timeScale.visible
+        var timeAxisVisible = this._private__options.timeScale.visible
+        var timeAxisHeight = timeAxisVisible
             ? this._private__timeAxisWidget._internal_optimalHeight()
             : 0
         // TODO: Fix it better
@@ -13560,9 +13748,9 @@ var ChartWidget = /** @class */ (function () {
             }
         }
         this._private__timeAxisWidget._internal_setSizes(
-            new Size(paneWidth, timeAxisHeight),
-            leftPriceAxisWidth,
-            rightPriceAxisWidth
+            new Size(timeAxisVisible ? paneWidth : 0, timeAxisHeight),
+            timeAxisVisible ? leftPriceAxisWidth : 0,
+            timeAxisVisible ? rightPriceAxisWidth : 0
         )
         this._private__model._internal_setWidth(paneWidth)
         if (this._private__leftPriceAxisWidth !== leftPriceAxisWidth) {
@@ -13818,24 +14006,35 @@ var ChartWidget = /** @class */ (function () {
             display
     }
     ChartWidget.prototype._private__isLeftAxisVisible = function () {
-        return this._private__options.leftPriceScale.visible
+        return this._private__paneWidgets[0]
+            ._internal_state()
+            ._internal_leftPriceScale()
+            ._internal_options().visible
     }
     ChartWidget.prototype._private__isRightAxisVisible = function () {
-        return this._private__options.rightPriceScale.visible
+        return this._private__paneWidgets[0]
+            ._internal_state()
+            ._internal_rightPriceScale()
+            ._internal_options().visible
     }
     return ChartWidget
 })()
 function disableSelection(element) {
     element.style.userSelect = 'none'
+
     element.style.webkitUserSelect = 'none'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
     element.style.msUserSelect = 'none'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
     element.style.MozUserSelect = 'none'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access
     element.style.webkitTapHighlightColor = 'transparent'
 }
 
 /// <reference types="_build-time-constants" />
 function warn(msg) {
     {
+        // eslint-disable-next-line no-console
         console.warn(msg)
     }
 }
@@ -13848,6 +14047,7 @@ function getLineBasedSeriesPlotRow(time, index, item) {
         _internal_value: [val, val, val, val],
     }
     // 'color' here is public property (from API) so we can use `in` here safely
+    // eslint-disable-next-line no-restricted-syntax
     if ('color' in item && item.color !== undefined) {
         res._internal_color = item.color
     }
@@ -13875,6 +14075,7 @@ var seriesPlotRowFnMap = {
     Candlestick: wrapWhitespaceData(getOHLCBasedSeriesPlotRow),
     Bar: wrapWhitespaceData(getOHLCBasedSeriesPlotRow),
     Area: wrapWhitespaceData(getLineBasedSeriesPlotRow),
+    Baseline: wrapWhitespaceData(getLineBasedSeriesPlotRow),
     Histogram: wrapWhitespaceData(getLineBasedSeriesPlotRow),
     Line: wrapWhitespaceData(getLineBasedSeriesPlotRow),
 }
@@ -13892,65 +14093,68 @@ function seconds(count) {
     return count * 1000
 }
 var intradayWeightDivisors = [
-    // TODO: divisor=1 means 1ms and it's strange that weight for 1ms > weight for 1s
-    { _internal_divisor: 1, _internal_weight: 20 },
-    { _internal_divisor: seconds(1), _internal_weight: 19 },
-    { _internal_divisor: minutes(1), _internal_weight: 20 },
-    { _internal_divisor: minutes(5), _internal_weight: 21 },
-    { _internal_divisor: minutes(30), _internal_weight: 22 },
-    { _internal_divisor: hours(1), _internal_weight: 30 },
-    { _internal_divisor: hours(3), _internal_weight: 31 },
-    { _internal_divisor: hours(6), _internal_weight: 32 },
-    { _internal_divisor: hours(12), _internal_weight: 33 },
+    { _internal_divisor: seconds(1), _internal_weight: 10 /* Second */ },
+    { _internal_divisor: minutes(1), _internal_weight: 20 /* Minute1 */ },
+    { _internal_divisor: minutes(5), _internal_weight: 21 /* Minute5 */ },
+    { _internal_divisor: minutes(30), _internal_weight: 22 /* Minute30 */ },
+    { _internal_divisor: hours(1), _internal_weight: 30 /* Hour1 */ },
+    { _internal_divisor: hours(3), _internal_weight: 31 /* Hour3 */ },
+    { _internal_divisor: hours(6), _internal_weight: 32 /* Hour6 */ },
+    { _internal_divisor: hours(12), _internal_weight: 33 /* Hour12 */ },
 ]
-function weightByTime(time, prevTime) {
-    if (prevTime !== null) {
-        var prevDate = new Date(prevTime * 1000)
-        var currentDate = new Date(time * 1000)
-        if (currentDate.getUTCFullYear() !== prevDate.getUTCFullYear()) {
-            return 70
-        } else if (currentDate.getUTCMonth() !== prevDate.getUTCMonth()) {
-            return 60
-        } else if (currentDate.getUTCDate() !== prevDate.getUTCDate()) {
-            return 50
-        }
-        for (var i = intradayWeightDivisors.length - 1; i >= 0; --i) {
-            if (
-                Math.floor(
-                    prevDate.getTime() /
-                        intradayWeightDivisors[i]._internal_divisor
-                ) !==
-                Math.floor(
-                    currentDate.getTime() /
-                        intradayWeightDivisors[i]._internal_divisor
-                )
-            ) {
-                return intradayWeightDivisors[i]._internal_weight
-            }
+function weightByTime(currentDate, prevDate) {
+    if (currentDate.getUTCFullYear() !== prevDate.getUTCFullYear()) {
+        return 70 /* Year */
+    } else if (currentDate.getUTCMonth() !== prevDate.getUTCMonth()) {
+        return 60 /* Month */
+    } else if (currentDate.getUTCDate() !== prevDate.getUTCDate()) {
+        return 50 /* Day */
+    }
+    for (var i = intradayWeightDivisors.length - 1; i >= 0; --i) {
+        if (
+            Math.floor(
+                prevDate.getTime() / intradayWeightDivisors[i]._internal_divisor
+            ) !==
+            Math.floor(
+                currentDate.getTime() /
+                    intradayWeightDivisors[i]._internal_divisor
+            )
+        ) {
+            return intradayWeightDivisors[i]._internal_weight
         }
     }
-    return 20
+    return 0 /* LessThanSecond */
 }
 function fillWeightsForPoints(sortedTimePoints, startIndex) {
     if (startIndex === void 0) {
         startIndex = 0
     }
+    if (sortedTimePoints.length === 0) {
+        return
+    }
     var prevTime =
-        startIndex === 0 || sortedTimePoints.length === 0
+        startIndex === 0
             ? null
             : sortedTimePoints[startIndex - 1]._internal_time
                   ._internal_timestamp
+    var prevDate = prevTime !== null ? new Date(prevTime * 1000) : null
     var totalTimeDiff = 0
     for (var index = startIndex; index < sortedTimePoints.length; ++index) {
         var currentPoint = sortedTimePoints[index]
-        currentPoint._internal_timeWeight = weightByTime(
-            currentPoint._internal_time._internal_timestamp,
-            prevTime
+        var currentDate = new Date(
+            currentPoint._internal_time._internal_timestamp * 1000
         )
+        if (prevDate !== null) {
+            currentPoint._internal_timeWeight = weightByTime(
+                currentDate,
+                prevDate
+            )
+        }
         totalTimeDiff +=
             currentPoint._internal_time._internal_timestamp -
             (prevTime || currentPoint._internal_time._internal_timestamp)
         prevTime = currentPoint._internal_time._internal_timestamp
+        prevDate = currentDate
     }
     if (startIndex === 0 && sortedTimePoints.length > 1) {
         // let's guess a weight for the first point
@@ -13958,12 +14162,16 @@ function fillWeightsForPoints(sortedTimePoints, startIndex) {
         var averageTimeDiff = Math.ceil(
             totalTimeDiff / (sortedTimePoints.length - 1)
         )
-        var approxPrevTime =
-            sortedTimePoints[0]._internal_time._internal_timestamp -
-            averageTimeDiff
+        var approxPrevDate = new Date(
+            (sortedTimePoints[0]._internal_time._internal_timestamp -
+                averageTimeDiff) *
+                1000
+        )
         sortedTimePoints[0]._internal_timeWeight = weightByTime(
-            sortedTimePoints[0]._internal_time._internal_timestamp,
-            approxPrevTime
+            new Date(
+                sortedTimePoints[0]._internal_time._internal_timestamp * 1000
+            ),
+            approxPrevDate
         )
     }
 }
@@ -14056,7 +14264,7 @@ var DataLayer = /** @class */ (function () {
         this._private__pointDataByTimePoint = new Map()
         this._private__seriesRowsBySeries = new Map()
         this._private__seriesLastTimePoint = new Map()
-        // this is kind of "dest" values (in opposite to "source" ones) - we don't need to modify it manually, the only by calling _syncIndexesAndApplyChanges method
+        // this is kind of "dest" values (in opposite to "source" ones) - we don't need to modify it manually, the only by calling _updateTimeScalePoints or updateSeriesData methods
         this._private__sortedTimePoints = []
     }
     DataLayer.prototype._internal_destroy = function () {
@@ -14067,12 +14275,28 @@ var DataLayer = /** @class */ (function () {
     }
     DataLayer.prototype._internal_setSeriesData = function (series, data) {
         var _this = this
-        // first, remove the series from data mappings if we have any data for that series
-        // note we can't use _seriesRowsBySeries here because we might don't have the data there in case of whitespaces
-        if (this._private__seriesLastTimePoint.has(series)) {
-            this._private__pointDataByTimePoint.forEach(function (pointData) {
-                return pointData._internal_mapping.delete(series)
-            })
+        var needCleanupPoints = this._private__pointDataByTimePoint.size !== 0
+        var isTimeScaleAffected = false
+        if (this._private__seriesRowsBySeries.has(series)) {
+            if (this._private__seriesRowsBySeries.size === 1) {
+                needCleanupPoints = false
+                isTimeScaleAffected = true
+                // perf optimization - if there is only 1 series, then we can just clear and fill everything from scratch
+                this._private__pointDataByTimePoint.clear()
+            } else {
+                // perf optimization - actually we have to use this._pointDataByTimePoint for going through here
+                // but as soon as this._sortedTimePoints is just a different form of _pointDataByTimePoint we can use it as well
+                for (
+                    var _i = 0, _a = this._private__sortedTimePoints;
+                    _i < _a.length;
+                    _i++
+                ) {
+                    var point = _a[_i]
+                    if (point.pointData._internal_mapping.delete(series)) {
+                        isTimeScaleAffected = true
+                    }
+                }
+            }
         }
         var seriesRows = []
         if (data.length !== 0) {
@@ -14093,6 +14317,7 @@ var DataLayer = /** @class */ (function () {
                         time._internal_timestamp,
                         timePointData
                     )
+                    isTimeScaleAffected = true
                 }
                 var row = createPlotRow_1(
                     time,
@@ -14103,11 +14328,34 @@ var DataLayer = /** @class */ (function () {
                 return row
             })
         }
-        // we delete the old data from mapping and add the new ones
-        // so there might be empty points, let's remove them first
-        this._private__cleanupPointsData()
+        if (needCleanupPoints) {
+            // we deleted the old data from mapping and added the new ones
+            // so there might be empty points now, let's remove them first
+            this._private__cleanupPointsData()
+        }
         this._private__setRowsToSeries(series, seriesRows)
-        return this._private__syncIndexesAndApplyChanges(series)
+        var firstChangedPointIndex = -1
+        if (isTimeScaleAffected) {
+            // then generate the time scale points
+            // timeWeight will be updates in _updateTimeScalePoints later
+            var newTimeScalePoints_1 = []
+            this._private__pointDataByTimePoint.forEach(function (pointData) {
+                newTimeScalePoints_1.push({
+                    _internal_timeWeight: 0,
+                    _internal_time: pointData._internal_timePoint,
+                    pointData: pointData,
+                })
+            })
+            newTimeScalePoints_1.sort(function (t1, t2) {
+                return (
+                    t1._internal_time._internal_timestamp -
+                    t2._internal_time._internal_timestamp
+                )
+            })
+            firstChangedPointIndex =
+                this._private__replaceTimeScalePoints(newTimeScalePoints_1)
+        }
+        return this._private__getUpdateResponse(series, firstChangedPointIndex)
     }
     DataLayer.prototype._internal_removeSeries = function (series) {
         return this._internal_setSeriesData(series, [])
@@ -14146,23 +14394,39 @@ var DataLayer = /** @class */ (function () {
         )
         var plotRow = createPlotRow(time, pointDataAtTime._internal_index, data)
         pointDataAtTime._internal_mapping.set(series, plotRow)
-        var seriesChanges = this._private__updateLastSeriesRow(series, plotRow)
+        this._private__updateLastSeriesRow(series, plotRow)
         // if point already exist on the time scale - we don't need to make a full update and just make an incremental one
         if (!affectsTimeScale) {
-            var seriesUpdate = new Map()
-            if (seriesChanges !== null) {
-                seriesUpdate.set(series, seriesChanges)
-            }
-            return {
-                _internal_series: seriesUpdate,
-                _internal_timeScale: {
-                    // base index might be updated even if no time scale point is changed
-                    _internal_baseIndex: this._private__getBaseIndex(),
-                },
-            }
+            return this._private__getUpdateResponse(series, -1)
         }
-        // but if we don't have such point on the time scale - we need to generate "full" update (including time scale update)
-        return this._private__syncIndexesAndApplyChanges(series)
+        var newPoint = {
+            _internal_timeWeight: 0,
+            _internal_time: pointDataAtTime._internal_timePoint,
+            pointData: pointDataAtTime,
+        }
+        var insertIndex = lowerbound(
+            this._private__sortedTimePoints,
+            newPoint._internal_time._internal_timestamp,
+            function (a, b) {
+                return a._internal_time._internal_timestamp < b
+            }
+        )
+        // yes, I know that this array is readonly and this change is intended to make it performative
+        // we marked _sortedTimePoints array as readonly to avoid modifying this array anywhere else
+        // but this place is exceptional case due performance reasons, sorry
+        this._private__sortedTimePoints.splice(insertIndex, 0, newPoint)
+        for (
+            var index = insertIndex;
+            index < this._private__sortedTimePoints.length;
+            ++index
+        ) {
+            assignIndexToPointData(
+                this._private__sortedTimePoints[index].pointData,
+                index
+            )
+        }
+        fillWeightsForPoints(this._private__sortedTimePoints, insertIndex)
+        return this._private__getUpdateResponse(series, insertIndex)
     }
     DataLayer.prototype._private__updateLastSeriesRow = function (
         series,
@@ -14175,7 +14439,6 @@ var DataLayer = /** @class */ (function () {
         }
         var lastSeriesRow =
             seriesData.length !== 0 ? seriesData[seriesData.length - 1] : null
-        var result = null
         if (
             lastSeriesRow === null ||
             plotRow._internal_time._internal_timestamp >
@@ -14183,29 +14446,15 @@ var DataLayer = /** @class */ (function () {
         ) {
             if (isSeriesPlotRow(plotRow)) {
                 seriesData.push(plotRow)
-                result = {
-                    _internal_fullUpdate: false,
-                    _internal_data: [plotRow],
-                }
             }
         } else {
             if (isSeriesPlotRow(plotRow)) {
                 seriesData[seriesData.length - 1] = plotRow
-                result = {
-                    _internal_fullUpdate: false,
-                    _internal_data: [plotRow],
-                }
             } else {
                 seriesData.splice(-1, 1)
-                // we just removed point from series - needs generate full update
-                result = {
-                    _internal_fullUpdate: true,
-                    _internal_data: seriesData,
-                }
             }
         }
         this._private__seriesLastTimePoint.set(series, plotRow._internal_time)
-        return result
     }
     DataLayer.prototype._private__setRowsToSeries = function (
         series,
@@ -14226,23 +14475,29 @@ var DataLayer = /** @class */ (function () {
         }
     }
     DataLayer.prototype._private__cleanupPointsData = function () {
-        // create a copy remove from points items without series
-        // _pointDataByTimePoint is kind of "inbound" (or "source") value
-        // which should be used to update other dest values like _sortedTimePoints
-        var newPointsData = new Map()
-        this._private__pointDataByTimePoint.forEach(function (pointData, key) {
-            if (pointData._internal_mapping.size > 0) {
-                newPointsData.set(key, pointData)
+        // let's treat all current points as "potentially removed"
+        // we could create an array with actually potentially removed points
+        // but most likely this array will be similar to _sortedTimePoints so let's avoid using additional memory
+        // note that we can use _sortedTimePoints here since a point might be removed only it was here previously
+        for (
+            var _i = 0, _a = this._private__sortedTimePoints;
+            _i < _a.length;
+            _i++
+        ) {
+            var point = _a[_i]
+            if (point.pointData._internal_mapping.size === 0) {
+                this._private__pointDataByTimePoint.delete(
+                    point._internal_time._internal_timestamp
+                )
             }
-        })
-        this._private__pointDataByTimePoint = newPointsData
+        }
     }
     /**
      * Sets new time scale and make indexes valid for all series
      *
-     * @returns An index of the first changed point
+     * @returns The index of the first changed point or `-1` if there is no change.
      */
-    DataLayer.prototype._private__updateTimeScalePoints = function (
+    DataLayer.prototype._private__replaceTimeScalePoints = function (
         newTimePoints
     ) {
         var firstChangedPointIndex = -1
@@ -14264,6 +14519,7 @@ var DataLayer = /** @class */ (function () {
             }
             // re-assign point's time weight for points if time is the same (and all prior times was the same)
             newPoint._internal_timeWeight = oldPoint._internal_timeWeight
+            assignIndexToPointData(newPoint.pointData, index)
         }
         if (
             firstChangedPointIndex === -1 &&
@@ -14280,20 +14536,6 @@ var DataLayer = /** @class */ (function () {
             // if no time scale changed, then do nothing
             return -1
         }
-        var _loop_1 = function (index) {
-            var pointData = ensureDefined(
-                this_1._private__pointDataByTimePoint.get(
-                    newTimePoints[index]._internal_time._internal_timestamp
-                )
-            )
-            // first, nevertheless update index of point data ("make it valid")
-            pointData._internal_index = index
-            // and then we need to sync indexes for all series
-            pointData._internal_mapping.forEach(function (seriesRow) {
-                seriesRow._internal_index = index
-            })
-        }
-        var this_1 = this
         // if time scale points are changed that means that we need to make full update to all series (with clearing points)
         // but first we need to synchronize indexes and re-fill time weights
         for (
@@ -14301,7 +14543,7 @@ var DataLayer = /** @class */ (function () {
             index < newTimePoints.length;
             ++index
         ) {
-            _loop_1(index)
+            assignIndexToPointData(newTimePoints[index].pointData, index)
         }
         // re-fill time weights for point after the first changed one
         fillWeightsForPoints(newTimePoints, firstChangedPointIndex)
@@ -14324,31 +14566,10 @@ var DataLayer = /** @class */ (function () {
         })
         return baseIndex
     }
-    /**
-     * Methods syncs indexes (recalculates them applies them to point/series data) between time scale, point data and series point
-     * and returns generated update for applied change.
-     */
-    DataLayer.prototype._private__syncIndexesAndApplyChanges = function (
-        series
+    DataLayer.prototype._private__getUpdateResponse = function (
+        updatedSeries,
+        firstChangedPointIndex
     ) {
-        // then generate the time scale points
-        // timeWeight will be updates in _updateTimeScalePoints later
-        var newTimeScalePoints = Array.from(
-            this._private__pointDataByTimePoint.values()
-        ).map(function (d) {
-            return {
-                _internal_timeWeight: 0,
-                _internal_time: d._internal_timePoint,
-            }
-        })
-        newTimeScalePoints.sort(function (t1, t2) {
-            return (
-                t1._internal_time._internal_timestamp -
-                t2._internal_time._internal_timestamp
-            )
-        })
-        var firstChangedPointIndex =
-            this._private__updateTimeScalePoints(newTimeScalePoints)
         var dataUpdateResponse = {
             _internal_series: new Map(),
             _internal_timeScale: {
@@ -14356,38 +14577,45 @@ var DataLayer = /** @class */ (function () {
             },
         }
         if (firstChangedPointIndex !== -1) {
-            // time scale is changed, so we need to make "full" update for every series
             // TODO: it's possible to make perf improvements by checking what series has data after firstChangedPointIndex
             // but let's skip for now
             this._private__seriesRowsBySeries.forEach(function (data, s) {
                 dataUpdateResponse._internal_series.set(s, {
                     _internal_data: data,
-                    _internal_fullUpdate: true,
                 })
             })
-            // if the seires data was set to [] it will have already been removed from _seriesRowBySeries
+            // if the series data was set to [] it will have already been removed from _seriesRowBySeries
             // meaning the forEach above won't add the series to the data update response
             // so we handle that case here
-            if (!this._private__seriesRowsBySeries.has(series)) {
-                dataUpdateResponse._internal_series.set(series, {
+            if (!this._private__seriesRowsBySeries.has(updatedSeries)) {
+                dataUpdateResponse._internal_series.set(updatedSeries, {
                     _internal_data: [],
-                    _internal_fullUpdate: true,
                 })
             }
             dataUpdateResponse._internal_timeScale._internal_points =
                 this._private__sortedTimePoints
+            dataUpdateResponse._internal_timeScale._internal_firstChangedPointIndex =
+                firstChangedPointIndex
         } else {
-            var seriesData = this._private__seriesRowsBySeries.get(series)
+            var seriesData =
+                this._private__seriesRowsBySeries.get(updatedSeries)
             // if no seriesData found that means that we just removed the series
-            dataUpdateResponse._internal_series.set(series, {
+            dataUpdateResponse._internal_series.set(updatedSeries, {
                 _internal_data: seriesData || [],
-                _internal_fullUpdate: true,
             })
         }
         return dataUpdateResponse
     }
     return DataLayer
 })()
+function assignIndexToPointData(pointData, index) {
+    // first, nevertheless update index of point data ("make it valid")
+    pointData._internal_index = index
+    // and then we need to sync indexes for all series
+    pointData._internal_mapping.forEach(function (seriesRow) {
+        seriesRow._internal_index = index
+    })
+}
 
 function checkPriceLineOptions(options) {
     assert(
@@ -14431,11 +14659,10 @@ function getChecker(type) {
         case 'Candlestick':
             return checkBarItem.bind(null, type)
         case 'Area':
+        case 'Baseline':
         case 'Line':
         case 'Histogram':
             return checkLineItem.bind(null, type)
-        default:
-            throw new Error('unsupported series type ' + type)
     }
 }
 function checkBarItem(type, barItem) {
@@ -14549,6 +14776,7 @@ var SeriesApi = /** @class */ (function () {
             ._internal_priceScale()
             ._internal_coordinateToPrice(coordinate, firstValue._internal_value)
     }
+    // eslint-disable-next-line complexity
     SeriesApi.prototype.barsInLogicalRange = function (range) {
         if (range === null) {
             return null
@@ -14847,6 +15075,25 @@ var areaStyleDefaults = {
     crosshairMarkerBackgroundColor: '',
     lastPriceAnimation: 0 /* Disabled */,
 }
+var baselineStyleDefaults = {
+    baseValue: {
+        type: 'price',
+        price: 0,
+    },
+    topFillColor1: 'rgba(38, 166, 154, 0.28)',
+    topFillColor2: 'rgba(38, 166, 154, 0.05)',
+    topLineColor: 'rgba(38, 166, 154, 1)',
+    bottomFillColor1: 'rgba(239, 83, 80, 0.05)',
+    bottomFillColor2: 'rgba(239, 83, 80, 0.28)',
+    bottomLineColor: 'rgba(239, 83, 80, 1)',
+    lineWidth: 3,
+    lineStyle: 0 /* Solid */,
+    crosshairMarkerVisible: true,
+    crosshairMarkerRadius: 4,
+    crosshairMarkerBorderColor: '',
+    crosshairMarkerBackgroundColor: '',
+    lastPriceAnimation: 0 /* Disabled */,
+}
 var histogramStyleDefaults = {
     color: '#26a69a',
     base: 0,
@@ -14906,47 +15153,58 @@ var PriceScaleApi = /** @class */ (function () {
 })()
 
 var TimeScaleApi = /** @class */ (function () {
-    function TimeScaleApi(model) {
+    function TimeScaleApi(model, timeAxisWidget) {
         this._private__timeRangeChanged = new Delegate()
         this._private__logicalRangeChanged = new Delegate()
+        this._private__sizeChanged = new Delegate()
         this._private__model = model
-        this._private__timeScale()
+        this._private__timeScale = model._internal_timeScale()
+        this._private__timeAxisWidget = timeAxisWidget
+        this._private__timeScale
             ._internal_visibleBarsChanged()
             ._internal_subscribe(this._private__onVisibleBarsChanged.bind(this))
-        this._private__timeScale()
+        this._private__timeScale
             ._internal_logicalRangeChanged()
             ._internal_subscribe(
                 this._private__onVisibleLogicalRangeChanged.bind(this)
             )
+        this._private__timeAxisWidget
+            ._internal_sizeChanged()
+            ._internal_subscribe(this._private__onSizeChanged.bind(this))
     }
     TimeScaleApi.prototype._internal_destroy = function () {
-        this._private__timeScale()
+        this._private__timeScale
             ._internal_visibleBarsChanged()
             ._internal_unsubscribeAll(this)
-        this._private__timeScale()
+        this._private__timeScale
             ._internal_logicalRangeChanged()
             ._internal_unsubscribeAll(this)
+        this._private__timeAxisWidget
+            ._internal_sizeChanged()
+            ._internal_unsubscribeAll(this)
         this._private__timeRangeChanged._internal_destroy()
+        this._private__logicalRangeChanged._internal_destroy()
+        this._private__sizeChanged._internal_destroy()
     }
     TimeScaleApi.prototype.scrollPosition = function () {
-        return this._private__timeScale()._internal_rightOffset()
+        return this._private__timeScale._internal_rightOffset()
     }
     TimeScaleApi.prototype.scrollToPosition = function (position, animated) {
         if (!animated) {
             this._private__model._internal_setRightOffset(position)
             return
         }
-        this._private__timeScale()._internal_scrollToOffsetAnimated(
+        this._private__timeScale._internal_scrollToOffsetAnimated(
             position,
             1000 /* AnimationDurationMs */
         )
     }
     TimeScaleApi.prototype.scrollToRealTime = function () {
-        this._private__timeScale()._internal_scrollToRealTime()
+        this._private__timeScale._internal_scrollToRealTime()
     }
     TimeScaleApi.prototype.getVisibleRange = function () {
         var _a, _b
-        var timeRange = this._private__timeScale()._internal_visibleTimeRange()
+        var timeRange = this._private__timeScale._internal_visibleTimeRange()
         if (timeRange === null) {
             return null
         }
@@ -14969,14 +15227,14 @@ var TimeScaleApi = /** @class */ (function () {
             to: convertTime(range.to),
         }
         var logicalRange =
-            this._private__timeScale()._internal_logicalRangeForTimeRange(
+            this._private__timeScale._internal_logicalRangeForTimeRange(
                 convertedRange
             )
         this._private__model._internal_setTargetLogicalRange(logicalRange)
     }
     TimeScaleApi.prototype.getVisibleLogicalRange = function () {
         var logicalRange =
-            this._private__timeScale()._internal_visibleLogicalRange()
+            this._private__timeScale._internal_visibleLogicalRange()
         if (logicalRange === null) {
             return null
         }
@@ -15007,21 +15265,24 @@ var TimeScaleApi = /** @class */ (function () {
         }
     }
     TimeScaleApi.prototype.coordinateToLogical = function (x) {
-        var timeScale = this._private__model._internal_timeScale()
-        if (timeScale._internal_isEmpty()) {
+        if (this._private__timeScale._internal_isEmpty()) {
             return null
         } else {
-            return timeScale._internal_coordinateToIndex(x)
+            return this._private__timeScale._internal_coordinateToIndex(x)
         }
     }
     TimeScaleApi.prototype.timeToCoordinate = function (time) {
         var timePoint = convertTime(time)
-        var timeScale = this._private__model._internal_timeScale()
-        var timePointIndex = timeScale._internal_timeToIndex(timePoint, false)
+        var timePointIndex = this._private__timeScale._internal_timeToIndex(
+            timePoint,
+            false
+        )
         if (timePointIndex === null) {
             return null
         }
-        return timeScale._internal_indexToCoordinate(timePointIndex)
+        return this._private__timeScale._internal_indexToCoordinate(
+            timePointIndex
+        )
     }
     TimeScaleApi.prototype.coordinateToTime = function (x) {
         var _a
@@ -15034,6 +15295,12 @@ var TimeScaleApi = /** @class */ (function () {
         return (_a = timePoint._internal_businessDay) !== null && _a !== void 0
             ? _a
             : timePoint._internal_timestamp
+    }
+    TimeScaleApi.prototype.width = function () {
+        return this._private__timeAxisWidget._internal_getSize()._internal_w
+    }
+    TimeScaleApi.prototype.height = function () {
+        return this._private__timeAxisWidget._internal_getSize()._internal_h
     }
     TimeScaleApi.prototype.subscribeVisibleTimeRangeChange = function (
         handler
@@ -15055,14 +15322,17 @@ var TimeScaleApi = /** @class */ (function () {
     ) {
         this._private__logicalRangeChanged._internal_unsubscribe(handler)
     }
+    TimeScaleApi.prototype.subscribeSizeChange = function (handler) {
+        this._private__sizeChanged._internal_subscribe(handler)
+    }
+    TimeScaleApi.prototype.unsubscribeSizeChange = function (handler) {
+        this._private__sizeChanged._internal_unsubscribe(handler)
+    }
     TimeScaleApi.prototype.applyOptions = function (options) {
-        this._private__timeScale()._internal_applyOptions(options)
+        this._private__timeScale._internal_applyOptions(options)
     }
     TimeScaleApi.prototype.options = function () {
-        return clone(this._private__timeScale()._internal_options())
-    }
-    TimeScaleApi.prototype._private__timeScale = function () {
-        return this._private__model._internal_timeScale()
+        return clone(this._private__timeScale._internal_options())
     }
     TimeScaleApi.prototype._private__onVisibleBarsChanged = function () {
         if (this._private__timeRangeChanged._internal_hasListeners()) {
@@ -15079,6 +15349,12 @@ var TimeScaleApi = /** @class */ (function () {
                 )
             }
         }
+    TimeScaleApi.prototype._private__onSizeChanged = function (size) {
+        this._private__sizeChanged._internal_fire(
+            size._internal_w,
+            size._internal_h
+        )
+    }
     return TimeScaleApi
 })()
 
@@ -15221,7 +15497,10 @@ var ChartApi = /** @class */ (function () {
                 }
             }, this)
         var model = this._private__chartWidget._internal_model()
-        this._private__timeScaleApi = new TimeScaleApi(model)
+        this._private__timeScaleApi = new TimeScaleApi(
+            model,
+            this._private__chartWidget._internal_timeAxisWidget()
+        )
     }
     ChartApi.prototype.remove = function () {
         this._private__chartWidget
@@ -15255,6 +15534,25 @@ var ChartApi = /** @class */ (function () {
         var series = this._private__chartWidget
             ._internal_model()
             ._internal_createSeries('Area', strictOptions)
+        var res = new SeriesApi(series, this, this)
+        this._private__seriesMap.set(res, series)
+        this._private__seriesMapReversed.set(series, res)
+        return res
+    }
+    ChartApi.prototype.addBaselineSeries = function (options) {
+        if (options === void 0) {
+            options = {}
+        }
+        options = migrateOptions(options)
+        patchPriceFormat(options.priceFormat)
+        var strictOptions = merge(
+            clone(seriesOptionsDefaults),
+            baselineStyleDefaults,
+            options
+        )
+        var series = this._private__chartWidget
+            ._internal_model()
+            ._internal_createSeries('Baseline', strictOptions)
         var res = new SeriesApi(series, this, this)
         this._private__seriesMap.set(res, series)
         this._private__seriesMapReversed.set(series, res)
@@ -15407,13 +15705,11 @@ var ChartApi = /** @class */ (function () {
         var model = this._private__chartWidget._internal_model()
         model._internal_updateTimeScale(
             update._internal_timeScale._internal_baseIndex,
-            update._internal_timeScale._internal_points
+            update._internal_timeScale._internal_points,
+            update._internal_timeScale._internal_firstChangedPointIndex
         )
         update._internal_series.forEach(function (value, series) {
-            return series._internal_updateData(
-                value._internal_data,
-                value._internal_fullUpdate
-            )
+            return series._internal_setData(value._internal_data)
         })
         model._internal_recalculateAllPanes()
     }
@@ -15445,11 +15741,11 @@ var ChartApi = /** @class */ (function () {
 })()
 
 /**
- * This function is the main entry point of the Lightweight Charting Library
+ * This function is the main entry point of the Lightweight Charting Library.
  *
  * @param container - id of HTML element or element itself
  * @param options - any subset of ChartOptions to be applied at start.
- * @returns an interface to the created chart
+ * @returns An interface to the created chart
  */
 function createChart(container, options) {
     var htmlElement
@@ -15467,8 +15763,13 @@ function createChart(container, options) {
 }
 
 /// <reference types="_build-time-constants" />
+/**
+ * Returns the current version as a string. For example `'3.3.0'`.
+ *
+ * @returns {string} The version string.
+ */
 function version() {
-    return '3.6.1'
+    return '3.7.0'
 }
 
 export {
