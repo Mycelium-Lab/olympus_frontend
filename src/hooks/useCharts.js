@@ -38,9 +38,7 @@ export default function useCharts({ store, shouldBindCrossHair }) {
         timezone,
         shouldRebasesLoad,
         refreshRateSeconds,
-        mainChartHeight,
-        sideChartHeight,
-        rightPriceScaleWidth,
+        chartParams: { mainChartHeight, sideChartHeight, rightPriceScaleWidth },
     } = useSelector((state) => state[store])
     const nCharts = methods.length
 

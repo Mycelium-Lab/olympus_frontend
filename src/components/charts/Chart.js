@@ -13,8 +13,7 @@ export default function Chart({ chartRef, method, index, ohlc, store }) {
         isGlobalLoading,
         isPartialLoading,
         timeframe,
-        mainChartHeight,
-        sideChartHeight,
+        chartParams: { mainLoadingSkeletonHeight, sideLoadingSkeletonHeight },
     } = useSelector((state) => state[store])
     const getOhlcClass = (open, close) => {
         if (open < close) return 'positive'
@@ -51,7 +50,9 @@ export default function Chart({ chartRef, method, index, ohlc, store }) {
                     animation="wave"
                     width="100%"
                     height={
-                        (index === 0 ? mainChartHeight : sideChartHeight) - 10 // 10 is the skeleton padding
+                        index === 0
+                            ? mainLoadingSkeletonHeight
+                            : sideLoadingSkeletonHeight
                     }
                 />
             )}

@@ -31,9 +31,13 @@ const initialState = {
     timeframe: isNaN(parsedDefaultTimeframe) ? 1 : parsedDefaultTimeframe,
     timezone: isNaN(parsedDefaultTimezone) ? 11 : parsedDefaultTimezone,
     refreshRateSeconds: 30,
-    mainChartHeight: 360,
-    sideChartHeight: 220,
-    rightPriceScaleWidth: 70,
+    chartParams: {
+        mainChartHeight: 360,
+        sideChartHeight: 220,
+        mainLoadingSkeletonHeight: 350,
+        sideLoadingSkeletonHeight: 210,
+        rightPriceScaleWidth: 70,
+    },
 }
 
 export default function (state = initialState, action) {
