@@ -15,6 +15,14 @@ This repository contains the front end part of the monitoring system implemented
 npm ci
 ```
 
+## Configuring an Environment
+
+```bash
+cp .env.example .env
+```
+
+Afterwards, modify .env with your parameters.
+
 ## Running the Code
 
 ```bash
