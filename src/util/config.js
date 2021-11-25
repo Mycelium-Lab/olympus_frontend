@@ -65,16 +65,19 @@ const baseHistConfig = {
         precision: 3,
         minMove: 0.001,
     },
+    color: 'rgba(165, 165, 239, 0.89)',
 }
 
-const baseLineConfig = {
+const baseAreaConfig = {
     base: 0,
     priceFormat: {
         type: 'volume',
         precision: 3,
         minMove: 0.001,
     },
-    color: 'rgba(165, 165, 239, 0.89)',
+    topColor: 'rgba(165, 165, 239, 0.89)',
+    bottomColor: 'rgba(165, 165, 239, 0.06)',
+    lineColor: 'rgba(165, 165, 239, 1)',
 }
 
 const baseCandleConfig = {
@@ -236,12 +239,12 @@ const setBaseHist = (
     series,
     rebases,
     dataProperty,
-    seriesConfig = baseLineConfig
+    seriesConfig = baseHistConfig
 ) => {
     let hist
     if (!series) {
         hist = chart.addHistogramSeries({
-            ...baseLineConfig,
+            ...baseHistConfig,
             ...seriesConfig,
         })
     } else {
@@ -250,6 +253,28 @@ const setBaseHist = (
     hist.setData(data[dataProperty])
     if (rebases) hist.setMarkers(rebases.map((r) => getRebaseMarker(r)))
     return [hist]
+}
+
+const setBaseArea = (
+    chart,
+    data,
+    series,
+    rebases,
+    dataProperty,
+    seriesConfig = baseAreaConfig
+) => {
+    let area
+    if (!series) {
+        area = chart.addAreaSeries({
+            ...baseAreaConfig,
+            ...seriesConfig,
+        })
+    } else {
+        area = series[0]
+    }
+    area.setData(data[dataProperty])
+    if (rebases) area.setMarkers(rebases.map((r) => getRebaseMarker(r)))
+    return [area]
 }
 
 // polar, e.g., staking & unstaking, the former is positive, the latter is negative
@@ -354,7 +379,7 @@ export const methodPropsChartConfigs = {
                         color: 'rgb(247,169,167)',
                     })
 
-                    nettoHist = chart.addHistogramSeries(baseLineConfig)
+                    nettoHist = chart.addHistogramSeries(baseHistConfig)
                 } else {
                     ;[posHist, negHist, nettoHist] = series
                 }
@@ -372,12 +397,12 @@ export const methodPropsChartConfigs = {
         ),
         new MethodPropsChartConfig(
             'Current Staked (Cumulative), OHM',
-            (...args) => setBaseHist(...args, 'currentStaked'),
+            (...args) => setBaseArea(...args, 'currentStaked'),
             'OHM Staked at the Moment'
         ),
         new MethodPropsChartConfig(
             'Current Staked (Cumulative), USD',
-            (...args) => setBaseHist(...args, 'currentStakedUsd'),
+            (...args) => setBaseArea(...args, 'currentStakedUsd'),
             'OHM Staked at the Moment Multiplied by SushiSwap "Aggregated USD" OHM Price'
         ),
         new MethodPropsChartConfig(
@@ -426,13 +451,13 @@ export const methodPropsChartConfigs = {
     rebases: [
         new MethodPropsChartConfig(
             'Rebase Rate, %',
-            (...args) => setBaseHist(...args, 'rebasePercentage'),
+            (...args) => setBaseArea(...args, 'rebasePercentage'),
             'Current Rebase Rate as Set in the Staking Contract'
         ),
         new MethodPropsChartConfig(
             'APY, %',
             (...args) =>
-                setBaseHist(...args, 'apy', {
+                setBaseArea(...args, 'apy', {
                     priceFormat: {
                         type: 'percent',
                         precision: 3,
@@ -445,7 +470,7 @@ export const methodPropsChartConfigs = {
     index: [
         new MethodPropsChartConfig(
             'sOHM Index',
-            (...args) => setBaseHist(...args, 'index'),
+            (...args) => setBaseArea(...args, 'index'),
             'How Much sOHM One Would Have if They Staked and Held a Single OHM From Day 1'
         ),
     ],
@@ -565,7 +590,7 @@ export const methodPropsChartConfigs = {
     treasury: [
         new MethodPropsChartConfigTreasury(
             'Total Reserves (Rough Contract Estimate), OHM',
-            (...args) => setBaseHist(...args, 'total_reserves'),
+            (...args) => setBaseArea(...args, 'total_reserves'),
             'How Treasury Contract Estimates its Reserves (Holdings of 4 Reserve Tokens: DAI, OHM, LUSD, wETH ) in a 1 Token = 1 OHM Proportion via the valueOf function',
             totalReservesFuncs,
             mapTotalReserves
