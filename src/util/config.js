@@ -344,7 +344,7 @@ export const methodPropsChartConfigs = {
                 volumeDownHistSeries.setData(data.volumeDown)
 
                 if (rebases)
-                    volumeDownHistSeries.setMarkers(
+                    volumeUpHistSeries.setMarkers(
                         rebases.map((r) => getRebaseMarker(r))
                     )
 
