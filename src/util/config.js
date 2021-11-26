@@ -440,9 +440,10 @@ export const methodPropsChartConfigs = {
             (...args) =>
                 setBaseHist(...args, 'unstakedOfTotalStakedPercent', {
                     priceFormat: {
-                        type: 'percent',
-                        precision: 3,
-                        minMove: 0.001,
+                        type: 'custom',
+                        formatter: (price) => {
+                            return `${price.toFixed(3)}%`
+                        },
                     },
                 }),
             '[-1 x 100 x (Unstaked / Current Total Staked)] per Bar'
