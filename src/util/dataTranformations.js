@@ -39,10 +39,21 @@ export const getMappedScData = async (
             data = await getRebasesInfo(startTime, endTime)
             mappedData = mapRebases(data)
             break
-        case 'index':
+        case 'sOHM':
             const getIndexesInfo = getIndexesInfoFunction(timeframe)
             data = await getIndexesInfo(startTime, endTime)
             mappedData = mapIndexes(data)
+            break
+        case 'OHM':
+            const getOHMParamInfo =
+                methodPropsChartConfigs[method.type][
+                    method.orderNumber
+                ].getInfoFunction(timeframe)
+            data = await getOHMParamInfo(startTime, endTime)
+            mappedData =
+                methodPropsChartConfigs[method.type][
+                    method.orderNumber
+                ].mapDataFunction(data)
             break
         case 'bonds':
             const getBondsInfo = getBondsInfoFunction(timeframe)
@@ -50,9 +61,11 @@ export const getMappedScData = async (
             mappedData = mapBonds(data)
             break
         case 'treasury':
-            data = await methodPropsChartConfigs[method.type][
-                method.orderNumber
-            ].getDataFunctions[timeframe](startTime, endTime)
+            const getTreasuryParamInfo =
+                methodPropsChartConfigs[method.type][
+                    method.orderNumber
+                ].getInfoFunction(timeframe)
+            data = await getTreasuryParamInfo(startTime, endTime)
             const mappedRaw =
                 methodPropsChartConfigs[method.type][
                     method.orderNumber

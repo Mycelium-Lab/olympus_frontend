@@ -301,16 +301,28 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
     return data
 }
 
-export const totalReservesFuncs = [
-    (...args) => getTotalReservesByNDays(...args, 7),
-    (...args) => getTotalReservesByNDays(...args, 1),
-    (...args) => getTotalReservesByNHours(...args, 8),
-    (...args) => getTotalReservesByNHours(...args, 4),
-    (...args) => getTotalReservesByNHours(...args, 1),
-    (...args) => getTotalReservesByNMinutes(...args, 15),
-    (...args) => getTotalReservesByNMinutes(...args, 5),
-    (...args) => getTotalReservesByNMinutes(...args, 1),
-]
+export function getTotalReservesInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return (...rest) => getTotalReservesByNDays(...rest, 7)
+        case 1:
+            return (...rest) => getTotalReservesByNDays(...rest, 1)
+        case 2:
+            return (...rest) => getTotalReservesByNHours(...rest, 8)
+        case 3:
+            return (...rest) => getTotalReservesByNHours(...rest, 4)
+        case 4:
+            return (...rest) => getTotalReservesByNHours(...rest, 1)
+        case 5:
+            return (...rest) => getTotalReservesByNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getTotalReservesByNMinutes(...rest, 5)
+        case 7:
+            return (...rest) => getTotalReservesByNMinutes(...rest, 1)
+        default:
+            return
+    }
+}
 
 export function mapTotalReserves(total_reserves) {
     return total_reserves.reduce(

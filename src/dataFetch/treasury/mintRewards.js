@@ -292,16 +292,28 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
     return data
 }
 
-export const mintRewardsFuncs = [
-    (...args) => getMintRewardsByNDays(...args, 7),
-    (...args) => getMintRewardsByNDays(...args, 1),
-    (...args) => getMintRewardsByNHours(...args, 8),
-    (...args) => getMintRewardsByNHours(...args, 4),
-    (...args) => getMintRewardsByNHours(...args, 1),
-    (...args) => getMintRewardsByNMinutes(...args, 15),
-    (...args) => getMintRewardsByNMinutes(...args, 5),
-    (...args) => getMintRewardsByNMinutes(...args, 1),
-]
+export function getMintRewardsInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return (...rest) => getMintRewardsByNDays(...rest, 7)
+        case 1:
+            return (...rest) => getMintRewardsByNDays(...rest, 1)
+        case 2:
+            return (...rest) => getMintRewardsByNHours(...rest, 8)
+        case 3:
+            return (...rest) => getMintRewardsByNHours(...rest, 4)
+        case 4:
+            return (...rest) => getMintRewardsByNHours(...rest, 1)
+        case 5:
+            return (...rest) => getMintRewardsByNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getMintRewardsByNMinutes(...rest, 5)
+        case 7:
+            return (...rest) => getMintRewardsByNMinutes(...rest, 1)
+        default:
+            return
+    }
+}
 
 export function mapMintRewards(minted_rewards) {
     return minted_rewards.reduce(

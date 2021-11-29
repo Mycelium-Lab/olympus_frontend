@@ -372,16 +372,28 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
     return data
 }
 
-export const manageFuncs = [
-    (...args) => getManageByNDays(...args, 7),
-    (...args) => getManageByNDays(...args, 1),
-    (...args) => getManageByNHours(...args, 8),
-    (...args) => getManageByNHours(...args, 4),
-    (...args) => getManageByNHours(...args, 1),
-    (...args) => getManageByNMinutes(...args, 15),
-    (...args) => getManageByNMinutes(...args, 5),
-    (...args) => getManageByNMinutes(...args, 1),
-]
+export function getManageInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return (...rest) => getManageByNDays(...rest, 7)
+        case 1:
+            return (...rest) => getManageByNDays(...rest, 1)
+        case 2:
+            return (...rest) => getManageByNHours(...rest, 8)
+        case 3:
+            return (...rest) => getManageByNHours(...rest, 4)
+        case 4:
+            return (...rest) => getManageByNHours(...rest, 1)
+        case 5:
+            return (...rest) => getManageByNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getManageByNMinutes(...rest, 5)
+        case 7:
+            return (...rest) => getManageByNMinutes(...rest, 1)
+        default:
+            return
+    }
+}
 
 export function mapManage(manage, token) {
     return manage

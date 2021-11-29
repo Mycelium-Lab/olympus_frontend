@@ -409,16 +409,28 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
     return data
 }
 
-export const depositFuncs = [
-    (...args) => getDepositByNDays(...args, 7),
-    (...args) => getDepositByNDays(...args, 1),
-    (...args) => getDepositByNHours(...args, 8),
-    (...args) => getDepositByNHours(...args, 4),
-    (...args) => getDepositByNHours(...args, 1),
-    (...args) => getDepositByNMinutes(...args, 15),
-    (...args) => getDepositByNMinutes(...args, 5),
-    (...args) => getDepositByNMinutes(...args, 1),
-]
+export function getDepositInfoFunction(timeframe) {
+    switch (timeframe) {
+        case 0:
+            return (...rest) => getDepositByNDays(...rest, 7)
+        case 1:
+            return (...rest) => getDepositByNDays(...rest, 1)
+        case 2:
+            return (...rest) => getDepositByNHours(...rest, 8)
+        case 3:
+            return (...rest) => getDepositByNHours(...rest, 4)
+        case 4:
+            return (...rest) => getDepositByNHours(...rest, 1)
+        case 5:
+            return (...rest) => getDepositByNMinutes(...rest, 15)
+        case 6:
+            return (...rest) => getDepositByNMinutes(...rest, 5)
+        case 7:
+            return (...rest) => getDepositByNMinutes(...rest, 1)
+        default:
+            return
+    }
+}
 
 export function mapDeposit(deposit, token) {
     return deposit

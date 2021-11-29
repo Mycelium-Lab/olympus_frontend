@@ -7,7 +7,7 @@ const initialState = {
     isRebasesLoading: false, // not in use yet
     shouldRebasesLoad: false,
     methods: [
-        { type: 'index', orderNumber: 0, id: v4() }, // index
+        { type: 'sOHM', orderNumber: 0, id: v4() }, // index
         { type: 'rebases', orderNumber: 0, id: v4() }, // rebase rate
         { type: 'rebases', orderNumber: 1, id: v4() }, // apy
         { type: 'staking', orderNumber: 3, id: v4() }, // current staked, ohm

@@ -1,15 +1,42 @@
 import moment from 'moment'
 
 import {
-    totalReservesFuncs,
+    getTotalReservesInfoFunction,
     mapTotalReserves,
 } from '../dataFetch/treasury/totalReserves'
-import { depositFuncs, mapDeposit } from '../dataFetch/treasury/deposit'
 import {
-    mintRewardsFuncs,
+    getDepositInfoFunction,
+    mapDeposit,
+} from '../dataFetch/treasury/deposit'
+import {
+    getMintRewardsInfoFunction,
     mapMintRewards,
 } from '../dataFetch/treasury/mintRewards'
-import { manageFuncs, mapManage } from '../dataFetch/treasury/manage'
+import { getManageInfoFunction, mapManage } from '../dataFetch/treasury/manage'
+import {
+    getMarketCapInfoFunction,
+    mapMarketCap,
+} from '../dataFetch/ohm/marketCap'
+import {
+    getTotalSupplyInfoFunction,
+    mapTotalSupply,
+} from '../dataFetch/ohm/totalSupply'
+import {
+    getTotalSupplyUsdInfoFunction,
+    mapTotalSupplyUsd,
+} from '../dataFetch/ohm/totalSupplyUsd'
+import {
+    getDaoBalanceInfoFunction,
+    mapDaoBalance,
+} from '../dataFetch/ohm/daoBalance'
+import {
+    getDaoBalanceUsdInfoFunction,
+    mapDaoBalanceUsd,
+} from '../dataFetch/ohm/daoBalanceUsd'
+import {
+    getCirculatingSupplyInfoFunction,
+    mapCirculatingSupply,
+} from '../dataFetch/ohm/circulatingSupply'
 
 export const chartConfig = {
     width: 800,
@@ -218,10 +245,10 @@ class MethodPropsChartConfig {
     }
 }
 
-class MethodPropsChartConfigTreasury extends MethodPropsChartConfig {
-    constructor(title, setChart, info, getDataFunctions, mapDataFunction) {
-        super(title, setChart, info, getDataFunctions, mapDataFunction)
-        this.getDataFunctions = getDataFunctions
+class MethodPropsChartConfigCustomFuncs extends MethodPropsChartConfig {
+    constructor(title, setChart, info, getInfoFunction, mapDataFunction) {
+        super(title, setChart, info, getInfoFunction, mapDataFunction)
+        this.getInfoFunction = getInfoFunction
         this.mapDataFunction = mapDataFunction
     }
 }
@@ -468,11 +495,55 @@ export const methodPropsChartConfigs = {
             '<a href="https://docs.olympusdao.finance/main/basics/basics#how-is-the-apy-calculated" target="_blank" rel=”noreferrer noopener”>APY Calculation Explanation</a>'
         ),
     ],
-    index: [
+    sOHM: [
         new MethodPropsChartConfig(
             'sOHM Index',
             (...args) => setBaseArea(...args, 'index'),
             'How Much sOHM One Would Have if They Staked and Held a Single OHM From Day 1'
+        ),
+    ],
+    OHM: [
+        new MethodPropsChartConfigCustomFuncs(
+            'OHM Market Cap, USD',
+            (...args) => setBaseArea(...args, 'marketCap'),
+            'Market Capitilization of OHM (Circulating Supply x OHM Price per Bar)',
+            getMarketCapInfoFunction,
+            mapMarketCap
+        ),
+        new MethodPropsChartConfigCustomFuncs(
+            'OHM Circulating Supply, OHM',
+            (...args) => setBaseArea(...args, 'circulatingSupply'),
+            'Circulating Supply of OHM (Total Supply - DAO Balance)',
+            getCirculatingSupplyInfoFunction,
+            mapCirculatingSupply
+        ),
+        new MethodPropsChartConfigCustomFuncs(
+            'OHM Total Supply, OHM',
+            (...args) => setBaseArea(...args, 'totalSupply'),
+            'Total Supply of OHM',
+            getTotalSupplyInfoFunction,
+            mapTotalSupply
+        ),
+        new MethodPropsChartConfigCustomFuncs(
+            'OHM Total Supply, USD',
+            (...args) => setBaseArea(...args, 'totalSupplyUsd'),
+            'Total Supply of OHM in USD',
+            getTotalSupplyUsdInfoFunction,
+            mapTotalSupplyUsd
+        ),
+        new MethodPropsChartConfigCustomFuncs(
+            'DAO Balance, OHM',
+            (...args) => setBaseArea(...args, 'daoBalance'),
+            'Balance of the DAO Contract in OHM',
+            getDaoBalanceInfoFunction,
+            mapDaoBalance
+        ),
+        new MethodPropsChartConfigCustomFuncs(
+            'DAO Balance, USD',
+            (...args) => setBaseArea(...args, 'daoBalanceUsd'),
+            'Balance of the DAO Contract in USD',
+            getDaoBalanceUsdInfoFunction,
+            mapDaoBalanceUsd
         ),
     ],
     bonds: [
@@ -589,127 +660,127 @@ export const methodPropsChartConfigs = {
         ),
     ],
     treasury: [
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Total Reserves (Rough Contract Estimate), OHM',
             (...args) => setBaseArea(...args, 'total_reserves'),
             'How Treasury Contract Estimates its Reserves (Holdings of 4 Reserve Tokens: DAI, OHM, LUSD, wETH ) in a 1 Token = 1 OHM Proportion via the valueOf function',
-            totalReservesFuncs,
+            getTotalReservesInfoFunction,
             mapTotalReserves
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, DAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Deposited to Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
                     '0x6b175474e89094c44da98b954eedeac495271d0f'
                 )
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), DAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of DAI Withdrawn from Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0x6b175474e89094c44da98b954eedeac495271d0f')
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, FRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Deposited to Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
                     '0x853d955acef822db058eb8505911ed77f175b99e'
                 )
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), FRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of FRAX Withdrawn from Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0x853d955acef822db058eb8505911ed77f175b99e')
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, LUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Deposited to Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
                     '0x5f98805a4e8be255a32880fdec7f6728c6568ba0'
                 )
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), LUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LUSD Withdrawn from Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0x5f98805a4e8be255a32880fdec7f6728c6568ba0')
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, LP OHMDAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Deposited to Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
                     '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c'
                 )
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), LP OHMDAI',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMDAI Withdrawn from Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c')
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Deposited to Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
                     '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b'
                 )
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), LP OHMLUSD',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMLUSD Withdrawn from Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0xfdf12d1f85b5082877a6e070524f50f6c84faa6b')
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Managed (Withdrawn), LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Deposited to Treasury Contract',
-            manageFuncs,
+            getManageInfoFunction,
             (manage) =>
                 mapManage(manage, '0x2dce0dda1c2f98e0f171de8333c3c6fe1bbf4877')
         ),
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Amount Deposited, LP OHMFRAX',
             (...args) => setBaseHist(...args, 'amount'),
             'Amount of LP OHMFRAX Withdrawn from Treasury Contract',
-            depositFuncs,
+            getDepositInfoFunction,
             (deposit) =>
                 mapDeposit(
                     deposit,
@@ -717,11 +788,11 @@ export const methodPropsChartConfigs = {
                 )
         ),
 
-        new MethodPropsChartConfigTreasury(
+        new MethodPropsChartConfigCustomFuncs(
             'Minted Rewards for Staking, OHM',
             (...args) => setBaseHist(...args, 'minted_rewards'),
             "Rewards Minted by Treasury For Distributing Stakers' Rewards to V1 and V2 Staking Contracts",
-            mintRewardsFuncs,
+            getMintRewardsInfoFunction,
             mapMintRewards
         ),
     ],
