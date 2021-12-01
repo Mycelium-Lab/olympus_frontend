@@ -4,7 +4,7 @@ import { getRebasesInfoFunction, mapRebases } from '../dataFetch/rebases'
 import {
     getSOHMIndexesInfoFunction,
     mapSOHMIndexes,
-} from '../dataFetch/sOHMIndexes'
+} from '../dataFetch/sOhmIndexes'
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 
 import moment from 'moment'
@@ -43,8 +43,8 @@ export const getMappedScData = async (
             mappedData = mapRebases(data)
             break
         case 'sOHM':
-            const getIndexesInfo = getSOHMIndexesInfoFunction(timeframe)
-            data = await getIndexesInfo(startTime, endTime)
+            const getSOHMIndexesInfo = getSOHMIndexesInfoFunction(timeframe)
+            data = await getSOHMIndexesInfo(startTime, endTime)
             mappedData = mapSOHMIndexes(data)
             break
         case 'OHM':
