@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { token } from './config.js'
-import { TVTimeValueObject } from '../../util/tvSeries.js'
+import { TVValueTimeObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
 
@@ -17,7 +17,7 @@ const dayQuery = `
   }
   `
 
-export async function getMintRewardsByNDays(
+export async function getMintRewardsInfoNDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -113,7 +113,7 @@ const hourQuery = `
   }
   `
 
-export async function getMintRewardsByNHours(
+export async function getMintRewardsInfoNHours(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -210,7 +210,7 @@ const minuteQuery = `
   }
   `
 
-export async function getMintRewardsByNMinutes(
+export async function getMintRewardsInfoNMinutes(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -295,21 +295,21 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
 export function getMintRewardsInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getMintRewardsByNDays(...rest, 7)
+            return (...rest) => getMintRewardsInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getMintRewardsByNDays(...rest, 1)
+            return (...rest) => getMintRewardsInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getMintRewardsByNHours(...rest, 8)
+            return (...rest) => getMintRewardsInfoNHours(...rest, 8)
         case 3:
-            return (...rest) => getMintRewardsByNHours(...rest, 4)
+            return (...rest) => getMintRewardsInfoNHours(...rest, 4)
         case 4:
-            return (...rest) => getMintRewardsByNHours(...rest, 1)
+            return (...rest) => getMintRewardsInfoNHours(...rest, 1)
         case 5:
-            return (...rest) => getMintRewardsByNMinutes(...rest, 15)
+            return (...rest) => getMintRewardsInfoNMinutes(...rest, 15)
         case 6:
-            return (...rest) => getMintRewardsByNMinutes(...rest, 5)
+            return (...rest) => getMintRewardsInfoNMinutes(...rest, 5)
         case 7:
-            return (...rest) => getMintRewardsByNMinutes(...rest, 1)
+            return (...rest) => getMintRewardsInfoNMinutes(...rest, 1)
         default:
             return
     }
@@ -320,7 +320,7 @@ export function mapMintRewards(minted_rewards) {
         (acc, e) => {
             const time = parseInt(e.timestamp)
             acc.minted_rewards.push(
-                new TVTimeValueObject(Number(e.amount), time)
+                new TVValueTimeObject(Number(e.amount), time)
             )
             return acc
         },

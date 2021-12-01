@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { TVValueTimeObject, TVCandleObject } from '../util/tvSeries'
 
 /**
  * @dev : Get pairs (N days)
@@ -472,23 +473,29 @@ export function mapPairs(pairs) {
     return pairs.reduce(
         (acc, e) => {
             const time = parseInt(e.beginTimestamp)
-            acc.priceCandles.push({
-                open: Number(e.token1PriceOpen),
-                close: Number(e.token1PriceClose),
-                high: Number(e.token1PriceHigh),
-                low: Number(e.token1PriceLow),
-                time,
-            })
-            acc.volumeUp.push({
-                value: Math.round(
-                    Number(e.volumeToken1In) + Number(e.volumeToken1Out)
-                ),
-                time,
-            })
-            acc.volumeDown.push({
-                value: Math.round(Number(e.volumeToken1Out)),
-                time,
-            })
+            acc.priceCandles.push(
+                new TVCandleObject(
+                    Number(e.token1PriceOpen),
+                    Number(e.token1PriceHigh),
+                    Number(e.token1PriceLow),
+                    Number(e.token1PriceClose),
+                    time
+                )
+            )
+            acc.volumeUp.push(
+                new TVValueTimeObject(
+                    Math.round(
+                        Number(e.volumeToken1In) + Number(e.volumeToken1Out)
+                    ),
+                    time
+                )
+            )
+            acc.volumeDown.push(
+                new TVValueTimeObject(
+                    Math.round(Number(e.volumeToken1Out)),
+                    time
+                )
+            )
             return acc
         },
         { priceCandles: [], volumeUp: [], volumeDown: [] }

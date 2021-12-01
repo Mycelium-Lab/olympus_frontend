@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js'
 import { getTokens } from './getTokens.js'
-import { TVTimeValueObject } from '../../util/tvSeries.js'
+import { TVValueTimeObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
 
@@ -21,7 +21,7 @@ const dayQuery = `
 }
   `
 
-export async function getManageByNDays(
+export async function getManageInfoNDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -137,7 +137,7 @@ const hourQuery = `
 }
 `
 
-export async function getManageByNHours(
+export async function getManageInfoNHours(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -259,7 +259,7 @@ const minuteQuery = `
 }
 `
 
-export async function getManageByNMinutes(
+export async function getManageInfoNMinutes(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -375,21 +375,21 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
 export function getManageInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getManageByNDays(...rest, 7)
+            return (...rest) => getManageInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getManageByNDays(...rest, 1)
+            return (...rest) => getManageInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getManageByNHours(...rest, 8)
+            return (...rest) => getManageInfoNHours(...rest, 8)
         case 3:
-            return (...rest) => getManageByNHours(...rest, 4)
+            return (...rest) => getManageInfoNHours(...rest, 4)
         case 4:
-            return (...rest) => getManageByNHours(...rest, 1)
+            return (...rest) => getManageInfoNHours(...rest, 1)
         case 5:
-            return (...rest) => getManageByNMinutes(...rest, 15)
+            return (...rest) => getManageInfoNMinutes(...rest, 15)
         case 6:
-            return (...rest) => getManageByNMinutes(...rest, 5)
+            return (...rest) => getManageInfoNMinutes(...rest, 5)
         case 7:
-            return (...rest) => getManageByNMinutes(...rest, 1)
+            return (...rest) => getManageInfoNMinutes(...rest, 1)
         default:
             return
     }
@@ -401,9 +401,9 @@ export function mapManage(manage, token) {
         .array.reduce(
             (acc, e) => {
                 const time = parseInt(e.timestamp)
-                acc.amount.push(new TVTimeValueObject(Number(e.amount), time))
+                acc.amount.push(new TVValueTimeObject(Number(e.amount), time))
                 acc.sumAmount.push(
-                    new TVTimeValueObject(Number(e.sumAmount), time)
+                    new TVValueTimeObject(Number(e.sumAmount), time)
                 )
                 return acc
             },

@@ -1,13 +1,16 @@
 import { getStakesInfoFunction, mapStakes } from '../dataFetch/stakes'
 import { getBondsInfoFunction, mapBonds } from '../dataFetch/bonds'
 import { getRebasesInfoFunction, mapRebases } from '../dataFetch/rebases'
-import { getIndexesInfoFunction, mapIndexes } from '../dataFetch/sOhmIndexes'
+import {
+    getSOHMIndexesInfoFunction,
+    mapSOHMIndexes,
+} from '../dataFetch/sOHMIndexes'
 import { getPairsInfoFunction, mapPairs } from '../dataFetch/pairs'
 
 import moment from 'moment'
 
 import { methodPropsChartConfigs } from './config'
-import { TVTimeValueObject } from './tvSeries'
+import { TVValueTimeObject } from './tvSeries'
 
 import timezones from './timezones'
 
@@ -40,9 +43,9 @@ export const getMappedScData = async (
             mappedData = mapRebases(data)
             break
         case 'sOHM':
-            const getIndexesInfo = getIndexesInfoFunction(timeframe)
+            const getIndexesInfo = getSOHMIndexesInfoFunction(timeframe)
             data = await getIndexesInfo(startTime, endTime)
-            mappedData = mapIndexes(data)
+            mappedData = mapSOHMIndexes(data)
             break
         case 'OHM':
             const getOHMParamInfo =
@@ -100,7 +103,7 @@ export const completeDataSetStart = (
             let currentTimeDifference = endTime - intervalDiff * realLength
 
             const filler = Array.from(Array(lengthDiff).keys()).map((_) => {
-                const obj = new TVTimeValueObject(0, currentTimeDifference)
+                const obj = new TVValueTimeObject(0, currentTimeDifference)
                 currentTimeDifference -= intervalDiff
                 return obj
             })

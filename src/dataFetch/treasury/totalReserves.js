@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { token } from './config.js'
-import { TVTimeValueObject } from '../../util/tvSeries.js'
+import { TVValueTimeObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
 const dayQuery = `
@@ -15,7 +15,7 @@ const dayQuery = `
 }
 `
 
-export async function getTotalReservesByNDays(
+export async function getTotalReservesInfoNDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -106,7 +106,7 @@ const hourQuery = `
 }
 `
 
-export async function getTotalReservesByNHours(
+export async function getTotalReservesInfoNHours(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -206,7 +206,7 @@ const minuteQuery = `
 }
   `
 
-export async function getTotalReservesByNMinutes(
+export async function getTotalReservesInfoNMinutes(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -304,21 +304,21 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
 export function getTotalReservesInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getTotalReservesByNDays(...rest, 7)
+            return (...rest) => getTotalReservesInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getTotalReservesByNDays(...rest, 1)
+            return (...rest) => getTotalReservesInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getTotalReservesByNHours(...rest, 8)
+            return (...rest) => getTotalReservesInfoNHours(...rest, 8)
         case 3:
-            return (...rest) => getTotalReservesByNHours(...rest, 4)
+            return (...rest) => getTotalReservesInfoNHours(...rest, 4)
         case 4:
-            return (...rest) => getTotalReservesByNHours(...rest, 1)
+            return (...rest) => getTotalReservesInfoNHours(...rest, 1)
         case 5:
-            return (...rest) => getTotalReservesByNMinutes(...rest, 15)
+            return (...rest) => getTotalReservesInfoNMinutes(...rest, 15)
         case 6:
-            return (...rest) => getTotalReservesByNMinutes(...rest, 5)
+            return (...rest) => getTotalReservesInfoNMinutes(...rest, 5)
         case 7:
-            return (...rest) => getTotalReservesByNMinutes(...rest, 1)
+            return (...rest) => getTotalReservesInfoNMinutes(...rest, 1)
         default:
             return
     }
@@ -329,7 +329,7 @@ export function mapTotalReserves(total_reserves) {
         (acc, e) => {
             const time = parseInt(e.timestamp)
             acc.total_reserves.push(
-                new TVTimeValueObject(Number(e.totalReserves), time)
+                new TVValueTimeObject(Number(e.totalReserves), time)
             )
             return acc
         },

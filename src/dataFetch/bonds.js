@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TVTimeValueObject } from '../util/tvSeries'
+import { TVValueTimeObject } from '../util/tvSeries'
 
 /**
  * @dev : Get deposits (N days)
@@ -7,7 +7,7 @@ import { TVTimeValueObject } from '../util/tvSeries'
  * @param endTime - End timestamp for query
  * @param days - Number of days
  */
-export async function getDepositsInfoNDays(startTimestamp, endTime, days) {
+export async function getBondsInfoDays(startTimestamp, endTime, days) {
     let depositQuery = `
     {
         depositYearDaiEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"DAI"}) {
@@ -511,7 +511,7 @@ export async function getDepositsInfoNDays(startTimestamp, endTime, days) {
     * @param endTime - End timestamp for query
     * @param hours - Number of hours
 */
-export async function getDepositsInfoNHours(startTimestamp, endTime, hours) {
+export async function getBondsInfoNHours(startTimestamp, endTime, hours) {
     let depositQuery = `
     {
         depositYearDaiEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"DAI"}) {
@@ -1198,11 +1198,7 @@ export async function getDepositsInfoNHours(startTimestamp, endTime, hours) {
     * @param endTime - End timestamp for query
 
 */
-export async function getDepositsInfoNMinutes(
-    startTimestamp,
-    endTime,
-    minutes
-) {
+export async function getBondsInfoNMinutes(startTimestamp, endTime, minutes) {
     let depositQueryDai = `
     {
         depositYearDaiEntities:depositYearEntities(first: 100 orderBy:timestamp, where:{token:"DAI"}) {
@@ -2079,68 +2075,68 @@ export function mapBonds(bonds) {
             const time = parseInt(e.beginTimestamp)
 
             // amounts
-            acc.amountDai.push(new TVTimeValueObject(Number(e.amountDai), time))
-            acc.amountEth.push(new TVTimeValueObject(Number(e.amountEth), time))
+            acc.amountDai.push(new TVValueTimeObject(Number(e.amountDai), time))
+            acc.amountEth.push(new TVValueTimeObject(Number(e.amountEth), time))
             acc.amountFrax.push(
-                new TVTimeValueObject(Number(e.amountFrax), time)
+                new TVValueTimeObject(Number(e.amountFrax), time)
             )
             acc.amountLusd.push(
-                new TVTimeValueObject(Number(e.amountLusd), time)
+                new TVValueTimeObject(Number(e.amountLusd), time)
             )
             acc.amountOhmDai.push(
-                new TVTimeValueObject(Number(e.amountOhmDai), time)
+                new TVValueTimeObject(Number(e.amountOhmDai), time)
             )
             acc.amountOhmFrax.push(
-                new TVTimeValueObject(Number(e.amountOhmFrax), time)
+                new TVValueTimeObject(Number(e.amountOhmFrax), time)
             )
             acc.amountOhmLusd.push(
-                new TVTimeValueObject(Number(e.amountOhmLusd), time)
+                new TVValueTimeObject(Number(e.amountOhmLusd), time)
             )
 
             // count
             acc.depositCountDai.push(
-                new TVTimeValueObject(Number(e.depositCountDai), time)
+                new TVValueTimeObject(Number(e.depositCountDai), time)
             )
             acc.depositCountEth.push(
-                new TVTimeValueObject(Number(e.depositCountEth), time)
+                new TVValueTimeObject(Number(e.depositCountEth), time)
             )
             acc.depositCountFrax.push(
-                new TVTimeValueObject(Number(e.depositCountFrax), time)
+                new TVValueTimeObject(Number(e.depositCountFrax), time)
             )
             acc.depositCountLusd.push(
-                new TVTimeValueObject(Number(e.depositCountLusd), time)
+                new TVValueTimeObject(Number(e.depositCountLusd), time)
             )
             acc.depositCountOhmDai.push(
-                new TVTimeValueObject(Number(e.depositCountOhmDai), time)
+                new TVValueTimeObject(Number(e.depositCountOhmDai), time)
             )
             acc.depositCountOhmFrax.push(
-                new TVTimeValueObject(Number(e.depositCountOhmFrax), time)
+                new TVValueTimeObject(Number(e.depositCountOhmFrax), time)
             )
             acc.depositCountOhmLusd.push(
-                new TVTimeValueObject(Number(e.depositCountOhmLusd), time)
+                new TVValueTimeObject(Number(e.depositCountOhmLusd), time)
             )
 
             // bcv
             acc.newBCVDai.push(
-                new TVTimeValueObject(Number(e.newBCVDai) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVDai) * 10 ** 7, time)
             )
             acc.newBCVEth.push(
-                new TVTimeValueObject(Number(e.newBCVEth) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVEth) * 10 ** 7, time)
             )
             acc.newBCVFrax.push(
-                new TVTimeValueObject(Number(e.newBCVFrax) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVFrax) * 10 ** 7, time)
             )
             acc.newBCVLusd.push(
-                new TVTimeValueObject(Number(e.newBCVLusd) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVLusd) * 10 ** 7, time)
             )
             acc.newBCVOhmDai.push(
-                new TVTimeValueObject(Number(e.newBCVOhmDai) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVOhmDai) * 10 ** 7, time)
             )
             acc.newBCVOhmFrax.push(
-                new TVTimeValueObject(Number(e.newBCVOhmFrax) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVOhmFrax) * 10 ** 7, time)
             )
             acc.newBCVOhmLusd.push(
-                new TVTimeValueObject(Number(e.newBCVOhmLusd) * 10 ** 7, time)
+                new TVValueTimeObject(Number(e.newBCVOhmLusd) * 10 ** 7, time)
             )
             return acc
         },
@@ -2173,21 +2169,21 @@ export function mapBonds(bonds) {
 export function getBondsInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getDepositsInfoNDays(...rest, 7)
+            return (...rest) => getBondsInfoDays(...rest, 7)
         case 1:
-            return (...rest) => getDepositsInfoNDays(...rest, 1)
+            return (...rest) => getBondsInfoDays(...rest, 1)
         case 2:
-            return (...rest) => getDepositsInfoNHours(...rest, 8)
+            return (...rest) => getBondsInfoNHours(...rest, 8)
         case 3:
-            return (...rest) => getDepositsInfoNHours(...rest, 4)
+            return (...rest) => getBondsInfoNHours(...rest, 4)
         case 4:
-            return (...rest) => getDepositsInfoNHours(...rest, 1)
+            return (...rest) => getBondsInfoNHours(...rest, 1)
         case 5:
-            return (...rest) => getDepositsInfoNMinutes(...rest, 15)
+            return (...rest) => getBondsInfoNMinutes(...rest, 15)
         case 6:
-            return (...rest) => getDepositsInfoNMinutes(...rest, 5)
+            return (...rest) => getBondsInfoNMinutes(...rest, 5)
         case 7:
-            return (...rest) => getDepositsInfoNMinutes(...rest, 1)
+            return (...rest) => getBondsInfoNMinutes(...rest, 1)
         default:
             return
     }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { token } from './config.js'
 import { getTokens } from './getTokens.js'
-import { TVTimeValueObject } from '../../util/tvSeries.js'
+import { TVValueTimeObject } from '../../util/tvSeries.js'
 
 const day = 60 * 60 * 24
 
@@ -24,7 +24,7 @@ const dayQuery = `
  }
   `
 
-export async function getDepositByNDays(
+export async function getDepositInfoNDays(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -153,7 +153,7 @@ const hourQuery = `
  }
   `
 
-export async function getDepositByNHours(
+export async function getDepositInfoNHours(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -289,7 +289,7 @@ const minuteQuery = `
  }
   `
 
-export async function getDepositByNMinutes(
+export async function getDepositInfoNMinutes(
     startTimestamp = 0,
     endTimestamp = Date.now() / 1000,
     n
@@ -412,21 +412,21 @@ function fillBigArrayForNMinutes(stakes, startTimestamp, endTime, minutes) {
 export function getDepositInfoFunction(timeframe) {
     switch (timeframe) {
         case 0:
-            return (...rest) => getDepositByNDays(...rest, 7)
+            return (...rest) => getDepositInfoNDays(...rest, 7)
         case 1:
-            return (...rest) => getDepositByNDays(...rest, 1)
+            return (...rest) => getDepositInfoNDays(...rest, 1)
         case 2:
-            return (...rest) => getDepositByNHours(...rest, 8)
+            return (...rest) => getDepositInfoNHours(...rest, 8)
         case 3:
-            return (...rest) => getDepositByNHours(...rest, 4)
+            return (...rest) => getDepositInfoNHours(...rest, 4)
         case 4:
-            return (...rest) => getDepositByNHours(...rest, 1)
+            return (...rest) => getDepositInfoNHours(...rest, 1)
         case 5:
-            return (...rest) => getDepositByNMinutes(...rest, 15)
+            return (...rest) => getDepositInfoNMinutes(...rest, 15)
         case 6:
-            return (...rest) => getDepositByNMinutes(...rest, 5)
+            return (...rest) => getDepositInfoNMinutes(...rest, 5)
         case 7:
-            return (...rest) => getDepositByNMinutes(...rest, 1)
+            return (...rest) => getDepositInfoNMinutes(...rest, 1)
         default:
             return
     }
@@ -438,17 +438,17 @@ export function mapDeposit(deposit, token) {
         .array.reduce(
             (acc, e) => {
                 const time = parseInt(e.timestamp)
-                acc.profit.push(new TVTimeValueObject(Number(e.profit), time))
-                acc.amount.push(new TVTimeValueObject(Number(e.amount), time))
-                acc.value.push(new TVTimeValueObject(Number(e.value), time))
+                acc.profit.push(new TVValueTimeObject(Number(e.profit), time))
+                acc.amount.push(new TVValueTimeObject(Number(e.amount), time))
+                acc.value.push(new TVValueTimeObject(Number(e.value), time))
                 acc.sumProfit.push(
-                    new TVTimeValueObject(Number(e.sumProfit), time)
+                    new TVValueTimeObject(Number(e.sumProfit), time)
                 )
                 acc.sumAmount.push(
-                    new TVTimeValueObject(Number(e.sumAmount), time)
+                    new TVValueTimeObject(Number(e.sumAmount), time)
                 )
                 acc.sumValue.push(
-                    new TVTimeValueObject(Number(e.sumValue), time)
+                    new TVValueTimeObject(Number(e.sumValue), time)
                 )
                 return acc
             },

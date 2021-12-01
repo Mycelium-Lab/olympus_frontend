@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { TVValueTimeObject } from '../util/tvSeries'
 import moment from 'moment'
 
 export async function getRebasesInfoNDays(startTimestamp, endTime, days) {
@@ -279,14 +280,10 @@ export function mapRebases(rebases) {
     return rebases.reduce(
         (acc, e) => {
             const time = parseInt(e.beginTimestamp)
-            acc.rebasePercentage.push({
-                value: Number(e.percentage) * 100,
-                time,
-            })
-            acc.apy.push({
-                value: Number(e.apy) * 100,
-                time,
-            })
+            acc.rebasePercentage.push(
+                new TVValueTimeObject(Number(e.percentage) * 100, time)
+            )
+            acc.apy.push(new TVValueTimeObject(Number(e.apy) * 100, time))
             return acc
         },
         { rebasePercentage: [], apy: [] }

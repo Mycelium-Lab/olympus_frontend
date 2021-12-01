@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TVTimeValueObject } from '../../util/tvSeries'
+import { TVValueTimeObject } from '../../util/tvSeries'
 
 const getTotalSupplyInfoNDays = (startTimestamp, endTimestamp, n) =>
     axios({
@@ -22,7 +22,7 @@ const getTotalSupplyInfoNMinutes = (startTimestamp, endTimestamp, n) =>
 export function mapTotalSupply(totalSupply) {
     return {
         totalSupply: totalSupply.map(
-            (i) => new TVTimeValueObject(i.totalSupply, i.timestamp)
+            (i) => new TVValueTimeObject(i.totalSupply, i.timestamp)
         ),
     }
 }

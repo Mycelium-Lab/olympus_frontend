@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TVTimeValueObject } from '../../util/tvSeries'
+import { TVValueTimeObject } from '../../util/tvSeries'
 
 const getDaoBalanceInfoNDays = (startTimestamp, endTimestamp, n) =>
     axios({
@@ -22,7 +22,7 @@ const getDaoBalanceInfoNMinutes = (startTimestamp, endTimestamp, n) =>
 export function mapDaoBalance(daoBalance) {
     return {
         daoBalance: daoBalance.map(
-            (i) => new TVTimeValueObject(i.daoBalance, i.timestamp)
+            (i) => new TVValueTimeObject(i.daoBalance, i.timestamp)
         ),
     }
 }

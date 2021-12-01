@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TVTimeValueObject } from '../util/tvSeries'
+import { TVValueTimeObject } from '../util/tvSeries'
 
 /**
  * @dev : Get stakes (N days)
@@ -416,24 +416,24 @@ export function mapStakes(stakes) {
     return stakes.reduce(
         (acc, e) => {
             const time = parseInt(e.beginTimestamp)
-            acc.staked.push(new TVTimeValueObject(Number(e.amountStaked), time))
+            acc.staked.push(new TVValueTimeObject(Number(e.amountStaked), time))
             acc.unstaked.push(
-                new TVTimeValueObject(-Number(e.amountUnstaked), time)
+                new TVValueTimeObject(-Number(e.amountUnstaked), time)
             )
             acc.currentStaked.push(
-                new TVTimeValueObject(Number(e.currentStaked), time)
+                new TVValueTimeObject(Number(e.currentStaked), time)
             )
             acc.currentStakedUsd.push(
-                new TVTimeValueObject(
+                new TVValueTimeObject(
                     Number(e.currentStaked) * Number(e.usdRate),
                     time
                 )
             )
             acc.nettoStaked.push(
-                new TVTimeValueObject(Number(e.nettoStaked), time)
+                new TVValueTimeObject(Number(e.nettoStaked), time)
             )
             acc.unstakedToStakedPercent.push(
-                new TVTimeValueObject(
+                new TVValueTimeObject(
                     Math.abs(Number(e.unstakedToStakedPercent)) === Infinity
                         ? NaN
                         : Number(e.unstakedToStakedPercent),
@@ -441,7 +441,7 @@ export function mapStakes(stakes) {
                 )
             )
             acc.unstakedOfTotalStakedPercent.push(
-                new TVTimeValueObject(
+                new TVValueTimeObject(
                     Math.abs(Number(e.unstakedOfTotalStakedPercent)) ===
                     Infinity
                         ? NaN
@@ -449,19 +449,19 @@ export function mapStakes(stakes) {
                     time
                 )
             )
-            acc.stakedMax.push(new TVTimeValueObject(Number(e.stakeMax), time))
+            acc.stakedMax.push(new TVValueTimeObject(Number(e.stakeMax), time))
             acc.unstakedMax.push(
-                new TVTimeValueObject(-Number(e.unstakeMax), time)
+                new TVValueTimeObject(-Number(e.unstakeMax), time)
             )
-            acc.stakedAvg.push(new TVTimeValueObject(Number(e.stakeAvg), time))
+            acc.stakedAvg.push(new TVValueTimeObject(Number(e.stakeAvg), time))
             acc.unstakedAvg.push(
-                new TVTimeValueObject(-Number(e.unstakeAvg), time)
+                new TVValueTimeObject(-Number(e.unstakeAvg), time)
             )
             acc.stakeCount.push(
-                new TVTimeValueObject(Number(e.stakeCount), time)
+                new TVValueTimeObject(Number(e.stakeCount), time)
             )
             acc.unstakeCount.push(
-                new TVTimeValueObject(-Number(e.unstakeCount), time)
+                new TVValueTimeObject(-Number(e.unstakeCount), time)
             )
             return acc
         },

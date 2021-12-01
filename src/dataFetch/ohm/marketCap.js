@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TVTimeValueObject } from '../../util/tvSeries'
+import { TVValueTimeObject } from '../../util/tvSeries'
 
 const getMarketCapInfoNDays = (startTimestamp, endTimestamp, n) =>
     axios({
@@ -22,7 +22,7 @@ const getMarketCapInfoNMinutes = (startTimestamp, endTimestamp, n) =>
 export function mapMarketCap(marketCap) {
     return {
         marketCap: marketCap.map(
-            (i) => new TVTimeValueObject(i.marketCap, i.timestamp)
+            (i) => new TVValueTimeObject(i.marketCap, i.timestamp)
         ),
     }
 }
