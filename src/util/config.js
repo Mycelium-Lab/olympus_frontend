@@ -81,7 +81,7 @@ export const chartConfig = {
 export const timeVisibleConfig = (timeframe) => ({
     timeScale: {
         ...chartConfig.timeScale,
-        timeVisible: timeframe > 0,
+        timeVisible: timeframe >= 2, // Do not display time for 1W, 1D
     },
 })
 
